@@ -6,8 +6,17 @@ import java.sql.SQLException;
 
 public class DatabaseConnection {
     private static final String URL_Runtime = "jdbc:oracle:thin:@im2ag-oracle.univ-grenoble-alpes.fr:1521:im2ag";
-    private static final String USER_Runtime = "guegann";
-    private static final String PASSWORD_Runtime = "a611f35d18";
+    private static final String USER_Runtime = "baydouna";
+    private static final String PASSWORD_Runtime = "e449c762e6";
+    
+    static {
+        try {
+            Class.forName("oracle.jdbc.OracleDriver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            throw new ExceptionInInitializerError(e);
+        }
+    }
 
      public static Connection getConnection(boolean mode) throws SQLException {
         if (mode)

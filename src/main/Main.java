@@ -12,18 +12,19 @@ public class Main {
 
 	public static void main(String[] args) {
 		
-		Session session = new Session(true);
-
+		Session session = new Session(false);
+		
 		try {
 
 			session.open();
+			
 			DaoFactory daoFactory = DaoFactory.getInstance();
 
 			MachineDao machineDao = new MachineDao(session.get());
 			daoFactory.registerDao(Machine.class, machineDao);
 
 			Machine machine = machineDao.getById(1L);
-
+			
 			if (machine != null) {
 				System.out.println("Retrieved Machine from the Database: " + machine);
 
