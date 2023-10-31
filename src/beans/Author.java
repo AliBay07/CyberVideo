@@ -3,12 +3,8 @@ package beans;
 public class Author {
 
 	private Long id;
-	private String name;
-
-	public Author(Long id, String name) {
-		this.id = id;
-		this.name = name;
-	}
+	private String first_name;
+	private String last_name;
 
 	public Long getId() {
 		return id;
@@ -18,19 +14,20 @@ public class Author {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
+	public String getFirstName() {
+		return first_name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setFirstName(String first_name) {
+		this.first_name = first_name;
 	}
 
-	@Override
-	public String toString() {
-		return "Author{" +
-				"id=" + id +
-				", name='" + name + '\'' +
-				'}';
+	public String getLastName() {
+		return last_name;
 	}
+
+	public void setLastName(String last_name) {
+		this.last_name = last_name;
+	}
+
 }

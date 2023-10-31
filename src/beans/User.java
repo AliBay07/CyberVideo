@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class User {
 	
+	private long id;
 	private String firstName;
 	private String lastName;
 	private Date dateOfBirth;
@@ -30,6 +31,14 @@ public class User {
 	
 	public void setDateOfBirth(Date dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
 	}
 
 }
