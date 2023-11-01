@@ -80,6 +80,23 @@ public class FilmDaoTest {
             System.out.println();
         }
     }
+    
+    @Test
+    public void testGetTopFilmsOfTheWeek() {
+        System.out.println("========================================");
+        System.out.println("   Top Films Of The Week");
+        System.out.println("========================================");
+        List<List<Object>> topFilms = filmDao.getTopFilmsWeek();
+        assertNotNull(topFilms);
+
+        for (List<Object> filmData : topFilms) {
+            Film film = (Film) filmData.get(0);
+            int numberReservations = (int) filmData.get(1);
+            System.out.println(film);
+            System.out.println("Number of Reservations: " + numberReservations);
+            System.out.println();
+        }
+    }
 
     @Test
     public void testGetFilmInformation() {

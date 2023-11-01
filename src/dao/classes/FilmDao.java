@@ -184,6 +184,90 @@ public class FilmDao extends Dao<Film> {
 
 	    return topFilms;
 	}
+	
+	public List<List<Object>> getTopFilmsWeek() {
+	    List<List<Object>> topFilms = new ArrayList<>();
+	    String query = "SELECT f.id, f.name, f.duration, f.description, " +
+	            "tw.number_reservations, " +
+	            "(SELECT LISTAGG(DISTINCT a.first_name || ' ' || a.last_name, ', ') WITHIN GROUP (ORDER BY a.id) " +
+	            " FROM FilmActor fa INNER JOIN Actor a ON fa.id_actor = a.id " +
+	            " WHERE fa.id_film = f.id) AS actors, " +
+	            "(SELECT LISTAGG(DISTINCT au.first_name || ' ' || au.last_name, ', ') WITHIN GROUP (ORDER BY au.id) " +
+	            " FROM FilmAuthor fau INNER JOIN Author au ON fau.id_author = au.id " +
+	            " WHERE fau.id_film = f.id) AS authors, " +
+	            "(SELECT LISTAGG(c.category_name, ', ') WITHIN GROUP (ORDER BY c.id) " +
+	            " FROM FilmCategory fc INNER JOIN Category c ON fc.id_category = c.id " +
+	            " WHERE fc.id_film = f.id) AS categories " +
+	            "FROM Film f " +
+	            "INNER JOIN TopFilmsWeek tw ON f.id = tw.id_film " +
+	            "ORDER BY tw.number_reservations DESC";
+
+	    try (PreparedStatement statement = connection.prepareStatement(query);
+	            ResultSet resultSet = statement.executeQuery()) {
+	        while (resultSet.next()) {
+	            List<Object> filmData = new ArrayList<>();
+
+	            Film film = new Film();
+	            film.setId(resultSet.getLong("id"));
+	            film.setName(resultSet.getString("name"));
+	            film.setDuration(resultSet.getInt("duration"));
+	            film.setDescription(resultSet.getString("description"));
+
+	            String actorNames = resultSet.getString("actors");
+	            if (actorNames != null) {
+	                String[] actorNameArray = actorNames.split(",");
+	                List<Actor> actors = new ArrayList<>();
+	                for (String actorName : actorNameArray) {
+	                    Actor actor = new Actor();
+	                    String[] nameParts = actorName.trim().split(" ");
+	                    if (nameParts.length == 2) {
+	                        actor.setFirstName(nameParts[0]);
+	                        actor.setLastName(nameParts[1]);
+	                        actors.add(actor);
+	                    }
+	                }
+	                film.setActors(actors);
+	            }
+
+	            String authorNames = resultSet.getString("authors");
+	            if (authorNames != null) {
+	                String[] authorNameArray = authorNames.split(",");
+	                List<Author> authors = new ArrayList<>();
+	                for (String authorName : authorNameArray) {
+	                    Author author = new Author();
+	                    String[] nameParts = authorName.trim().split(" ");
+	                    if (nameParts.length == 2) {
+	                        author.setFirstName(nameParts[0]);
+	                        author.setLastName(nameParts[1]);
+	                        authors.add(author);
+	                    }
+	                }
+	                film.setAuthors(authors);
+	            }
+
+	            String categoryNames = resultSet.getString("categories");
+	            if (categoryNames != null) {
+	                String[] categoryArray = categoryNames.split(",");
+	                List<Category> categories = new ArrayList<>();
+	                for (String categoryName : categoryArray) {
+	                    Category category = new Category();
+	                    category.setCategoryName(categoryName);
+	                    categories.add(category);
+	                }
+	                film.setCategories(categories);
+	            }
+
+	            filmData.add(film);
+	            filmData.add(resultSet.getInt("number_reservations"));
+
+	            topFilms.add(filmData);
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return topFilms;
+	}
 
 	public Film getFilmInformation(String filmName) {
 	    String query = "SELECT f.id, f.name, f.duration, f.description, " +
@@ -365,92 +449,140 @@ public class FilmDao extends Dao<Film> {
 	// For testing, adding mock data
 
 	public void insertMockData() {
-		try {
-			connection.setAutoCommit(false);
+	    try {
+	        connection.setAutoCommit(false);
 
-			String insertFilmQuery = "INSERT INTO Film (id, name, duration, description) VALUES (?, ?, ?, ?)";
-			String insertFilmCategoryQuery = "INSERT INTO FilmCategory (id_film, id_category) VALUES (?, ?)";
-			String insertActorQuery = "INSERT INTO Actor (id, first_name, last_name) VALUES (?, ?, ?)";
-			String insertFilmActorQuery = "INSERT INTO FilmActor (id_film, id_actor) VALUES (?, ?)";
-			String insertAuthorQuery = "INSERT INTO Author (id, first_name, last_name) VALUES (?, ?, ?)";
-			String insertFilmAuthorQuery = "INSERT INTO FilmAuthor (id_film, id_author) VALUES (?, ?)";
-			String insertTopMoviesQuery = "INSERT INTO TopFilmsMonth (id, id_film, number_reservations) VALUES (?, ?, ?)";
-			String insertCategoryQuery = "INSERT INTO Category (id, category_name) VALUES (?, ?)";
+	        String insertFilmQuery = "INSERT INTO Film (name, duration, description) VALUES (?, ?, ?)";
+	        String insertFilmCategoryQuery = "INSERT INTO FilmCategory (id_film, id_category) VALUES (?, ?)";
+	        String insertActorQuery = "INSERT INTO Actor (first_name, last_name) VALUES (?, ?)";
+	        String insertFilmActorQuery = "INSERT INTO FilmActor (id_film, id_actor) VALUES (?, ?)";
+	        String insertAuthorQuery = "INSERT INTO Author (first_name, last_name) VALUES (?, ?)";
+	        String insertFilmAuthorQuery = "INSERT INTO FilmAuthor (id_film, id_author) VALUES (?, ?)";
+	        String insertTopFilmsMonthQuery = "INSERT INTO TopFilmsMonth (id_film, number_reservations) VALUES (?, ?)";
+	        String insertTopFilmsWeekQuery = "INSERT INTO TopFilmsWeek (id_film, number_reservations) VALUES (?, ?)";
+	        String insertCategoryQuery = "INSERT INTO Category (category_name) VALUES (?)";
+	        for (int i = 1; i <= 10; i++) {
+	            long filmId;
+	            try (PreparedStatement insertFilmStatement = connection.prepareStatement(insertFilmQuery, new String[] {"ID"})) {
+	                insertFilmStatement.setString(1, "Film " + i);
+	                insertFilmStatement.setInt(2, 120);
+	                insertFilmStatement.setString(3, "Description for Film " + i);
+	                int rowsInserted = insertFilmStatement.executeUpdate();
 
-			for (int i = 1; i <= 10; i++) {
-				try (PreparedStatement insertFilmStatement = connection.prepareStatement(insertFilmQuery)) {
-					insertFilmStatement.setLong(1, i);
-					insertFilmStatement.setString(2, "Film " + i);
-					insertFilmStatement.setInt(3, 120);
-					insertFilmStatement.setString(4, "Description for Film " + i);
-					insertFilmStatement.executeUpdate();
+	                if (rowsInserted > 0) {
+	                    try (ResultSet generatedKeys = insertFilmStatement.getGeneratedKeys()) {
+	                        if (generatedKeys.next()) {
+	                            filmId = generatedKeys.getLong(1);
+	                        } else {
+	                            throw new SQLException("Creating Film failed, no ID obtained.");
+	                        }
+	                    }
+	                } else {
+	                    throw new SQLException("Creating Film failed, no rows affected.");
+	                }
+	            }
 
-					
-					for (int j = 1; j <= 3; j++) {
-						try (PreparedStatement insertActorStatement = connection.prepareStatement(insertActorQuery)) {
-							insertActorStatement.setLong(1, i * 10 + j);
-							insertActorStatement.setString(2, "Actor" + j);
-							insertActorStatement.setString(3, "Lastname" + j);
-							insertActorStatement.executeUpdate();
-						}
-						
-						try (PreparedStatement insertFilmActorStatement = connection.prepareStatement(insertFilmActorQuery)) {
-							insertFilmActorStatement.setLong(1, i);
-							insertFilmActorStatement.setLong(2, i * 10 + j);
-							insertFilmActorStatement.executeUpdate();
-						}
-					}
-					
-					for (int j = 1; j <= 2; j++) {
-						try (PreparedStatement insertAuthorStatement = connection.prepareStatement(insertAuthorQuery)) {
-							insertAuthorStatement.setLong(1, i * 100 + j);
-							insertAuthorStatement.setString(2, "Author" + j);
-							insertAuthorStatement.setString(3, "Lastname" + j);
-							insertAuthorStatement.executeUpdate();
-						}
+	            for (int j = 1; j <= 3; j++) {
+	                long actorId;
+	                try (PreparedStatement insertActorStatement = connection.prepareStatement(insertActorQuery, new String[] {"ID"})) {
+	                    insertActorStatement.setString(1, "Actor" + j);
+	                    insertActorStatement.setString(2, "Lastname" + j);
+	                    int rowsInserted = insertActorStatement.executeUpdate();
 
-						
-						try (PreparedStatement insertFilmAuthorStatement = connection.prepareStatement(insertFilmAuthorQuery)) {
-							insertFilmAuthorStatement.setLong(1, i);
-							insertFilmAuthorStatement.setLong(2, i * 100 + j);
-							insertFilmAuthorStatement.executeUpdate();
-						}
-					}
+	                    if (rowsInserted > 0) {
+	                        try (ResultSet generatedKeys = insertActorStatement.getGeneratedKeys()) {
+	                            if (generatedKeys.next()) {
+	                                actorId = generatedKeys.getLong(1);
+	                            } else {
+	                                throw new SQLException("Creating Actor failed, no ID obtained.");
+	                            }
+	                        }
+	                    } else {
+	                        throw new SQLException("Creating Actor failed, no rows affected.");
+	                    }
+	                }
 
-					
-					try (PreparedStatement insertTopMoviesStatement = connection.prepareStatement(insertTopMoviesQuery)) {
-						insertTopMoviesStatement.setLong(1, i * 10);
-						insertTopMoviesStatement.setLong(2, i);
-						insertTopMoviesStatement.setInt(3, (int) (Math.random() * 100));
-						insertTopMoviesStatement.executeUpdate();
-					}
-					
-		            for (int j = 1; j <= 3; j++) {
-		                long categoryId = i * 1000 + j;
+	                try (PreparedStatement insertFilmActorStatement = connection.prepareStatement(insertFilmActorQuery)) {
+	                    insertFilmActorStatement.setLong(1, filmId);
+	                    insertFilmActorStatement.setLong(2, actorId);
+	                    insertFilmActorStatement.executeUpdate();
+	                }
+	            }
 
-		                try (PreparedStatement insertCategoryStatement = connection.prepareStatement(insertCategoryQuery)) {
-		                    insertCategoryStatement.setLong(1, categoryId);
-		                    insertCategoryStatement.setString(2, "Category " + j);
-		                    insertCategoryStatement.executeUpdate();
-		                }
-		                
-		                try (PreparedStatement insertFilmCategoryStatement = connection.prepareStatement(insertFilmCategoryQuery)) {
-		                    insertFilmCategoryStatement.setLong(1, i);
-		                    insertFilmCategoryStatement.setLong(2, categoryId);
-		                    insertFilmCategoryStatement.executeUpdate();
-		                }
-		            }
-				}
-			}
+	            for (int j = 1; j <= 2; j++) {
+	                long authorId;
+	                try (PreparedStatement insertAuthorStatement = connection.prepareStatement(insertAuthorQuery, new String[] {"ID"})) {
+	                    insertAuthorStatement.setString(1, "Author" + j);
+	                    insertAuthorStatement.setString(2, "Lastname" + j);
+	                    int rowsInserted = insertAuthorStatement.executeUpdate();
 
-		} catch (SQLException e) {
-			try {
-				connection.rollback();
-			} catch (SQLException rollbackException) {
-				rollbackException.printStackTrace();
-			}
-			e.printStackTrace();
-		}
+	                    if (rowsInserted > 0) {
+	                        try (ResultSet generatedKeys = insertAuthorStatement.getGeneratedKeys()) {
+	                            if (generatedKeys.next()) {
+	                                authorId = generatedKeys.getLong(1);
+	                            } else {
+	                                throw new SQLException("Creating Author failed, no ID obtained.");
+	                            }
+	                        }
+	                    } else {
+	                        throw new SQLException("Creating Author failed, no rows affected.");
+	                    }
+	                }
+
+	                try (PreparedStatement insertFilmAuthorStatement = connection.prepareStatement(insertFilmAuthorQuery)) {
+	                    insertFilmAuthorStatement.setLong(1, filmId);
+	                    insertFilmAuthorStatement.setLong(2, authorId);
+	                    insertFilmAuthorStatement.executeUpdate();
+	                }
+	            } 
+
+	            try (PreparedStatement insertTopFilmsMonthStatement = connection.prepareStatement(insertTopFilmsMonthQuery)) {
+	                insertTopFilmsMonthStatement.setLong(1, filmId);
+	                insertTopFilmsMonthStatement.setInt(2, (int) (Math.random() * 100));
+	                insertTopFilmsMonthStatement.executeUpdate();
+	            }
+	            
+	            try (PreparedStatement insertTopFilmsWeekStatement = connection.prepareStatement(insertTopFilmsWeekQuery)) {
+	            	insertTopFilmsWeekStatement.setLong(1, filmId);
+	            	insertTopFilmsWeekStatement.setInt(2, (int) (Math.random() * 100));
+	            	insertTopFilmsWeekStatement.executeUpdate();
+	            }
+
+	            for (int j = 1; j <= 3; j++) {
+	                long categoryId;
+	                try (PreparedStatement insertCategoryStatement = connection.prepareStatement(insertCategoryQuery, new String[] {"ID"})) {
+	                    insertCategoryStatement.setString(1, "Category " + j);
+	                    int rowsInserted = insertCategoryStatement.executeUpdate();
+
+	                    if (rowsInserted > 0) {
+	                        try (ResultSet generatedKeys = insertCategoryStatement.getGeneratedKeys()) {
+	                            if (generatedKeys.next()) {
+	                                categoryId = generatedKeys.getLong(1);
+	                            } else {
+	                                throw new SQLException("Creating Category failed, no ID obtained.");
+	                            }
+	                        }
+	                    } else {
+	                        throw new SQLException("Creating Category failed, no rows affected.");
+	                    }
+	                }
+
+	                try (PreparedStatement insertFilmCategoryStatement = connection.prepareStatement(insertFilmCategoryQuery)) {
+	                    insertFilmCategoryStatement.setLong(1, filmId);
+	                    insertFilmCategoryStatement.setLong(2, categoryId);
+	                    insertFilmCategoryStatement.executeUpdate();
+	                }
+	            }
+	        }
+
+	    } catch (SQLException e) {
+	        try {
+	            connection.rollback();
+	        } catch (SQLException rollbackException) {
+	            rollbackException.printStackTrace();
+	        }
+	        e.printStackTrace();
+	    }
 	}
 
 	public void removeMockData() {
