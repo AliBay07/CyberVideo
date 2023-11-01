@@ -8,7 +8,6 @@ public class SubscriberAccount extends Account {
 	private double subscriptionAmount;
     private List<SubscriberCard> subscriberCards;
 
-    // Constructor
     public SubscriberAccount() {
         this.subscriptionAmount = 0.0;
         this.subscriberCards = new ArrayList<SubscriberCard>();
@@ -37,5 +36,11 @@ public class SubscriberAccount extends Account {
     public void removeSubscriberCard(SubscriberCard subscriberCard) {
         this.subscriberCards.remove(subscriberCard);
     }
-
+    
+    @Override
+    public String toString() {
+        return super.toString() +
+                "\nsubscriptionAmount=" + subscriptionAmount +
+                "\nsubscriberCards=" + subscriberCards;
+    }
 }

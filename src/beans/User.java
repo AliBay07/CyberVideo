@@ -1,6 +1,6 @@
 package beans;
 
-import java.util.Date;
+import java.sql.Date;
 
 public class User {
 	
@@ -39,6 +39,11 @@ public class User {
 
 	public void setId(long id) {
 		this.id = id;
+	}
+	
+	@Override
+	public String toString() {
+		return this.getFirstName() + " - " + this.getLastName();
 	}
 
 }

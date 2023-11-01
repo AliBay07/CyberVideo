@@ -1,5 +1,7 @@
 package beans;
 
+import java.util.List;
+
 public abstract class Account {
 	
 	private long id;
@@ -8,6 +10,7 @@ public abstract class Account {
 	private String password;
 	private int nbAllowedReservation;
 	private User user;
+	private List<CreditCard> CreditCards;
 	
 	public long getId() {
 		return id;
@@ -56,7 +59,24 @@ public abstract class Account {
 	public void setNbAllowedReservation(int nbAllowedReservation) {
 		this.nbAllowedReservation = nbAllowedReservation;
 	}
+
+	public List<CreditCard> getCreditCards() {
+		return CreditCards;
+	}
+
+	public void setCreditCards(List<CreditCard> creditCards) {
+		CreditCards = creditCards;
+	}
 	
-	
+    @Override
+    public String toString() {
+        return  "id=" + id +
+                "\nidUser=" + idUser +
+                "\nemail=" + email +
+                "\npassword=" + password +
+                "\nnbAllowedReservation=" + nbAllowedReservation +
+                "\nuser=" + user +
+                "\nCreditCards=" + CreditCards;
+    }
 
 }
