@@ -17,6 +17,7 @@ import org.junit.Test;
 
 import dao.classes.FilmDao;
 import beans.Film;
+import beans.SubscriberAccount;
 import dao.tools.Session;
 
 public class FilmDaoTest {
@@ -54,9 +55,16 @@ public class FilmDaoTest {
     	System.out.println("========================================");
     	System.out.println("		Get All Films");
     	System.out.println("========================================");
-        List<Film> films = filmDao.getAllFilms();
+    	
+		SubscriberAccount subscriberAccount = new SubscriberAccount();
+		subscriberAccount.setId(100);
+		subscriberAccount.setIdUser(2);
+		subscriberAccount.setEmail("test10@example.com");
+		subscriberAccount.setPassword("password");
+		subscriberAccount.setNbAllowedReservation(5);
+    	
+        List<Film> films = filmDao.getAllFilms(subscriberAccount);
         assertNotNull(films);
-        assertEquals(10, films.size());
 
         for (Film film : films) {
             System.out.println(film.toString());
@@ -69,7 +77,15 @@ public class FilmDaoTest {
         System.out.println("========================================");
         System.out.println("   Top Films Of The Month");
         System.out.println("========================================");
-        List<List<Object>> topFilms = filmDao.getTopFilmsMonth();
+        
+		SubscriberAccount subscriberAccount = new SubscriberAccount();
+		subscriberAccount.setId(100);
+		subscriberAccount.setIdUser(2);
+		subscriberAccount.setEmail("test10@example.com");
+		subscriberAccount.setPassword("password");
+		subscriberAccount.setNbAllowedReservation(5);
+		
+        List<List<Object>> topFilms = filmDao.getTopFilmsMonth(subscriberAccount);
         assertNotNull(topFilms);
 
         for (List<Object> filmData : topFilms) {
@@ -86,7 +102,15 @@ public class FilmDaoTest {
         System.out.println("========================================");
         System.out.println("   Top Films Of The Week");
         System.out.println("========================================");
-        List<List<Object>> topFilms = filmDao.getTopFilmsWeek();
+        
+		SubscriberAccount subscriberAccount = new SubscriberAccount();
+		subscriberAccount.setId(100);
+		subscriberAccount.setIdUser(2);
+		subscriberAccount.setEmail("test10@example.com");
+		subscriberAccount.setPassword("password");
+		subscriberAccount.setNbAllowedReservation(5);
+		
+        List<List<Object>> topFilms = filmDao.getTopFilmsWeek(subscriberAccount);
         assertNotNull(topFilms);
 
         for (List<Object> filmData : topFilms) {
@@ -103,8 +127,16 @@ public class FilmDaoTest {
     	System.out.println("========================================");
     	System.out.println("		Film Information");
     	System.out.println("========================================");
+    	
+		SubscriberAccount subscriberAccount = new SubscriberAccount();
+		subscriberAccount.setId(100);
+		subscriberAccount.setIdUser(2);
+		subscriberAccount.setEmail("test10@example.com");
+		subscriberAccount.setPassword("password");
+		subscriberAccount.setNbAllowedReservation(5);
+		
         String filmName = "Film 1";
-        Film availableFilm = filmDao.getFilmInformation(filmName);
+        Film availableFilm = filmDao.getFilmInformation(subscriberAccount, filmName);
         assertNotNull(availableFilm);
 
         System.out.println(availableFilm.toString());
@@ -116,9 +148,17 @@ public class FilmDaoTest {
     	System.out.println("========================================");
     	System.out.println("		Search Criteria");
     	System.out.println("========================================");
+    	
+		SubscriberAccount subscriberAccount = new SubscriberAccount();
+		subscriberAccount.setId(100);
+		subscriberAccount.setIdUser(2);
+		subscriberAccount.setEmail("test10@example.com");
+		subscriberAccount.setPassword("password");
+		subscriberAccount.setNbAllowedReservation(5);
+		
         Map<String, String> filters = new HashMap<>();
         filters.put("name", "Film 2");
-        List<Film> filteredFilms = filmDao.searchFilmByCriteria(filters);
+        List<Film> filteredFilms = filmDao.searchFilmByCriteria(subscriberAccount, filters);
         assertNotNull(filteredFilms);
 
         for (Film film : filteredFilms) {

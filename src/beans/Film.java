@@ -108,7 +108,7 @@ public class Film {
 	        sb.append("None");
 	    } else {
 	        for (Category category : categories) {
-	            sb.append(category.getCategoryName()).append(", ");
+	            sb.append(category.getId()).append(" : ").append(category.getCategoryName()).append(", ");
 	        }
 	        sb.setLength(sb.length() - 2);
 	    }
