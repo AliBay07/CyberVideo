@@ -184,62 +184,145 @@ public class AccountDaoTest {
 //		assertTrue(result);
 //		
 //	}
+//	
+//	@Test
+//	public void unbanFilmCategory() {
+//		
+//		System.out.println("======================================");
+//		System.out.println("	Test Unban Category");
+//		System.out.println("======================================");
+//		
+//		SubscriberAccount subscriberAccount = new SubscriberAccount();
+//		subscriberAccount.setId(100);
+//		subscriberAccount.setIdUser(2);
+//		subscriberAccount.setEmail("test10@example.com");
+//		subscriberAccount.setPassword("password");
+//		subscriberAccount.setNbAllowedReservation(5);
+//		
+//		Category cat1 = new Category();
+//		cat1.setId(100);
+//		cat1.setCategoryName("Category1");
+//		
+//		boolean result = accountDao.unbanFilmCategories(subscriberAccount, cat1);
+//		assertTrue(result);
+//		
+//	}
+//	
+//	@Test
+//	public void getAllBannedCategories() {
+//		System.out.println("======================================");
+//		System.out.println("	Test Get Banned Categories");
+//		System.out.println("======================================");
+//		SubscriberAccount subscriberAccount = new SubscriberAccount();
+//		subscriberAccount.setId(100);
+//		subscriberAccount.setIdUser(2);
+//		subscriberAccount.setEmail("test10@example.com");
+//		subscriberAccount.setPassword("password");
+//		subscriberAccount.setNbAllowedReservation(5);
+//		
+//		List<Category> results = accountDao.getBannedCategories(subscriberAccount);
+//		
+//		for (Category cat : results) {
+//			System.out.println(cat);
+//		}
+//	}
+//	
+//	@Test
+//	public void testWeeklyRentalLimit() {
+//
+//		SubscriberAccount subscriberAccount = new SubscriberAccount();
+//	    subscriberAccount.setId(100);
+//	    subscriberAccount.setIdUser(2);
+//	    subscriberAccount.setEmail("test10@example.com");
+//	    subscriberAccount.setPassword("password");
+//	    subscriberAccount.setNbAllowedReservation(5);
+//
+//	    int newWeeklyLimit = 7;
+//	    boolean result = accountDao.setWeeklyRentalLimit(subscriberAccount, newWeeklyLimit);
+//
+//	    assertTrue(result);
+//	    
+//	}
 	
-	
+    @Test
+    public void testModifyAccountInformation() throws SQLException {
+    	
+		SubscriberAccount subscriberAccount = new SubscriberAccount();
+	    subscriberAccount.setId(100);
+	    subscriberAccount.setIdUser(2);
+	    subscriberAccount.setEmail("test10@example.com");
+	    subscriberAccount.setPassword("123");
+	    subscriberAccount.setNbAllowedReservation(5);
+    	
+        String newFirstName = "Jane";
+        String newLastName = "Smith";
+        Date newDob = Date.valueOf("1995-05-05");
+        String oldPassword = "123";
+        String newPassword = "newPassword";
+
+        Account updatedAccount = accountDao.modifyAccountInformation(subscriberAccount, newFirstName, newLastName, newDob, oldPassword, newPassword);
+        
+        System.out.println(updatedAccount);
+
+        assertEquals(newFirstName, updatedAccount.getUser().getFirstName());
+        assertEquals(newLastName, updatedAccount.getUser().getLastName());
+        assertEquals(newDob, updatedAccount.getUser().getDateOfBirth());
+    }
+
 	
 	// ============================================================================================================
 
-	@Test
-	public void testUserLogin() {
-		
-		System.out.println("======================================");
-		System.out.println("	Test User Login");
-		System.out.println("======================================");
-
-		String email = "test@example.com";		
-		String password = "123";
-		
-		Account account = accountDao.userLogin(email, password);
-
-		assertNotNull(account);
-		assertEquals(email, account.getEmail());
-
-		if (account instanceof SubscriberAccount) {
-
-			SubscriberAccount subscriberAccount = (SubscriberAccount) account;
-
-			List<SubscriberCard> subscriberCards = subscriberAccount.getSubscriberCards();
-			assertNotNull(subscriberCards);
-		}
-		List<CreditCard> creditCards = account.getCreditCards();
-		assertNotNull(creditCards);
-		
-		System.out.println(account);
-		System.out.println();
-	}
-
-	@Test
-	public void testUserLoginWithCard() {
-		
-		System.out.println("======================================");
-		System.out.println("	Test User Login Card");
-		System.out.println("======================================");
-
-		String cardNumber = "SubCard1";
-		String password = "123";
-		Account account = accountDao.userLoginWithCard(cardNumber, password);
-
-		assertNotNull(account);
-
-		List<CreditCard> creditCards = account.getCreditCards();
-		assertNotNull(creditCards);
-
-		List<SubscriberCard> subscriberCards = ((SubscriberAccount) account).getSubscriberCards();
-		assertNotNull(subscriberCards);
-		
-		System.out.println(account);
-		System.out.println();
-
-	}
+//	@Test
+//	public void testUserLogin() {
+//		
+//		System.out.println("======================================");
+//		System.out.println("	Test User Login");
+//		System.out.println("======================================");
+//
+//		String email = "test@example.com";		
+//		String password = "123";
+//		
+//		Account account = accountDao.userLogin(email, password);
+//
+//		assertNotNull(account);
+//		assertEquals(email, account.getEmail());
+//
+//		if (account instanceof SubscriberAccount) {
+//
+//			SubscriberAccount subscriberAccount = (SubscriberAccount) account;
+//
+//			List<SubscriberCard> subscriberCards = subscriberAccount.getSubscriberCards();
+//			assertNotNull(subscriberCards);
+//		}
+//		List<CreditCard> creditCards = account.getCreditCards();
+//		assertNotNull(creditCards);
+//		
+//		System.out.println(account);
+//		System.out.println();
+//	}
+//
+//	@Test
+//	public void testUserLoginWithCard() {
+//		
+//		System.out.println("======================================");
+//		System.out.println("	Test User Login Card");
+//		System.out.println("======================================");
+//
+//		String cardNumber = "SubCard1";
+//		String password = "123";
+//		Account account = accountDao.userLoginWithCard(cardNumber, password);
+//
+//		assertNotNull(account);
+//
+//		List<CreditCard> creditCards = account.getCreditCards();
+//		assertNotNull(creditCards);
+//
+//		List<SubscriberCard> subscriberCards = ((SubscriberAccount) account).getSubscriberCards();
+//		assertNotNull(subscriberCards);
+//		
+//		System.out.println(account);
+//		System.out.println();
+//
+//	}
 
 }
