@@ -22,7 +22,7 @@ import beans.SubscriberCard;
 import beans.User;
 
 
-public class AccountDao extends Dao {
+public class AccountDao extends Dao<Account> {
 
 	public AccountDao(Connection connection) {
 		super(connection);
@@ -321,6 +321,7 @@ public class AccountDao extends Dao {
 	}
 
 	public Account unsubscribeFromService(Account account) {
+		
 		if (account != null) {
 
 			String query = "SELECT * FROM Account WHERE Account.email = ?";

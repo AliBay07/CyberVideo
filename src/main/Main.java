@@ -4,7 +4,6 @@ import java.sql.SQLException;
 
 import beans.BlueRay;
 import beans.Machine;
-import dao.classes.MachineDao;
 import dao.tools.DaoFactory;
 import dao.tools.Session;
 
@@ -17,11 +16,6 @@ public class Main {
 		try {
 
 			session.open();
-			
-			DaoFactory daoFactory = DaoFactory.getInstance();
-
-			MachineDao machineDao = new MachineDao(session.get());
-			daoFactory.registerDao(Machine.class, machineDao);
 
 			
 		} catch (SQLException e) {
