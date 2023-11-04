@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,7 +22,7 @@ import beans.SubscriberCard;
 import beans.User;
 
 
-public class AccountDao extends Dao {
+public class AccountDao extends Dao<Account> {
 
 	public AccountDao(Connection connection) {
 		super(connection);
@@ -302,15 +303,11 @@ public class AccountDao extends Dao {
 									connection.commit();
 									return subscriberAccount;
 								}
-							} catch (SQLException e) {
-								e.printStackTrace();
 							}
 						}
 					}
 
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
+				} 
 			} catch (SQLException e1) {
 				e1.printStackTrace();
 			}
@@ -324,6 +321,7 @@ public class AccountDao extends Dao {
 	}
 
 	public Account unsubscribeFromService(Account account) {
+		
 		if (account != null) {
 
 			String query = "SELECT * FROM Account WHERE Account.email = ?";
@@ -439,7 +437,6 @@ public class AccountDao extends Dao {
 		return false;
 	}
 
-
 	public boolean requestUnavailableFilm(Account account, String filmName) {
 		if (account != null && filmName != null && !filmName.trim().isEmpty()) {
 
@@ -525,11 +522,241 @@ public class AccountDao extends Dao {
 	    }
 	    return false;
 	}
-
-
-
 	
+	public boolean unbanFilmCategories(Account account, Category category) {
+	    if (account != null && category != null) {
+	        try {
+	            String query = "SELECT * FROM Account WHERE Account.email = ?";
+	            try (PreparedStatement statementAccount = connection.prepareStatement(query)) {
+	                statementAccount.setString(1, account.getEmail());
+	                try (ResultSet resultSet = statementAccount.executeQuery()) {
+	                    if (resultSet.next()) {
+	                        if (resultSet.getString("is_subscriber").equals("N")) {
+	                            return false;
+	                        } else {
+	                            String deleteQuery = "DELETE FROM AccountFilterCategory WHERE id_account = ? AND id_category = ?";
+	                            try (PreparedStatement deleteStatement = connection.prepareStatement(deleteQuery)) {
+	                                deleteStatement.setLong(1, account.getId());
+	                                deleteStatement.setLong(2, category.getId());
+	                                int rowsDeleted = deleteStatement.executeUpdate();
 
+	                                if (rowsDeleted > 0) {
+	                                    connection.commit();
+	                                    return true;
+	                                } else {
+	                                	connection.rollback();
+	                                }
+	                            }
+	                        }
+	                    }
+	                }
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	            try {
+	                connection.rollback();
+	            } catch (SQLException rollbackException) {
+	                rollbackException.printStackTrace();
+	            }
+	        }
+	    }
+	    
+	    return false;
+	}
+
+	public List<Category> getBannedCategories(Account account) {
+	    List<Category> bannedCategories = new ArrayList<>();
+	    
+	    if (account != null) {
+	        try {
+	            String query = "SELECT * FROM Account WHERE Account.email = ?";
+	            try (PreparedStatement statementAccount = connection.prepareStatement(query)) {
+	                statementAccount.setString(1, account.getEmail());
+	                try (ResultSet resultSet = statementAccount.executeQuery()) {
+	                    if (resultSet.next()) {
+	                        if (resultSet.getString("is_subscriber").equals("N")) {
+	                            return bannedCategories;
+	                        } else {
+	                            String selectQuery = "SELECT Category.* FROM Category " +
+	                                "INNER JOIN AccountFilterCategory ON Category.id = AccountFilterCategory.id_category " +
+	                                "WHERE AccountFilterCategory.id_account = ?";
+	                            try (PreparedStatement selectStatement = connection.prepareStatement(selectQuery)) {
+	                                selectStatement.setLong(1, account.getId());
+	                                try (ResultSet categoryResultSet = selectStatement.executeQuery()) {
+	                                    while (categoryResultSet.next()) {
+	                                        Category category = new Category();
+	                                        category.setId(categoryResultSet.getLong("id"));
+	                                        category.setCategoryName(categoryResultSet.getString("category_name"));
+	                                        bannedCategories.add(category);
+	                                    }
+	                                    return bannedCategories;
+	                                }
+	                            }
+	                        }
+	                    }
+	                }
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	            try {
+	                connection.rollback();
+	            } catch (SQLException rollbackException) {
+	                rollbackException.printStackTrace();
+	            }
+	        }
+	    }
+
+	    return bannedCategories;
+	}
+
+	public boolean setWeeklyRentalLimit(Account account, int weeklyLimit) {
+	    if (account != null) {
+	        try {
+	            String query = "SELECT * FROM Account WHERE Account.email = ?";
+	            try (PreparedStatement statementAccount = connection.prepareStatement(query)) {
+	                statementAccount.setString(1, account.getEmail());
+	                try (ResultSet resultSet = statementAccount.executeQuery()) {
+	                    if (resultSet.next()) {
+	                        if (resultSet.getString("is_subscriber").equals("N")) {
+	                            return false;
+	                        } else {
+	                            String updateQuery = "UPDATE Account SET nb_allowed_reservations = ? WHERE id = ?";
+	                            try (PreparedStatement updateStatement = connection.prepareStatement(updateQuery)) {
+	                                updateStatement.setInt(1, weeklyLimit);
+	                                updateStatement.setLong(2, account.getId());
+	                                int rowsUpdated = updateStatement.executeUpdate();
+	                                
+	                                if (rowsUpdated > 0) {
+	                                    connection.commit();
+	                                    account.setNbAllowedReservation(weeklyLimit);
+	                                    return true;
+	                                } else {
+	                                    connection.rollback();
+	                                }
+	                            }
+	                        }
+	                    }
+	                }
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	            try {
+	                connection.rollback();
+	            } catch (SQLException rollbackException) {
+	                rollbackException.printStackTrace();
+	            }
+	        }
+	    }
+	    return false;
+	}
+	
+	public Account modifyAccountInformation(Account account, String newFirstName, String newLastName, Date newDob, String oldPassword, String newPassword) {
+	    BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+	    if (account != null) {
+	        try {
+	            boolean isChangingPassword = newPassword != null && !newPassword.trim().isEmpty();
+
+	            if (isChangingPassword) {
+	                String verifyQuery = "SELECT password FROM Account WHERE id = ?";
+	                try (PreparedStatement verifyStatement = connection.prepareStatement(verifyQuery)) {
+	                    verifyStatement.setLong(1, account.getId());
+	                    try (ResultSet resultSet = verifyStatement.executeQuery()) {
+	                        if (resultSet.next()) {
+	                            String storedPassword = resultSet.getString("password");
+	                            if (!passwordEncoder.matches(oldPassword, storedPassword)) {
+	                                return null;
+	                            }
+	                        }
+	                    }
+	                }
+	            }
+
+	            StringBuilder updateQuery = new StringBuilder("UPDATE Users SET ");
+	            List<Object> parameters = new ArrayList<>();
+
+	            if (newFirstName != null && !newFirstName.trim().isEmpty()) {
+	                updateQuery.append("first_name = ?, ");
+	                parameters.add(newFirstName.trim());
+	            }
+
+	            if (newLastName != null && !newLastName.trim().isEmpty()) {
+	                updateQuery.append("last_name = ?, ");
+	                parameters.add(newLastName.trim());
+	            }
+
+	            if (newDob != null) {
+	                updateQuery.append("dob = ?, ");
+	                parameters.add(newDob);
+	            }
+
+	            if (updateQuery.toString().endsWith(", ")) {
+	                updateQuery.setLength(updateQuery.length() - 2);
+	            }
+
+	            updateQuery.append(" WHERE id = ?");
+
+	            try (PreparedStatement updateStatement = connection.prepareStatement(updateQuery.toString())) {
+	                int index = 1;
+	                for (Object parameter : parameters) {
+	                    updateStatement.setObject(index++, parameter);
+	                }
+	                updateStatement.setLong(index, account.getId());
+
+	                int rowsUpdated = updateStatement.executeUpdate();
+	                if (rowsUpdated > 0 && (isChangingPassword || parameters.size() > 0)) {
+	                    if (isChangingPassword) {
+	                        String hashedPassword = passwordEncoder.encode(newPassword);
+	                        String passwordUpdateQuery = "UPDATE Account SET password = ? WHERE id = ?";
+	                        try (PreparedStatement passwordUpdateStatement = connection.prepareStatement(passwordUpdateQuery)) {
+	                            passwordUpdateStatement.setString(1, hashedPassword);
+	                            passwordUpdateStatement.setLong(2, account.getId());
+
+	                            int passwordRowsUpdated = passwordUpdateStatement.executeUpdate();
+	                            if (passwordRowsUpdated > 0) {
+	                                connection.commit();
+
+	                                User updatedUser = new User();
+	                                updatedUser.setFirstName(newFirstName);
+	                                updatedUser.setLastName(newLastName);
+	                                updatedUser.setDateOfBirth(newDob);
+
+	                                account.setUser(updatedUser);
+
+	                                return account;
+	                            }
+	                        }
+	                    } else {
+	                        connection.commit();
+
+	                        User updatedUser = new User();
+	                        updatedUser.setFirstName(newFirstName);
+	                        updatedUser.setLastName(newLastName);
+	                        updatedUser.setDateOfBirth(newDob);
+
+	                        account.setUser(updatedUser);
+
+	                        return account;
+	                    }
+	                }
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	            try {
+	                connection.rollback();
+	            } catch (SQLException rollbackException) {
+	                rollbackException.printStackTrace();
+	            }
+	        }
+	    }
+	    return null;
+	}
+
+
+	public boolean processPaymentByCreditCard(CreditCard creditCard) {
+		return true;
+	}
+	
 	// For testing, adding mock data
 
 	public void insertMockData() {

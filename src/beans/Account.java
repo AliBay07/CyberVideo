@@ -73,7 +73,6 @@ public abstract class Account {
         return  "id=" + id +
                 "\nidUser=" + idUser +
                 "\nemail=" + email +
-                "\npassword=" + password +
                 "\nnbAllowedReservation=" + nbAllowedReservation +
                 "\nuser=" + user +
                 "\nCreditCards=" + CreditCards;

@@ -17,4 +17,9 @@ public class Category {
 	public void setCategoryName(String categoryName) {
 		CategoryName = categoryName;
 	}
+	
+	@Override
+	public String toString() {
+		return this.getId() + " : " + this.getCategoryName();
+	}
 }
