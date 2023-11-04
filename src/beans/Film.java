@@ -113,6 +113,6 @@ public class Film {
 	        sb.setLength(sb.length() - 2);
 	    }
 
-	    return sb.toString();
+	    return sb.toString() + "\n";
 	}
 }
