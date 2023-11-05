@@ -1,6 +1,7 @@
 package dao.classes;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,6 +10,7 @@ import java.util.UUID;
 
 import beans.Account;
 import beans.BlueRay;
+import beans.CurrentReservation;
 import beans.Film;
 import beans.Reservation;
 
@@ -35,7 +37,7 @@ public class ReservationDao extends Dao<Reservation>{
                 ResultSet resultSet = statement.executeQuery();
 
                 while (resultSet.next()) {
-                    Reservation reservation = new Reservation();
+                	CurrentReservation reservation = new CurrentReservation();
                     reservation.setAccount(account);
 
                     Film film = new Film();
@@ -46,7 +48,6 @@ public class ReservationDao extends Dao<Reservation>{
 
                     reservation.setFilm(film);
                     reservation.setStartReservationDate(resultSet.getDate("reservation_start_date"));
-                    reservation.setEndReservationDate(null);
 
                     reservations.add(reservation);
                 }
@@ -169,6 +170,62 @@ public class ReservationDao extends Dao<Reservation>{
                 e.printStackTrace();
             }
         }
+        return false;
+    }
+    
+    public boolean addReservationToHistoric(BlueRay blueRay) {
+    	
+        try {
+            String selectQuery = "SELECT id_account, id_blueray, reservation_start_date FROM CurrentReservations WHERE id_blueray = ?";
+            try (PreparedStatement selectStatement = connection.prepareStatement(selectQuery)) {
+                selectStatement.setLong(1, blueRay.getId());
+                try (ResultSet resultSet = selectStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        long accountId = resultSet.getLong("id_account");
+                        long blueRayId = resultSet.getLong("id_blueray");
+                        Date reservationStartDate = resultSet.getDate("reservation_start_date");
+
+                        String insertQuery = "INSERT INTO ReservationHistory (id_account, id_blueray, reservation_start_date, reservation_end_date) " +
+                                "VALUES (?, ?, ?, CURRENT_DATE)";
+                        try (PreparedStatement insertStatement = connection.prepareStatement(insertQuery)) {
+                            insertStatement.setLong(1, accountId);
+                            insertStatement.setLong(2, blueRayId);
+                            insertStatement.setDate(3, reservationStartDate);
+                            int rowsInserted = insertStatement.executeUpdate();
+
+                            if (rowsInserted > 0) {
+                                connection.commit();
+                                return true;
+                            }
+                            connection.rollback();
+                        }
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+    
+    public boolean removeCurrentReservation(BlueRay blueRay) {
+        try {
+            String deleteQuery = "DELETE FROM CurrentReservations WHERE id_blueray = ?";
+            try (PreparedStatement deleteStatement = connection.prepareStatement(deleteQuery)) {
+                deleteStatement.setLong(1, blueRay.getId());
+                int rowsDeleted = deleteStatement.executeUpdate();
+
+                if (rowsDeleted > 0) {
+                    connection.commit();
+                    return true;
+                }
+                connection.rollback();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         return false;
     }
 

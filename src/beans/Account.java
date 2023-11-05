@@ -75,7 +75,7 @@ public abstract class Account {
                 "\nemail=" + email +
                 "\nnbAllowedReservation=" + nbAllowedReservation +
                 "\nuser=" + user +
-                "\nCreditCards=" + CreditCards;
+                "\nCreditCards=" + CreditCards + "\n";
     }
 
 }

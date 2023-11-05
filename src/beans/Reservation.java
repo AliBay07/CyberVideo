@@ -3,12 +3,11 @@ package beans;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 
-public class Reservation {
+public abstract class Reservation {
 	
 	private Account account;
 	private Film film;
 	private Date StartReservationDate;
-	private Date endReservationDate;
 	
 	public Account getAccount() {
 		return account;
@@ -33,14 +32,6 @@ public class Reservation {
 	public void setStartReservationDate(Date startReservationDate) {
 		StartReservationDate = startReservationDate;
 	}
-	
-	public Date getEndReservationDate() {
-		return endReservationDate;
-	}
-	
-	public void setEndReservationDate(Date endReservationDate) {
-		this.endReservationDate = endReservationDate;
-	}
 
     @Override
     public String toString() {
@@ -48,7 +39,6 @@ public class Reservation {
         return "Reservation Information:\n" +
                account +
                "Film: " + film.getName() + " (ID: " + film.getId() + ")\n" +
-               "Start Reservation Date: " + StartReservationDate + "\n" +
-               "End Reservation Date: " + endReservationDate;
+               "Start Reservation Date: " + StartReservationDate + "\n";
     }
 }

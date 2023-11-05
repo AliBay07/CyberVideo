@@ -93,5 +93,35 @@ public class ReservationDaoTest {
 		boolean result = reservationDao.ReserveQrCode(account, film);
 		assertTrue(result);
 	}
+	
+	@Test
+	public void testAddReservationToHistoric() {
+
+		System.out.println("============================");
+		System.out.println("Test Add Historic");
+		System.out.println("============================");
+
+		BlueRay blueRay = new BlueRay();
+		blueRay.setId(1);
+
+		boolean result = reservationDao.addReservationToHistoric(blueRay);
+		assertTrue(result);
+		
+	}
+	
+	@Test
+	public void testRemoveCurrentReservation() {
+
+		System.out.println("============================");
+		System.out.println("Test Remove Reservation");
+		System.out.println("============================");
+
+		BlueRay blueRay = new BlueRay();
+		blueRay.setId(1);
+
+		boolean result = reservationDao.removeCurrentReservation(blueRay);
+		assertTrue(result);
+		
+	}
 
 }
