@@ -225,7 +225,7 @@ public class SignupPage extends JFrame {
     }
 
     public static void main(String[] args) {
-        new SignupPage(500, 400).setVisible(true);
+        new SignupPage(SysAL2000.SCREEN_WIDTH, SysAL2000.SCREEN_HEIGHT).setVisible(true);
     }
 
 }

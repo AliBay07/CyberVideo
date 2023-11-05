@@ -9,13 +9,47 @@ public class LoginPage extends JFrame {
 
     public static final int DEF_TF_SIZE = 20;
 
+    private JTextField idTF;
+    private JTextField pwdTF;
+    private JButton loginBtn;
+    private JButton signupBtn;
+
+    private final ActionListener actionListener = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if(e.getSource()==loginBtn){
+                // login
+                if(login()){
+                    LoginPage.this.dispose();
+                }
+            }else
+            if(e.getSource()==signupBtn){
+                // signup
+                SysAL2000.showSignupPage();
+            }
+        }
+    };
+
     public LoginPage(int w, int h) {
         super(LoginPage.class.getSimpleName());
         this.setLayout(new BorderLayout());
         this.setSize(w, h);
         this.setLocationRelativeTo(null);
-        //this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         initViews();
+    }
+
+    private boolean login() {
+        String id = idTF.getText().trim();
+        String pwd = pwdTF.getText().trim();
+
+        System.out.println("== login ==");
+        System.out.println("id: "+id);
+        System.out.println("pwd: "+pwd);
+
+        //@TODO à compléter
+
+        return true;
     }
 
     private void initViews() {
@@ -27,19 +61,19 @@ public class LoginPage extends JFrame {
         JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
         JLabel idLabel = new JLabel("Identifiant:");
-        JTextField idTF = new JTextField(DEF_TF_SIZE);
+        idTF = new JTextField(DEF_TF_SIZE);
         idTF.setToolTipText("Entrez votre id");
         JLabel pwLabel = new JLabel("Mot de pass:");
-        JTextField pwTF = new JTextField(DEF_TF_SIZE);
-        pwTF.setToolTipText("Entrez le mot de pass");
+        pwdTF = new JTextField(DEF_TF_SIZE);
+        pwdTF.setToolTipText("Entrez le mot de pass");
         inputPanel.add(idLabel);
         inputPanel.add(idTF);
         inputPanel.add(pwLabel);
-        inputPanel.add(pwTF);
+        inputPanel.add(pwdTF);
 
-        JButton loginBtn = new JButton("Login");
+        loginBtn = new JButton("Login");
         JLabel sepLabel = new JLabel("----------------------");
-        JButton signupBtn = new JButton("Signup");
+        signupBtn = new JButton("Signup");
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
@@ -58,6 +92,9 @@ public class LoginPage extends JFrame {
         c.gridy = 3;
         contentPanel.add(signupBtn, c);
 
+        loginBtn.addActionListener(actionListener);
+        signupBtn.addActionListener(actionListener);
+
         this.add(navbar, BorderLayout.NORTH);
         this.add(contentPanel, BorderLayout.CENTER);
     }
@@ -65,6 +102,8 @@ public class LoginPage extends JFrame {
     private NavigationBar initNavigationBar() {
         NavigationBar navbar = new NavigationBar("Login");
         JButton backBtn = new JButton("<--");
+        JButton helpBtn = new JButton("Aide");
+
         backBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -72,12 +111,14 @@ public class LoginPage extends JFrame {
                 LoginPage.this.dispose();
             }
         });
+
         navbar.setLeftComponent(backBtn);
+        navbar.setRightComponent(helpBtn);
         return navbar;
     }
 
     public static void main(String[] args) {
-        new LoginPage(500, 400).setVisible(true);
+        new LoginPage(SysAL2000.SCREEN_WIDTH, SysAL2000.SCREEN_HEIGHT).setVisible(true);
     }
 
 }
