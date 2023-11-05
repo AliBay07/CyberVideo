@@ -1,13 +1,14 @@
 package ui;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class LoginPage extends JFrame {
 
-    public static final int DEF_TF_SIZE = 20;
+    public static final int DEF_TF_SIZE = 25;
 
     private JTextField idTF;
     private JTextField pwdTF;
@@ -60,16 +61,9 @@ public class LoginPage extends JFrame {
 
         JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
-        JLabel idLabel = new JLabel("Identifiant:");
-        idTF = new JTextField(DEF_TF_SIZE);
-        idTF.setToolTipText("Entrez votre id");
-        JLabel pwLabel = new JLabel("Mot de pass:");
-        pwdTF = new JTextField(DEF_TF_SIZE);
-        pwdTF.setToolTipText("Entrez le mot de pass");
-        inputPanel.add(idLabel);
-        inputPanel.add(idTF);
-        inputPanel.add(pwLabel);
-        inputPanel.add(pwdTF);
+        inputPanel.setBorder(new EmptyBorder(5, 10, 5, 10));
+        idTF = addInputTextView(inputPanel, "Identifiant:", "Entrez votre id", DEF_TF_SIZE);
+        pwdTF = addInputPasswordView(inputPanel, "Mot de pass:", "Entrez le mot de pass", DEF_TF_SIZE);
 
         loginBtn = new JButton("Login");
         JLabel sepLabel = new JLabel("----------------------");
@@ -80,13 +74,17 @@ public class LoginPage extends JFrame {
         c.gridy = 0;
         c.weightx = 1;
         c.weighty = 0;
-        c.fill = GridBagConstraints.CENTER;
+        c.ipady = 15;
+        c.anchor = GridBagConstraints.CENTER;
         contentPanel.add(inputPanel, c);
 
         c.gridy = 1;
+        c.ipady = 10;
+        c.insets = new Insets(10, 10, 10, 10);
         contentPanel.add(loginBtn, c);
 
         c.gridy = 2;
+        c.insets = new Insets(5, 10, 5, 10);
         contentPanel.add(sepLabel, c);
 
         c.gridy = 3;
@@ -115,6 +113,28 @@ public class LoginPage extends JFrame {
         navbar.setLeftComponent(backBtn);
         navbar.setRightComponent(helpBtn);
         return navbar;
+    }
+
+    private JTextField addInputTextView(JPanel container, String label, String tips, int size) {
+        JLabel jlabel = new JLabel(label);
+        jlabel.setHorizontalAlignment(SwingConstants.LEADING);
+        jlabel.setBorder(new EmptyBorder(8, 0, 3, 0)); // padding entre component
+        JTextField jtextField = new JTextField(size);
+        jtextField.setToolTipText(tips);
+        container.add(jlabel);
+        container.add(jtextField);
+        return jtextField;
+    }
+
+    private JTextField addInputPasswordView(JPanel container, String label, String tips, int size) {
+        JLabel jlabel = new JLabel(label);
+        jlabel.setHorizontalAlignment(SwingConstants.LEADING);
+        jlabel.setBorder(new EmptyBorder(8, 0, 3, 0)); // padding entre component
+        JTextField jtextField = new JPasswordField(size);
+        jtextField.setToolTipText(tips);
+        container.add(jlabel);
+        container.add(jtextField);
+        return jtextField;
     }
 
     public static void main(String[] args) {
