@@ -15,13 +15,11 @@ public class SubscriberMainPage extends JFrame {
         externalFrame.setSize(1280, 720);
 		externalFrame.setLocationRelativeTo(null);
 		externalFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        JDesktopPane desktop = new JDesktopPane();
         
-        JInternalFrame frame = new JInternalFrame("SubscriberMainPage", true, false, true);
+        JPanel frame = new JPanel();
         frame.setLayout(new BorderLayout());
 		frame.setSize(1280, 720);
 		frame.setLocation(0,0);
-		//frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //-------- BARRE DE NAVIGATION --------
         //Creation de la barre de navigation
@@ -31,37 +29,34 @@ public class SubscriberMainPage extends JFrame {
         JList<String> leftMenu = new JList<String>(tabFonctions1);
         leftMenu.setPreferredSize(new Dimension(200,400));
         leftMenu.setLayoutOrientation(JList.VERTICAL);
-        JInternalFrame leftMenuFrame = new JInternalFrame("Menu gauche", false, true);
-        leftMenuFrame.setLayout(new BoxLayout(leftMenuFrame, BoxLayout.Y_AXIS));
-        leftMenuFrame.setPreferredSize(new Dimension(250, 500));
-        leftMenuFrame.setLocation(0, 0);
-        leftMenuFrame.add(leftMenu);
-        JButton closeButton = new JButton("Close");
-        leftMenuFrame.add(closeButton);
         ActionListener openLeftMenu = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                JDialog leftMenuDialog = new JDialog(externalFrame, "Menu gauche", true);
+                leftMenuDialog.setSize(250, 500);
+                leftMenuDialog.setLayout(new FlowLayout());
+                leftMenuDialog.add(leftMenu);
+                JButton closeButton = new JButton("Close");
+                leftMenuDialog.add(closeButton);
                 closeButton.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        leftMenuFrame.setVisible(false);
-                        frame.setVisible(true);
-                        desktop.setSelectedFrame(frame);
-                        try {
-                            leftMenuFrame.setClosed(true);
-                        } catch (PropertyVetoException e1) {
-                            // TODO Auto-generated catch block
-                            e1.printStackTrace();
-                        }
+                        leftMenuDialog.dispose();
                     }
                 });
-                leftMenuFrame.setVisible(true);
-                leftMenuFrame.show();
-                desktop.moveToFront(leftMenuFrame);
-                desktop.setSelectedFrame(leftMenuFrame);
+                leftMenuDialog.setVisible(true);
             }
         };
         navbar.getLeftMenu().addActionListener(openLeftMenu);
-        desktop.add(leftMenuFrame);
+
+        ActionListener openNewPanel = new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JPanel testPage = new SignupBasicInfoPane();
+                frame.setVisible(false);
+                testPage.setVisible(true);
+                externalFrame.add(testPage);
+            }
+        };
+        navbar.getRightMenu().addActionListener(openNewPanel);
 
         //-------- PAGE PRINCIPALE D AFFICHAGE DES FILMS --------
         //Creation de la page principale d'affichage des films sous forme de sections
@@ -84,9 +79,7 @@ public class SubscriberMainPage extends JFrame {
         frame.add(bottomBar, BorderLayout.SOUTH);
 
         frame.setVisible(true);
-        frame.show();
-        desktop.add(frame);
-        externalFrame.add(desktop);
+        externalFrame.add(frame);
         externalFrame.setVisible(true);
     }
 }
