@@ -111,7 +111,7 @@ public class FacadeBd {
     }
     
     public boolean addCreditCardToAccount(Account account) {
-    	return accountDao.addCreditCardToAccount(account);d
+    	return accountDao.addCreditCardToAccount(account);
     }
     
     public boolean addSubscriberCardToAccount(Account account) {
