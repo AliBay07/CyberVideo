@@ -6,7 +6,7 @@ import java.util.List;
 public class SubscriberAccount extends Account {
 
 	private double subscriptionAmount;
-    private List<SubscriberCard> subscriberCards;
+    private List<SubscriberCard> subscriberCards = new ArrayList<SubscriberCard>();;
 
     public SubscriberAccount() {
         this.subscriptionAmount = 0.0;

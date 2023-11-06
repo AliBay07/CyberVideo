@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -321,7 +322,7 @@ public class AccountDao extends Dao<Account> {
 	}
 
 	public Account unsubscribeFromService(Account account) {
-		
+
 		if (account != null) {
 
 			String query = "SELECT * FROM Account WHERE Account.email = ?";
@@ -474,289 +475,408 @@ public class AccountDao extends Dao<Account> {
 		}
 		return false;
 	}
-	
+
 	public boolean banFilmCategories(Account account, List<Category> categories) {
-	    if (account != null && !categories.isEmpty()) {
-	        try {
-	            String query = "SELECT * FROM Account WHERE Account.email = ?";
-	            try (PreparedStatement statementAccount = connection.prepareStatement(query)) {
-	                statementAccount.setString(1, account.getEmail());
-	                try (ResultSet resultSet = statementAccount.executeQuery()) {
-	                    if (resultSet.next()) {
-	                        if (resultSet.getString("is_subscriber").equals("N")) {
-	                            return false;
-	                        } else {
-	                            String insertQuery = "INSERT INTO AccountFilterCategory (id_account, id_category) VALUES (?, ?)";
-	                            try (PreparedStatement statement = connection.prepareStatement(insertQuery)) {
-	                                for (Category category : categories) {
-	                                	System.out.println(account.getId());
-	                                	System.out.println(category.getId());
-	                                	System.out.println();
-	                                    statement.setLong(1, account.getId());
-	                                    statement.setLong(2, category.getId());
-	                                    statement.addBatch();
-	                                }
-	                                int[] rowsInserted = statement.executeBatch();
+		if (account != null && !categories.isEmpty()) {
+			try {
+				String query = "SELECT * FROM Account WHERE Account.email = ?";
+				try (PreparedStatement statementAccount = connection.prepareStatement(query)) {
+					statementAccount.setString(1, account.getEmail());
+					try (ResultSet resultSet = statementAccount.executeQuery()) {
+						if (resultSet.next()) {
+							if (resultSet.getString("is_subscriber").equals("N")) {
+								return false;
+							} else {
+								String insertQuery = "INSERT INTO AccountFilterCategory (id_account, id_category) VALUES (?, ?)";
+								try (PreparedStatement statement = connection.prepareStatement(insertQuery)) {
+									for (Category category : categories) {
+										System.out.println(account.getId());
+										System.out.println(category.getId());
+										System.out.println();
+										statement.setLong(1, account.getId());
+										statement.setLong(2, category.getId());
+										statement.addBatch();
+									}
+									int[] rowsInserted = statement.executeBatch();
 
-	                                for (int rows : rowsInserted) {
-	                                    if (rows < 0) {
-	                                        return false;
-	                                    }
-	                                }
+									for (int rows : rowsInserted) {
+										if (rows < 0) {
+											return false;
+										}
+									}
 
-	                                connection.commit();
-	                                return true;
-	                            }
-	                        }
-	                    }
-	                }
-	            }
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	            try {
-	                connection.rollback();
-	            } catch (SQLException rollbackException) {
-	                rollbackException.printStackTrace();
-	            }
-	        }
-	    }
-	    return false;
+									connection.commit();
+									return true;
+								}
+							}
+						}
+					}
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				try {
+					connection.rollback();
+				} catch (SQLException rollbackException) {
+					rollbackException.printStackTrace();
+				}
+			}
+		}
+		return false;
 	}
-	
-	public boolean unbanFilmCategories(Account account, Category category) {
-	    if (account != null && category != null) {
-	        try {
-	            String query = "SELECT * FROM Account WHERE Account.email = ?";
-	            try (PreparedStatement statementAccount = connection.prepareStatement(query)) {
-	                statementAccount.setString(1, account.getEmail());
-	                try (ResultSet resultSet = statementAccount.executeQuery()) {
-	                    if (resultSet.next()) {
-	                        if (resultSet.getString("is_subscriber").equals("N")) {
-	                            return false;
-	                        } else {
-	                            String deleteQuery = "DELETE FROM AccountFilterCategory WHERE id_account = ? AND id_category = ?";
-	                            try (PreparedStatement deleteStatement = connection.prepareStatement(deleteQuery)) {
-	                                deleteStatement.setLong(1, account.getId());
-	                                deleteStatement.setLong(2, category.getId());
-	                                int rowsDeleted = deleteStatement.executeUpdate();
 
-	                                if (rowsDeleted > 0) {
-	                                    connection.commit();
-	                                    return true;
-	                                } else {
-	                                	connection.rollback();
-	                                }
-	                            }
-	                        }
-	                    }
-	                }
-	            }
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	            try {
-	                connection.rollback();
-	            } catch (SQLException rollbackException) {
-	                rollbackException.printStackTrace();
-	            }
-	        }
-	    }
-	    
-	    return false;
+	public boolean unbanFilmCategories(Account account, Category category) {
+		if (account != null && category != null) {
+			try {
+				String query = "SELECT * FROM Account WHERE Account.email = ?";
+				try (PreparedStatement statementAccount = connection.prepareStatement(query)) {
+					statementAccount.setString(1, account.getEmail());
+					try (ResultSet resultSet = statementAccount.executeQuery()) {
+						if (resultSet.next()) {
+							if (resultSet.getString("is_subscriber").equals("N")) {
+								return false;
+							} else {
+								String deleteQuery = "DELETE FROM AccountFilterCategory WHERE id_account = ? AND id_category = ?";
+								try (PreparedStatement deleteStatement = connection.prepareStatement(deleteQuery)) {
+									deleteStatement.setLong(1, account.getId());
+									deleteStatement.setLong(2, category.getId());
+									int rowsDeleted = deleteStatement.executeUpdate();
+
+									if (rowsDeleted > 0) {
+										connection.commit();
+										return true;
+									} else {
+										connection.rollback();
+									}
+								}
+							}
+						}
+					}
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				try {
+					connection.rollback();
+				} catch (SQLException rollbackException) {
+					rollbackException.printStackTrace();
+				}
+			}
+		}
+
+		return false;
 	}
 
 	public List<Category> getBannedCategories(Account account) {
-	    List<Category> bannedCategories = new ArrayList<>();
-	    
-	    if (account != null) {
-	        try {
-	            String query = "SELECT * FROM Account WHERE Account.email = ?";
-	            try (PreparedStatement statementAccount = connection.prepareStatement(query)) {
-	                statementAccount.setString(1, account.getEmail());
-	                try (ResultSet resultSet = statementAccount.executeQuery()) {
-	                    if (resultSet.next()) {
-	                        if (resultSet.getString("is_subscriber").equals("N")) {
-	                            return bannedCategories;
-	                        } else {
-	                            String selectQuery = "SELECT Category.* FROM Category " +
-	                                "INNER JOIN AccountFilterCategory ON Category.id = AccountFilterCategory.id_category " +
-	                                "WHERE AccountFilterCategory.id_account = ?";
-	                            try (PreparedStatement selectStatement = connection.prepareStatement(selectQuery)) {
-	                                selectStatement.setLong(1, account.getId());
-	                                try (ResultSet categoryResultSet = selectStatement.executeQuery()) {
-	                                    while (categoryResultSet.next()) {
-	                                        Category category = new Category();
-	                                        category.setId(categoryResultSet.getLong("id"));
-	                                        category.setCategoryName(categoryResultSet.getString("category_name"));
-	                                        bannedCategories.add(category);
-	                                    }
-	                                    return bannedCategories;
-	                                }
-	                            }
-	                        }
-	                    }
-	                }
-	            }
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	            try {
-	                connection.rollback();
-	            } catch (SQLException rollbackException) {
-	                rollbackException.printStackTrace();
-	            }
-	        }
-	    }
+		List<Category> bannedCategories = new ArrayList<>();
 
-	    return bannedCategories;
+		if (account != null) {
+			try {
+				String query = "SELECT * FROM Account WHERE Account.email = ?";
+				try (PreparedStatement statementAccount = connection.prepareStatement(query)) {
+					statementAccount.setString(1, account.getEmail());
+					try (ResultSet resultSet = statementAccount.executeQuery()) {
+						if (resultSet.next()) {
+							if (resultSet.getString("is_subscriber").equals("N")) {
+								return bannedCategories;
+							} else {
+								String selectQuery = "SELECT Category.* FROM Category " +
+										"INNER JOIN AccountFilterCategory ON Category.id = AccountFilterCategory.id_category " +
+										"WHERE AccountFilterCategory.id_account = ?";
+								try (PreparedStatement selectStatement = connection.prepareStatement(selectQuery)) {
+									selectStatement.setLong(1, account.getId());
+									try (ResultSet categoryResultSet = selectStatement.executeQuery()) {
+										while (categoryResultSet.next()) {
+											Category category = new Category();
+											category.setId(categoryResultSet.getLong("id"));
+											category.setCategoryName(categoryResultSet.getString("category_name"));
+											bannedCategories.add(category);
+										}
+										return bannedCategories;
+									}
+								}
+							}
+						}
+					}
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				try {
+					connection.rollback();
+				} catch (SQLException rollbackException) {
+					rollbackException.printStackTrace();
+				}
+			}
+		}
+
+		return bannedCategories;
 	}
 
 	public boolean setWeeklyRentalLimit(Account account, int weeklyLimit) {
-	    if (account != null) {
-	        try {
-	            String query = "SELECT * FROM Account WHERE Account.email = ?";
-	            try (PreparedStatement statementAccount = connection.prepareStatement(query)) {
-	                statementAccount.setString(1, account.getEmail());
-	                try (ResultSet resultSet = statementAccount.executeQuery()) {
-	                    if (resultSet.next()) {
-	                        if (resultSet.getString("is_subscriber").equals("N")) {
-	                            return false;
-	                        } else {
-	                            String updateQuery = "UPDATE Account SET nb_allowed_reservations = ? WHERE id = ?";
-	                            try (PreparedStatement updateStatement = connection.prepareStatement(updateQuery)) {
-	                                updateStatement.setInt(1, weeklyLimit);
-	                                updateStatement.setLong(2, account.getId());
-	                                int rowsUpdated = updateStatement.executeUpdate();
-	                                
-	                                if (rowsUpdated > 0) {
-	                                    connection.commit();
-	                                    account.setNbAllowedReservation(weeklyLimit);
-	                                    return true;
-	                                } else {
-	                                    connection.rollback();
-	                                }
-	                            }
-	                        }
-	                    }
-	                }
-	            }
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	            try {
-	                connection.rollback();
-	            } catch (SQLException rollbackException) {
-	                rollbackException.printStackTrace();
-	            }
-	        }
-	    }
-	    return false;
+		if (account != null) {
+			try {
+				String query = "SELECT * FROM Account WHERE Account.email = ?";
+				try (PreparedStatement statementAccount = connection.prepareStatement(query)) {
+					statementAccount.setString(1, account.getEmail());
+					try (ResultSet resultSet = statementAccount.executeQuery()) {
+						if (resultSet.next()) {
+							if (resultSet.getString("is_subscriber").equals("N")) {
+								return false;
+							} else {
+								String updateQuery = "UPDATE Account SET nb_allowed_reservations = ? WHERE id = ?";
+								try (PreparedStatement updateStatement = connection.prepareStatement(updateQuery)) {
+									updateStatement.setInt(1, weeklyLimit);
+									updateStatement.setLong(2, account.getId());
+									int rowsUpdated = updateStatement.executeUpdate();
+
+									if (rowsUpdated > 0) {
+										connection.commit();
+										account.setNbAllowedReservation(weeklyLimit);
+										return true;
+									} else {
+										connection.rollback();
+									}
+								}
+							}
+						}
+					}
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				try {
+					connection.rollback();
+				} catch (SQLException rollbackException) {
+					rollbackException.printStackTrace();
+				}
+			}
+		}
+		return false;
 	}
-	
+
 	public Account modifyAccountInformation(Account account, String newFirstName, String newLastName, Date newDob, String oldPassword, String newPassword) {
-	    BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-	    if (account != null) {
-	        try {
-	            boolean isChangingPassword = newPassword != null && !newPassword.trim().isEmpty();
+		if (account != null) {
+			try {
+				boolean isChangingPassword = newPassword != null && !newPassword.trim().isEmpty();
 
-	            if (isChangingPassword) {
-	                String verifyQuery = "SELECT password FROM Account WHERE id = ?";
-	                try (PreparedStatement verifyStatement = connection.prepareStatement(verifyQuery)) {
-	                    verifyStatement.setLong(1, account.getId());
-	                    try (ResultSet resultSet = verifyStatement.executeQuery()) {
-	                        if (resultSet.next()) {
-	                            String storedPassword = resultSet.getString("password");
-	                            if (!passwordEncoder.matches(oldPassword, storedPassword)) {
-	                                return null;
-	                            }
-	                        }
-	                    }
-	                }
-	            }
+				if (isChangingPassword) {
+					String verifyQuery = "SELECT password FROM Account WHERE id = ?";
+					try (PreparedStatement verifyStatement = connection.prepareStatement(verifyQuery)) {
+						verifyStatement.setLong(1, account.getId());
+						try (ResultSet resultSet = verifyStatement.executeQuery()) {
+							if (resultSet.next()) {
+								String storedPassword = resultSet.getString("password");
+								if (!passwordEncoder.matches(oldPassword, storedPassword)) {
+									return null;
+								}
+							}
+						}
+					}
+				}
 
-	            StringBuilder updateQuery = new StringBuilder("UPDATE Users SET ");
-	            List<Object> parameters = new ArrayList<>();
+				StringBuilder updateQuery = new StringBuilder("UPDATE Users SET ");
+				List<Object> parameters = new ArrayList<>();
 
-	            if (newFirstName != null && !newFirstName.trim().isEmpty()) {
-	                updateQuery.append("first_name = ?, ");
-	                parameters.add(newFirstName.trim());
-	            }
+				if (newFirstName != null && !newFirstName.trim().isEmpty()) {
+					updateQuery.append("first_name = ?, ");
+					parameters.add(newFirstName.trim());
+				}
 
-	            if (newLastName != null && !newLastName.trim().isEmpty()) {
-	                updateQuery.append("last_name = ?, ");
-	                parameters.add(newLastName.trim());
-	            }
+				if (newLastName != null && !newLastName.trim().isEmpty()) {
+					updateQuery.append("last_name = ?, ");
+					parameters.add(newLastName.trim());
+				}
 
-	            if (newDob != null) {
-	                updateQuery.append("dob = ?, ");
-	                parameters.add(newDob);
-	            }
+				if (newDob != null) {
+					updateQuery.append("dob = ?, ");
+					parameters.add(newDob);
+				}
 
-	            if (updateQuery.toString().endsWith(", ")) {
-	                updateQuery.setLength(updateQuery.length() - 2);
-	            }
+				if (updateQuery.toString().endsWith(", ")) {
+					updateQuery.setLength(updateQuery.length() - 2);
+				}
 
-	            updateQuery.append(" WHERE id = ?");
+				updateQuery.append(" WHERE id = ?");
 
-	            try (PreparedStatement updateStatement = connection.prepareStatement(updateQuery.toString())) {
-	                int index = 1;
-	                for (Object parameter : parameters) {
-	                    updateStatement.setObject(index++, parameter);
-	                }
-	                updateStatement.setLong(index, account.getId());
+				try (PreparedStatement updateStatement = connection.prepareStatement(updateQuery.toString())) {
+					int index = 1;
+					for (Object parameter : parameters) {
+						updateStatement.setObject(index++, parameter);
+					}
+					updateStatement.setLong(index, account.getId());
 
-	                int rowsUpdated = updateStatement.executeUpdate();
-	                if (rowsUpdated > 0 && (isChangingPassword || parameters.size() > 0)) {
-	                    if (isChangingPassword) {
-	                        String hashedPassword = passwordEncoder.encode(newPassword);
-	                        String passwordUpdateQuery = "UPDATE Account SET password = ? WHERE id = ?";
-	                        try (PreparedStatement passwordUpdateStatement = connection.prepareStatement(passwordUpdateQuery)) {
-	                            passwordUpdateStatement.setString(1, hashedPassword);
-	                            passwordUpdateStatement.setLong(2, account.getId());
+					int rowsUpdated = updateStatement.executeUpdate();
+					if (rowsUpdated > 0 && (isChangingPassword || parameters.size() > 0)) {
+						if (isChangingPassword) {
+							String hashedPassword = passwordEncoder.encode(newPassword);
+							String passwordUpdateQuery = "UPDATE Account SET password = ? WHERE id = ?";
+							try (PreparedStatement passwordUpdateStatement = connection.prepareStatement(passwordUpdateQuery)) {
+								passwordUpdateStatement.setString(1, hashedPassword);
+								passwordUpdateStatement.setLong(2, account.getId());
 
-	                            int passwordRowsUpdated = passwordUpdateStatement.executeUpdate();
-	                            if (passwordRowsUpdated > 0) {
-	                                connection.commit();
+								int passwordRowsUpdated = passwordUpdateStatement.executeUpdate();
+								if (passwordRowsUpdated > 0) {
+									connection.commit();
 
-	                                User updatedUser = new User();
-	                                updatedUser.setFirstName(newFirstName);
-	                                updatedUser.setLastName(newLastName);
-	                                updatedUser.setDateOfBirth(newDob);
+									User updatedUser = new User();
+									updatedUser.setFirstName(newFirstName);
+									updatedUser.setLastName(newLastName);
+									updatedUser.setDateOfBirth(newDob);
 
-	                                account.setUser(updatedUser);
+									account.setUser(updatedUser);
 
-	                                return account;
-	                            }
-	                        }
-	                    } else {
-	                        connection.commit();
+									return account;
+								}
+							}
+						} else {
+							connection.commit();
 
-	                        User updatedUser = new User();
-	                        updatedUser.setFirstName(newFirstName);
-	                        updatedUser.setLastName(newLastName);
-	                        updatedUser.setDateOfBirth(newDob);
+							User updatedUser = new User();
+							updatedUser.setFirstName(newFirstName);
+							updatedUser.setLastName(newLastName);
+							updatedUser.setDateOfBirth(newDob);
 
-	                        account.setUser(updatedUser);
+							account.setUser(updatedUser);
 
-	                        return account;
-	                    }
-	                }
-	            }
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	            try {
-	                connection.rollback();
-	            } catch (SQLException rollbackException) {
-	                rollbackException.printStackTrace();
-	            }
-	        }
-	    }
-	    return null;
+							return account;
+						}
+					}
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				try {
+					connection.rollback();
+				} catch (SQLException rollbackException) {
+					rollbackException.printStackTrace();
+				}
+			}
+		}
+		return null;
 	}
 
+	public boolean addSubscriberCardToAccount(Account account) {
+		if (account != null) {
+			try {
+				String query = "SELECT * FROM Account WHERE Account.email = ?";
+				try (PreparedStatement statementAccount = connection.prepareStatement(query)) {
+					statementAccount.setString(1, account.getEmail());
+					try (ResultSet resultSet = statementAccount.executeQuery()) {
+						if (resultSet.next()) {
+							if (resultSet.getString("is_subscriber").equals("N")) {
+								return false;
+							} else {
+								Random random = new Random();
+								SubscriberCard subscriberCard = new SubscriberCard();
+								StringBuilder cardNumber = new StringBuilder();
+								for (int i = 0; i < 12; i++) {
+									int digit = random.nextInt(10);
+									cardNumber.append(digit);
+								}
+								subscriberCard.setCardNumber(cardNumber.toString());
+								subscriberCard.setAmount(0);
+								String addQuery = "INSERT INTO SubscriberCard (card_number, amount) VALUES (?, ?)";
+								try (PreparedStatement addStatement = connection.prepareStatement(addQuery, new String[] {"ID"})) {
+									addStatement.setString(1, subscriberCard.getCardNumber());
+									addStatement.setLong(2, 0);
+									int rowsUpdated = addStatement.executeUpdate();
+
+									if (rowsUpdated > 0) {
+										try (ResultSet generatedKeys = addStatement.getGeneratedKeys();) {
+											if (generatedKeys.next()) {
+												long cardId = generatedKeys.getLong(1);
+												subscriberCard.setId(cardId);
+												String addAccountSubscriberCardQuery = "INSERT INTO AccountSubscriberCard (id_account, id_subscriber_card) " +
+														"VALUES (?, ?)";
+												try (PreparedStatement addAccountSubscriberCardStatement = connection.prepareStatement(addAccountSubscriberCardQuery)) {
+													addAccountSubscriberCardStatement.setLong(1, account.getId());
+													addAccountSubscriberCardStatement.setLong(2, subscriberCard.getId());
+
+													rowsUpdated = addStatement.executeUpdate();
+
+													if (rowsUpdated > 0) {
+														((SubscriberAccount)account).addSubscriberCard(subscriberCard);
+														connection.commit();
+														return true;
+													}
+												}	                                        
+											}
+										}
+									} else {
+										connection.rollback();
+									}
+								}
+							}
+						}
+					}
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				try {
+					connection.rollback();
+				} catch (SQLException rollbackException) {
+					rollbackException.printStackTrace();
+				}
+			}
+		}
+		return false;
+	}
+
+	public boolean addCreditCardToAccount(Account account) {
+		if (account != null) {
+			try {
+				Random random = new Random();
+				CreditCard creditCard = new CreditCard();
+				StringBuilder cardNumber = new StringBuilder();
+				for (int i = 0; i < 12; i++) {
+					int digit = random.nextInt(10);
+					cardNumber.append(digit);
+				}
+				creditCard.setCardNumber(cardNumber.toString());
+				String addQuery = "INSERT INTO SubscriberCard (card_number) VALUES (?)";
+				try (PreparedStatement addStatement = connection.prepareStatement(addQuery, new String[] {"ID"})) {
+					addStatement.setString(1, creditCard.getCardNumber());
+					int rowsUpdated = addStatement.executeUpdate();
+
+					if (rowsUpdated > 0) {
+						try (ResultSet generatedKeys = addStatement.getGeneratedKeys();) {
+							if (generatedKeys.next()) {
+								long cardId = generatedKeys.getLong(1);
+								creditCard.setId(cardId);
+								String addAccountSubscriberCardQuery = "INSERT INTO AccountSubscriberCard (id_account, id_subscriber_card) " +
+										"VALUES (?, ?)";
+								try (PreparedStatement addAccountSubscriberCardStatement = connection.prepareStatement(addAccountSubscriberCardQuery)) {
+									addAccountSubscriberCardStatement.setLong(1, account.getId());
+									addAccountSubscriberCardStatement.setLong(2, creditCard.getId());
+
+									rowsUpdated = addStatement.executeUpdate();
+
+									if (rowsUpdated > 0) {
+										account.addCreditCard(creditCard);
+										connection.commit();
+										return true;
+									}
+								}                                        
+							}
+						}
+					} else {
+						connection.rollback();
+					}
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				try {
+					connection.rollback();
+				} catch (SQLException rollbackException) {
+					rollbackException.printStackTrace();
+				}
+			}
+		}
+		return false;
+	}
 
 	public boolean processPaymentByCreditCard(CreditCard creditCard) {
 		return true;
 	}
-	
+
 	// For testing, adding mock data
 
 	public void insertMockData() {

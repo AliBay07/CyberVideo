@@ -1,5 +1,6 @@
 package beans;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Account {
@@ -10,7 +11,7 @@ public abstract class Account {
 	private String password;
 	private int nbAllowedReservation;
 	private User user;
-	private List<CreditCard> CreditCards;
+	private List<CreditCard> CreditCards = new ArrayList<CreditCard>();
 	
 	public long getId() {
 		return id;
@@ -67,6 +68,14 @@ public abstract class Account {
 	public void setCreditCards(List<CreditCard> creditCards) {
 		CreditCards = creditCards;
 	}
+	
+	public void addCreditCard(CreditCard creditCard) {
+		this.CreditCards.add(creditCard);
+	}
+	
+	public void removeCreditCard(CreditCard creditCard) {
+        this.CreditCards.remove(creditCard);
+    }
 	
     @Override
     public String toString() {
