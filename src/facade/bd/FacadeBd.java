@@ -109,6 +109,14 @@ public class FacadeBd {
     public boolean processPaymentByCreditCard(CreditCard creditCard) {
         return accountDao.processPaymentByCreditCard(creditCard);
     }
+    
+    public boolean addCreditCardToAccount(Account account) {
+    	return accountDao.addCreditCardToAccount(account);d
+    }
+    
+    public boolean addSubscriberCardToAccount(Account account) {
+    	return accountDao.addSubscriberCardToAccount(account);
+    }
 
     // BlueRayDao
     public List<BlueRay> getAllAvailableBlueRays() {
