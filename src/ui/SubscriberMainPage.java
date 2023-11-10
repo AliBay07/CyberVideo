@@ -7,19 +7,15 @@ import java.beans.PropertyVetoException;
 
 import javax.swing.*;
 
-public class SubscriberMainPage extends JFrame {
+/**
+ * Classe définissant la page d'accueil d'un utilisateur abonné connecté
+ */
+public class SubscriberMainPage extends JPanel {
 
-    public static void main(String[] args) {
-
-        JFrame externalFrame = new JFrame();
-        externalFrame.setSize(1280, 720);
-		externalFrame.setLocationRelativeTo(null);
-		externalFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        JPanel frame = new JPanel();
-        frame.setLayout(new BorderLayout());
-		frame.setSize(1280, 720);
-		frame.setLocation(0,0);
+    public SubscriberMainPage(JFrame frame){
+        this.setLayout(new BorderLayout());
+		this.setSize(frame.getSize());
+		this.setLocation(0,0);
 
         //-------- BARRE DE NAVIGATION --------
         //Creation de la barre de navigation
@@ -31,7 +27,7 @@ public class SubscriberMainPage extends JFrame {
         leftMenu.setLayoutOrientation(JList.VERTICAL);
         ActionListener openLeftMenu = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                JDialog leftMenuDialog = new JDialog(externalFrame, "Menu gauche", true);
+                JDialog leftMenuDialog = new JDialog(frame, "Menu gauche", true);
                 leftMenuDialog.setSize(250, 500);
                 leftMenuDialog.setLayout(new FlowLayout());
                 leftMenuDialog.add(leftMenu);
@@ -48,15 +44,25 @@ public class SubscriberMainPage extends JFrame {
         };
         navbar.getLeftMenu().addActionListener(openLeftMenu);
 
-        ActionListener openNewPanel = new ActionListener() {
+        ArrayList<String> films = new ArrayList<String>();
+        films.add("Titanic");
+        films.add("Transformers");
+        navbar.getBasket().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Basket b = new Basket(films);
+                b.setVisible(true);
+            }
+        });
+
+        /*ActionListener openNewPanel = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JPanel testPage = new SignupBasicInfoPane();
-                frame.setVisible(false);
+                this.get.setVisible(false);
                 testPage.setVisible(true);
-                externalFrame.add(testPage);
+                this.SubscriberMainPage.getParent().add(testPage);
             }
         };
-        navbar.getRightMenu().addActionListener(openNewPanel);
+        navbar.getRightMenu().addActionListener(openNewPanel);*/
 
         //-------- PAGE PRINCIPALE D AFFICHAGE DES FILMS --------
         //Creation de la page principale d'affichage des films sous forme de sections
@@ -74,12 +80,9 @@ public class SubscriberMainPage extends JFrame {
         BottomBar bottomBar = new BottomBar();
         
         //Ajout de tous les éléments à la fenêtre
-        frame.add(navbar, BorderLayout.NORTH);
-        frame.add(filmsSectionsPane, BorderLayout.CENTER);
-        frame.add(bottomBar, BorderLayout.SOUTH);
-
-        frame.setVisible(true);
-        externalFrame.add(frame);
-        externalFrame.setVisible(true);
+        this.add(navbar, BorderLayout.NORTH);
+        this.add(filmsSectionsPane, BorderLayout.CENTER);
+        this.add(bottomBar, BorderLayout.SOUTH);
     }
+
 }

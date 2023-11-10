@@ -7,20 +7,15 @@ import javax.swing.*;
 
 import java.awt.*;
 
+/**
+ * Classe définissant la page d'accueil initiale
+ */
+public class InitialMainPage extends JPanel {
 
-public class InitialMainPage {
-
-    public static void main(String[] args) {
-        JFrame externalFrame = new JFrame();
-        externalFrame.setSize(1280, 720);
-		externalFrame.setLocationRelativeTo(null);
-		externalFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        JDesktopPane desktop = new JDesktopPane();
-
-        JInternalFrame frame = new JInternalFrame("InitialMainPage", true, false, true);
-        frame.setLayout(new BorderLayout());
-		frame.setSize(1280, 720);
-		frame.setLocation(0,0);
+    public InitialMainPage(JFrame frame) {
+        this.setLayout(new BorderLayout());
+		this.setSize(frame.getSize());
+		this.setLocation(0,0);
 
         //-------- BARRE DE NAVIGATION --------
         //Creation de la barre de navigation
@@ -40,15 +35,8 @@ public class InitialMainPage {
         BottomBar bottomBar = new BottomBar();
         
         //Ajout de tous les éléments à la fenêtre
-        frame.add(navbar, BorderLayout.NORTH);
-        frame.add(filmsSectionsPane, BorderLayout.CENTER);
-        frame.add(bottomBar, BorderLayout.SOUTH);
-
-        frame.setVisible(true);
-        frame.show();
-        desktop.add(frame);
-        externalFrame.add(desktop);
-        externalFrame.setVisible(true);
-    }
-    
+        this.add(navbar, BorderLayout.NORTH);
+        this.add(filmsSectionsPane, BorderLayout.CENTER);
+        this.add(bottomBar, BorderLayout.SOUTH);
+    }    
 }
