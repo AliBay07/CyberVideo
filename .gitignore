@@ -3,3 +3,7 @@ bin/
 .project
 *.class
 src/ui/Test.java
+.idea/
+out/
+TP_CYBERVIDEO.iml
+```
