@@ -50,6 +50,7 @@ public class SubscriberMainPage extends JPanel {
         navbar.getBasket().addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 Basket b = new Basket(films);
+                b.showBasket();
                 b.setVisible(true);
             }
         });

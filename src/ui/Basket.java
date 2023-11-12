@@ -6,52 +6,58 @@ import java.util.*;
 import javax.swing.*;
 
 public class Basket extends JDialog {
-    public Basket(ArrayList<String> films){
-        setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-		setSize(1280, 720);
-		setLocation(0,0);
+    private ArrayList<String> filmsList;
+    private JPanel filmsPanel = new JPanel();
+    private JPanel titresTableau = new JPanel(new BorderLayout());
 
-        JPanel titresTableau = new JPanel(new BorderLayout());
+    public Basket(ArrayList<String> films){
+        filmsPanel.setLayout(new BoxLayout(filmsPanel, BoxLayout.Y_AXIS));
+        filmsList = films;
+    }
+
+    public void showTabTitles(){
         titresTableau.add(new JLabel("Numéro"), BorderLayout.WEST);
-        JLabel filmName = new JLabel("Nom du film");
-        filmName.setAlignmentX((float) 0.5);
         titresTableau.add(new JLabel("Nom du film"), BorderLayout.CENTER);
+        ((JLabel) titresTableau.getComponent(1)).setHorizontalAlignment(JLabel.CENTER);
         titresTableau.add(new JLabel("Supprimer"), BorderLayout.EAST);
         this.add(titresTableau);
+    }
 
+    public void afficheFilmDansPanier(){
+        JButton bin = new JButton("Poubelle");
         ActionListener delete = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Container parent = ((Component) e.getSource()).getParent();
-                System.out.println(parent.getParent().getName());
                 JLabel num = (JLabel) (parent.getComponent(0));
-                films.remove(Integer.getInteger(num.getText()));
+                filmsList.remove(Integer.getInteger(num.getText()));
                 Container pParent = parent.getParent();
                 pParent.remove(parent);
-                Basket.this.afficheFilmDansPanier(films, titresTableau);
+                Basket.this.repaint();
             }
         };
-        for(int i=0; i<films.size(); i++){
+        bin.addActionListener(delete);
+        for(int i=0; i<filmsList.size(); i++){
             JPanel filmPanel = new JPanel(new BorderLayout());
-            filmPanel.setSize(this.getWidth(), 60);
-            filmPanel.add(new JLabel(Integer.toString(i)), BorderLayout.WEST);
-            filmPanel.add(new JLabel(films.get(i)), BorderLayout.CENTER);
-            JButton bin = new JButton("Supprimer");
-            bin.addActionListener(delete);
-            filmPanel.add(bin, BorderLayout.EAST);
-            this.add(filmPanel);
+            filmPanel.setSize(Test.DIALOG_WIDTH, Test.DIALOG_HEIGHT/5);
+            filmPanel.setAlignmentX((float) 0.5);
+            filmPanel.add(new JLabel(Integer.toString(i+1)), BorderLayout.WEST);
+            ((JLabel) filmPanel.getComponent(0)).setHorizontalAlignment(JLabel.CENTER);
+            filmPanel.add(new JLabel(filmsList.get(i)), BorderLayout.CENTER);
+            ((JLabel) filmPanel.getComponent(1)).setHorizontalAlignment(JLabel.CENTER);
+            filmPanel.add(new JButton("Poubelle"), BorderLayout.EAST);
+            ((JButton) filmPanel.getComponent(2)).addActionListener(delete);
+            this.filmsPanel.add(filmPanel);
         }
-
-        this.setVisible(true);
+        this.add(filmsPanel);
     }
 
-    public void afficheFilmDansPanier(ArrayList<String> films, JPanel filmPanel){
-        JButton bin = new JButton("Poubelle");
-        for(int i=0; i<films.size(); i++){
-            filmPanel.setSize(this.getWidth(), 60);
-            filmPanel.add(new JLabel(Integer.toString(i)), BorderLayout.WEST);
-            filmPanel.add(new JLabel(films.get(i)), BorderLayout.CENTER);
-            filmPanel.add(bin, BorderLayout.EAST);
-        }
+    public void showBasket() {
+        this.setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+		this.setSize(Test.DIALOG_WIDTH, Test.DIALOG_HEIGHT);
+		this.setLocation(0,0);
+        this.showTabTitles();
+        this.afficheFilmDansPanier();
+        this.setVisible(true);
     }
 }

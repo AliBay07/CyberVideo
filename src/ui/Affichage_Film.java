@@ -33,7 +33,7 @@ class Affichage_Film {
         // Liste d'acteurs
         JPanel actorsPanel = new JPanel(new GridLayout(film.getActors().size(), 1));
         for (Actor actor : film.getActors()) {
-            if(film.getActors().getFirst() == actor)
+            if(film.getActors().get(0) == actor)
             {
                 JLabel jLabelActor = new JLabel("Actor: " + actor.getName());
                 actorsPanel.add(jLabelActor);
@@ -51,7 +51,7 @@ class Affichage_Film {
         //Liste Categories
         JPanel categoryPanel = new JPanel(new GridLayout(film.getCategories().size(),1));
         for(Categorie categorie : film.getCategories()) {
-            if(film.getCategories().getFirst() == categorie)
+            if(film.getCategories().get(0) == categorie)
             {
                 JLabel jLabelCategory = new JLabel("Category : " + categorie.getName());
                 categoryPanel.add(jLabelCategory);
