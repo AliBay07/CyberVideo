@@ -9,6 +9,10 @@ public class Basket extends JDialog {
     private ArrayList<String> filmsList;
     private JPanel filmsPanel = new JPanel();
     private JPanel titresTableau = new JPanel(new BorderLayout());
+    //Code dans mon Test.java pour dimensionner la JFrame et les JDialog
+    public static Dimension dimension = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+    public static int DIALOG_WIDTH = (int) (dimension.getWidth()/3)*2;
+    public static int DIALOG_HEIGHT = (int) (dimension.getHeight()/3)*2;
 
     public Basket(ArrayList<String> films){
         filmsPanel.setLayout(new BoxLayout(filmsPanel, BoxLayout.Y_AXIS));
@@ -55,7 +59,7 @@ public class Basket extends JDialog {
     public void showBasket() {
         this.setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 		this.setSize(Test.DIALOG_WIDTH, Test.DIALOG_HEIGHT);
-		this.setLocation(0,0);
+		this.setLocationRelativeTo(null);
         this.showTabTitles();
         this.afficheFilmDansPanier();
         this.setVisible(true);

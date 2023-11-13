@@ -11,6 +11,12 @@ import javax.swing.*;
  * Classe définissant la page d'accueil d'un utilisateur abonné connecté
  */
 public class SubscriberMainPage extends JPanel {
+    private SubscriberNavbar navbar;
+    private BottomBar bottomBar;
+    //Code dans mon Test.java
+    public static Dimension dimension = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+    public static int DIALOG_WIDTH = (int) (dimension.getWidth()/4);
+    public static int DIALOG_HEIGHT = (int) (dimension.getHeight()*2)/3;
 
     public SubscriberMainPage(JFrame frame){
         this.setLayout(new BorderLayout());
@@ -19,16 +25,18 @@ public class SubscriberMainPage extends JPanel {
 
         //-------- BARRE DE NAVIGATION --------
         //Creation de la barre de navigation
-        SubscriberNavbar navbar = new SubscriberNavbar(0, 15);
+        navbar = new SubscriberNavbar(0, 15);
+
         //Creation du menu gauche
         String[] tabFonctions1 = {"Voir mon historique de location", "Modifier mes préférences de location", "Filtrer les catégories", "Demander l'ajout d'un nouveau film"};
         JList<String> leftMenu = new JList<String>(tabFonctions1);
-        leftMenu.setPreferredSize(new Dimension(200,400));
+        leftMenu.setFont(new Font("serif", Font.PLAIN, 15));
+        leftMenu.setPreferredSize(new Dimension(7*DIALOG_WIDTH/8, 7*DIALOG_HEIGHT/8));
         leftMenu.setLayoutOrientation(JList.VERTICAL);
         ActionListener openLeftMenu = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JDialog leftMenuDialog = new JDialog(frame, "Menu gauche", true);
-                leftMenuDialog.setSize(250, 500);
+                leftMenuDialog.setSize(DIALOG_WIDTH,DIALOG_HEIGHT);
                 leftMenuDialog.setLayout(new FlowLayout());
                 leftMenuDialog.add(leftMenu);
                 JButton closeButton = new JButton("Close");
@@ -39,11 +47,39 @@ public class SubscriberMainPage extends JPanel {
                         leftMenuDialog.dispose();
                     }
                 });
+                leftMenuDialog.setLocationRelativeTo(SubscriberMainPage.this);
                 leftMenuDialog.setVisible(true);
             }
         };
         navbar.getLeftMenu().addActionListener(openLeftMenu);
 
+        //Creation du menu droit
+        String[] tabFonctions2 = {"Modifier mes données personnelles", "Modifier mes cartes bancaires", "Commander une carte abonné", "Arreter mon abonnement", "Se deconnecter"};
+        JList<String> rightMenu = new JList<String>(tabFonctions2);
+        rightMenu.setPreferredSize(new Dimension(7*DIALOG_WIDTH/8, 7*DIALOG_HEIGHT/8));
+        rightMenu.setLayoutOrientation(JList.VERTICAL);
+        ActionListener openRightMenu = new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JDialog rightMenuDialog = new JDialog(frame, "Menu gauche", true);
+                rightMenuDialog.setSize(DIALOG_WIDTH,DIALOG_HEIGHT);
+                rightMenu.setFont(new Font("serif", Font.PLAIN, 15));
+                rightMenuDialog.setLayout(new FlowLayout());
+                rightMenuDialog.add(rightMenu);
+                JButton closeButton = new JButton("Close");
+                rightMenuDialog.add(closeButton);
+                closeButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        rightMenuDialog.dispose();
+                    }
+                });
+                rightMenuDialog.setLocationRelativeTo(SubscriberMainPage.this);
+                rightMenuDialog.setVisible(true);
+            }
+        };
+        navbar.getRightMenu().addActionListener(openRightMenu);
+
+        //Apparition de la pop-up du panier
         ArrayList<String> films = new ArrayList<String>();
         films.add("Titanic");
         films.add("Transformers");
@@ -54,6 +90,8 @@ public class SubscriberMainPage extends JPanel {
                 b.setVisible(true);
             }
         });
+
+
 
         /*ActionListener openNewPanel = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -72,13 +110,12 @@ public class SubscriberMainPage extends JPanel {
         filmsSections.add(new FilmSection(new ArrayList<String>(),"Top 10 du mois", false));
         filmsSections.add(new FilmSection(new ArrayList<String>(),"Blu-ray disponibles", true));
         filmsSections.add(new FilmSection(new ArrayList<String>(),"Par catégorie", true));
-        filmsSections.add(new FilmSection(new ArrayList<String>(),"Par réalisateur", true));
-        filmsSections.add(new FilmSection(new ArrayList<String>(),"Par acteurs", true));
+        filmsSections.add(new FilmSection(new ArrayList<String>(),"Tous les films", true));
         FilmsSectionsPane filmsSectionsPane = new FilmsSectionsPane(filmsSections);
 
 
         //-------- BARRE DES BOUTONS EN BAS DE PAGE --------
-        BottomBar bottomBar = new BottomBar();
+        bottomBar = new BottomBar();
         
         //Ajout de tous les éléments à la fenêtre
         this.add(navbar, BorderLayout.NORTH);
@@ -86,4 +123,11 @@ public class SubscriberMainPage extends JPanel {
         this.add(bottomBar, BorderLayout.SOUTH);
     }
 
+    public SubscriberNavbar getNavbar() {
+        return navbar;
+    }
+
+    public BottomBar getBottomBar(){
+        return bottomBar;
+    }
 }
