@@ -42,6 +42,7 @@ public class BlueRayDao extends Dao<BlueRay> {
 				film.setName(filmName);
 				film.setDuration(filmDuration);
 				film.setDescription(filmDescription);
+				film.setPath(resultSet.getString("image_path"));
 
 				BlueRay blueRay = new BlueRay();
 				blueRay.setId(blueRayId);

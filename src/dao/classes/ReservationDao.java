@@ -45,6 +45,7 @@ public class ReservationDao extends Dao<Reservation>{
                     film.setName(resultSet.getString("name"));
                     film.setDuration(resultSet.getInt("duration"));
                     film.setDescription(resultSet.getString("description"));
+                    film.setPath(resultSet.getString("image_path"));
 
                     reservation.setFilm(film);
                     reservation.setStartReservationDate(resultSet.getDate("reservation_start_date"));
@@ -145,8 +146,8 @@ public class ReservationDao extends Dao<Reservation>{
                 String randomToken = UUID.randomUUID().toString().replace("-", "").substring(0, 12);
                 String randomLink = baseLink + randomToken;
 
-                String insertQrCodeQuery = "INSERT INTO QRCode (id_account, id_film, reservation_start_date, link) " +
-                        "VALUES (?, ?, CURRENT_DATE, ?)";
+                String insertQrCodeQuery = "INSERT INTO QRCodeHistory (id_account, id_film, reservation_start_date, expiration_date, link) " +
+                        "VALUES (?, ?, CURRENT_DATE, CURRENT_DATE + INTERVAL '12' HOUR, ?)";
 
                 try (PreparedStatement insertQrCodeStatement = connection.prepareStatement(insertQrCodeQuery)) {
                     insertQrCodeStatement.setLong(1, account.getId());
