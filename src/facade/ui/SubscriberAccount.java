@@ -17,11 +17,11 @@ public class SubscriberAccount extends Account{
         super();
     }
 
-    public Boolean receiveBonusForRentingTwentyFilm(){
+    public boolean receiveBonusForRentingTwentyFilm(){
         return false;
     }
-    public Boolean blockUserCardForNegativeBalance(){return false;}
-    public Boolean addCardToSubscriber(String cardNumber){
+    public boolean blockUserCardForNegativeBalance(){return false;}
+    public boolean addCardToSubscriber(String cardNumber){
         return false;
     }
     public void setSubscriptionCard(SubscriptionCard subscriptionCard){

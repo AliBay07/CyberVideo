@@ -18,6 +18,7 @@ import dao.classes.AccountDao;
 import dao.classes.BlueRayDao;
 import dao.classes.FilmDao;
 import dao.classes.ReservationDao;
+import dao.tools.DaoFactory;
 
 public class FacadeBd {
     private FilmDao filmDao;
@@ -26,10 +27,10 @@ public class FacadeBd {
     private ReservationDao reservationDao;
 
     public FacadeBd(Connection connection) {
-        filmDao = new FilmDao(connection);
-        accountDao = new AccountDao(connection);
-        blueRayDao = new BlueRayDao(connection);
-        reservationDao = new ReservationDao(connection);
+        filmDao = DaoFactory.getFilmDao();
+        accountDao = DaoFactory.getAccountDao();
+        blueRayDao = DaoFactory.getBlueRayDao();
+        reservationDao = DaoFactory.getReservationsDao();
     }
     
     // FilmDao
