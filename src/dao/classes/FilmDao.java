@@ -35,7 +35,7 @@ public class FilmDao extends Dao<Film> {
 				try (ResultSet resultSet = statementAccount.executeQuery()) {
 					if (resultSet.next()) {
 						if (resultSet.getString("is_subscriber").equals("N")) {
-							query = "SELECT f.id, f.name, f.duration, f.description, " +
+							query = "SELECT f.id, f.name, f.duration, f.image_path, f.description, " +
 									"(SELECT LISTAGG(DISTINCT a.first_name || ' ' || a.last_name, ', ') WITHIN GROUP (ORDER BY a.id) " +
 									" FROM FilmActor fa INNER JOIN Actor a ON fa.id_actor = a.id " +
 									" WHERE fa.id_film = f.id) AS actors, " +
@@ -49,7 +49,7 @@ public class FilmDao extends Dao<Film> {
 									"FROM Film f";
 						} else {
 							is_subscriber = true;
-							query = "SELECT f.id, f.name, f.duration, f.description, " +
+							query = "SELECT f.id, f.name, f.duration, f.image_path, f.description, " +
 									"(SELECT LISTAGG(DISTINCT a.first_name || ' ' || a.last_name, ', ') WITHIN GROUP (ORDER BY a.id) " +
 									" FROM FilmActor fa INNER JOIN Actor a ON fa.id_actor = a.id " +
 									" WHERE fa.id_film = f.id) AS actors, " +
@@ -91,7 +91,8 @@ public class FilmDao extends Dao<Film> {
 				film.setName(resultSet.getString("name"));
 				film.setDuration(resultSet.getInt("duration"));
 				film.setDescription(resultSet.getString("description"));
-
+				film.setPath(resultSet.getString("image_path"));
+				
 				String actorNames = resultSet.getString("actors");
 				if (actorNames != null) {
 					String[] actorNameArray = actorNames.split(",");
@@ -158,7 +159,7 @@ public class FilmDao extends Dao<Film> {
 				try (ResultSet resultSet = statementAccount.executeQuery()) {
 					if (resultSet.next()) {
 						if (resultSet.getString("is_subscriber").equals("N")) {
-							query = "SELECT f.id, f.name, f.duration, f.description, " +
+							query = "SELECT f.id, f.name, f.duration, f.image_path, f.description, " +
 									"tm.number_reservations, " +
 									"(SELECT LISTAGG(DISTINCT a.first_name || ' ' || a.last_name, ', ') WITHIN GROUP (ORDER BY a.id) " +
 									" FROM FilmActor fa INNER JOIN Actor a ON fa.id_actor = a.id " +
@@ -174,7 +175,7 @@ public class FilmDao extends Dao<Film> {
 									"ORDER BY tm.number_reservations DESC";
 						} else {
 							is_subscriber = true;
-							query = "SELECT f.id, f.name, f.duration, f.description, " +
+							query = "SELECT f.id, f.name, f.duration, f.image_path, f.description, " +
 									"tm.number_reservations, " +
 									"(SELECT LISTAGG(DISTINCT a.first_name || ' ' || a.last_name, ', ') WITHIN GROUP (ORDER BY a.id) " +
 									" FROM FilmActor fa INNER JOIN Actor a ON fa.id_actor = a.id " +
@@ -221,6 +222,7 @@ public class FilmDao extends Dao<Film> {
 				film.setName(resultSet.getString("name"));
 				film.setDuration(resultSet.getInt("duration"));
 				film.setDescription(resultSet.getString("description"));
+				film.setPath(resultSet.getString("image_path"));
 
 				String actorNames = resultSet.getString("actors");
 				if (actorNames != null) {
@@ -291,7 +293,7 @@ public class FilmDao extends Dao<Film> {
 				try (ResultSet resultSet = statementAccount.executeQuery()) {
 					if (resultSet.next()) {
 						if (resultSet.getString("is_subscriber").equals("N")) {
-							query = "SELECT f.id, f.name, f.duration, f.description, " +
+							query = "SELECT f.id, f.name, f.duration, f.image_path, f.description, " +
 									"tw.number_reservations, " +
 									"(SELECT LISTAGG(DISTINCT a.first_name || ' ' || a.last_name, ', ') WITHIN GROUP (ORDER BY a.id) " +
 									" FROM FilmActor fa INNER JOIN Actor a ON fa.id_actor = a.id " +
@@ -307,7 +309,7 @@ public class FilmDao extends Dao<Film> {
 									"ORDER BY tw.number_reservations DESC";
 						} else {
 							is_subscriber = true;
-							query = "SELECT f.id, f.name, f.duration, f.description, " +
+							query = "SELECT f.id, f.name, f.duration, f.image_path, f.description, " +
 									"tw.number_reservations, " +
 									"(SELECT LISTAGG(DISTINCT a.first_name || ' ' || a.last_name, ', ') WITHIN GROUP (ORDER BY a.id) " +
 									"FROM FilmActor fa INNER JOIN Actor a ON fa.id_actor = a.id " +
@@ -353,6 +355,7 @@ public class FilmDao extends Dao<Film> {
 				film.setName(resultSet.getString("name"));
 				film.setDuration(resultSet.getInt("duration"));
 				film.setDescription(resultSet.getString("description"));
+				film.setPath(resultSet.getString("image_path"));
 
 				String actorNames = resultSet.getString("actors");
 				if (actorNames != null) {
@@ -423,7 +426,7 @@ public class FilmDao extends Dao<Film> {
 				try (ResultSet resultSet = statementAccount.executeQuery()) {
 					if (resultSet.next()) {
 						if (resultSet.getString("is_subscriber").equals("N")) {
-							query = "SELECT f.id, f.name, f.duration, f.description, " +
+							query = "SELECT f.id, f.name, f.duration, f.image_path, f.description, " +
 									"(SELECT LISTAGG(DISTINCT a.first_name || ' ' || a.last_name, ', ') WITHIN GROUP (ORDER BY a.id) " +
 									" FROM FilmActor fa INNER JOIN Actor a ON fa.id_actor = a.id " +
 									" WHERE fa.id_film = f.id) AS actors, " +
@@ -437,7 +440,7 @@ public class FilmDao extends Dao<Film> {
 									"WHERE f.name = ?";
 						} else {
 							is_subscriber = true;
-							query = "SELECT f.id, f.name, f.duration, f.description, " +
+							query = "SELECT f.id, f.name, f.duration, f.image_path, f.description, " +
 									"(SELECT LISTAGG(DISTINCT a.first_name || ' ' || a.last_name, ', ') WITHIN GROUP (ORDER BY a.id) " +
 									"FROM FilmActor fa INNER JOIN Actor a ON fa.id_actor = a.id " +
 									"WHERE fa.id_film = f.id) AS actors, " +
@@ -480,6 +483,7 @@ public class FilmDao extends Dao<Film> {
 					film.setName(resultSet.getString("name"));
 					film.setDuration(resultSet.getInt("duration"));
 					film.setDescription(resultSet.getString("description"));
+					film.setPath(resultSet.getString("image_path"));
 
 					String actorNames = resultSet.getString("actors");
 					if (actorNames != null) {
@@ -549,7 +553,7 @@ public class FilmDao extends Dao<Film> {
 				try (ResultSet resultSet = statementAccount.executeQuery()) {
 					if (resultSet.next()) {
 						if (resultSet.getString("is_subscriber").equals("N")) {
-							queryBuilder.append("SELECT f.id, f.name, f.duration, f.description, " +
+							queryBuilder.append("SELECT f.id, f.name, f.duration, f.image_path, f.description, " +
 									"(SELECT LISTAGG(DISTINCT a.first_name || ' ' || a.last_name, ', ') WITHIN GROUP (ORDER BY a.id) " +
 									" FROM FilmActor fa INNER JOIN Actor a ON fa.id_actor = a.id " +
 									" WHERE fa.id_film = f.id) AS actors, " +
@@ -563,7 +567,7 @@ public class FilmDao extends Dao<Film> {
 									"WHERE 1=1");
 						} else {
 							is_subscriber = true;
-							queryBuilder.append("SELECT f.id, f.name, f.duration, f.description, " +
+							queryBuilder.append("SELECT f.id, f.name, f.duration, f.image_path, f.description, " +
 								    "(SELECT LISTAGG(DISTINCT a.first_name || ' ' || a.last_name, ', ') WITHIN GROUP (ORDER BY a.id) " +
 								    "FROM FilmActor fa INNER JOIN Actor a ON fa.id_actor = a.id " +
 								    "WHERE fa.id_film = f.id) AS actors, " +
@@ -622,6 +626,7 @@ public class FilmDao extends Dao<Film> {
 					film.setName(resultSet.getString("name"));
 					film.setDuration(resultSet.getInt("duration"));
 					film.setDescription(resultSet.getString("description"));
+					film.setPath(resultSet.getString("image_path"));
 
 					String actorNames = resultSet.getString("actors");
 					if (actorNames != null) {

@@ -490,9 +490,6 @@ public class AccountDao extends Dao<Account> {
 								String insertQuery = "INSERT INTO AccountFilterCategory (id_account, id_category) VALUES (?, ?)";
 								try (PreparedStatement statement = connection.prepareStatement(insertQuery)) {
 									for (Category category : categories) {
-										System.out.println(account.getId());
-										System.out.println(category.getId());
-										System.out.println();
 										statement.setLong(1, account.getId());
 										statement.setLong(2, category.getId());
 										statement.addBatch();

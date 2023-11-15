@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Film {
-
+	
+	private long id;
 	private String name;
 	private String description;
 	private int duration;
-	private long id;
+	private String path;
 	private List<Author> authors = new ArrayList<Author>();
 	private List<Actor> actors = new ArrayList<Actor>();
 	private List<Category> categories = new ArrayList<Category>();
@@ -114,5 +115,13 @@ public class Film {
 	    }
 
 	    return sb.toString() + "\n";
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
 	}
 }
