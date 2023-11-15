@@ -26,7 +26,7 @@ public class FacadeBd {
     private BlueRayDao blueRayDao;
     private ReservationDao reservationDao;
 
-    public FacadeBd(Connection connection) {
+    public FacadeBd() {
         filmDao = DaoFactory.getFilmDao();
         accountDao = DaoFactory.getAccountDao();
         blueRayDao = DaoFactory.getBlueRayDao();
