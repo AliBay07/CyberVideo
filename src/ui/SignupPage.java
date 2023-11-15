@@ -1,15 +1,16 @@
 package ui;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class SignupPage extends JFrame implements ActionListener {
+public class SignupPage extends JPanel implements ActionListener {
 
     public static final String PANEL_BASIC_INFO = "basic_info";
     public static final String PANEL_CARD_INFO = "card_info";
+
+    private final JFrame frame;
 
     private String pageTitle = "Signup";
     private JPanel contentPanel;
@@ -19,12 +20,10 @@ public class SignupPage extends JFrame implements ActionListener {
     private SignupBasicInfoPane basicInfoPane;
     private SignupCardInfoPane cardInfoPane;
 
-    public SignupPage(int w, int h) {
-        super(SignupPage.class.getSimpleName());
+    public SignupPage(JFrame frame) {
+        super();
+        this.frame = frame;
         this.setLayout(new BorderLayout());
-        this.setSize(w, h);
-        this.setLocationRelativeTo(null);
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         initViews();
     }
 
@@ -81,20 +80,14 @@ public class SignupPage extends JFrame implements ActionListener {
     }
 
     private NavigationBar initNavigationBar() {
-        NavigationBar navbar = new NavigationBar(pageTitle);
-        JButton backBtn = new JButton("<--");
-        JButton helpBtn = new JButton("Aide");
-
-        backBtn.addActionListener(new ActionListener() {
+        BackNavigationBar navbar = new BackNavigationBar(pageTitle);
+        navbar.getLeftBtn().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // se termine
-                SignupPage.this.dispose();
+                dispose();
             }
         });
-
-        navbar.setLeftComponent(backBtn);
-        navbar.setRightComponent(helpBtn);
         return navbar;
     }
 
@@ -117,7 +110,7 @@ public class SignupPage extends JFrame implements ActionListener {
         }else
         if(cmd.equals(SignupCardInfoPane.ACT_CANCEL)){
             // plus tard
-            SignupPage.this.dispose();
+            dispose();
         }else
         if(cmd.equals(SignupCardInfoPane.ACT_SUBSCRIBE)){
             // demande une carte abonnee
@@ -125,8 +118,19 @@ public class SignupPage extends JFrame implements ActionListener {
         }
     }
 
+    private void dispose() {
+        SignupPage.this.setVisible(false);
+        frame.remove(SignupPage.this);
+    }
+
     public static void main(String[] args) {
-        new SignupPage(SysAL2000.SCREEN_WIDTH, SysAL2000.SCREEN_HEIGHT).setVisible(true);
+        JFrame frame = new JFrame(SignupPage.class.getSimpleName());
+        frame.add(new SignupPage(frame));
+        frame.setSize(1280, 960);
+        frame.setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setVisible(true);
+//        SysAL2000.getInstance().showSignupPage();
     }
 
 }

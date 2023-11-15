@@ -6,9 +6,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class LoginPage extends JFrame {
+public class LoginPage extends JPanel {
 
-    public static final int DEF_TF_SIZE = 25;
+    public static final int DEF_TF_SIZE = 18;
+    public static final int ITEM_PADDING = 15;
+    private static final int FONT_SIZE = 19;
+
+    private final JFrame frame;
 
     private JTextField idTF;
     private JTextField pwdTF;
@@ -21,22 +25,25 @@ public class LoginPage extends JFrame {
             if(e.getSource()==loginBtn){
                 // login
                 if(login()){
-                    LoginPage.this.dispose();
+                    dispose();
                 }
             }else
             if(e.getSource()==signupBtn){
                 // signup
-                SysAL2000.showSignupPage();
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        SysAL2000.getInstance().showSignupPage();
+                    }
+                });
             }
         }
     };
 
-    public LoginPage(int w, int h) {
-        super(LoginPage.class.getSimpleName());
+    public LoginPage(JFrame frame) {
+        super();
+        this.frame = frame;
         this.setLayout(new BorderLayout());
-        this.setSize(w, h);
-        this.setLocationRelativeTo(null);
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         initViews();
     }
 
@@ -69,6 +76,11 @@ public class LoginPage extends JFrame {
         JLabel sepLabel = new JLabel("----------------------");
         signupBtn = new JButton("Signup");
 
+        Font font = loginBtn.getFont();
+        font = new Font(font.getName(), font.getStyle(), FONT_SIZE);
+        loginBtn.setFont(font);
+        signupBtn.setFont(font);
+
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
@@ -98,47 +110,68 @@ public class LoginPage extends JFrame {
     }
 
     private NavigationBar initNavigationBar() {
-        NavigationBar navbar = new NavigationBar("Login");
-        JButton backBtn = new JButton("<--");
-        JButton helpBtn = new JButton("Aide");
-
-        backBtn.addActionListener(new ActionListener() {
+        BackNavigationBar navbar = new BackNavigationBar("Login");
+        navbar.getLeftBtn().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // se termine
-                LoginPage.this.dispose();
+                dispose();
             }
         });
-
-        navbar.setLeftComponent(backBtn);
-        navbar.setRightComponent(helpBtn);
         return navbar;
     }
 
     private JTextField addInputTextView(JPanel container, String label, String tips, int size) {
+        Font font = null;
+        // label
         JLabel jlabel = new JLabel(label);
-        jlabel.setHorizontalAlignment(SwingConstants.LEADING);
-        jlabel.setBorder(new EmptyBorder(8, 0, 3, 0)); // padding entre component
+        jlabel.setBorder(new EmptyBorder(ITEM_PADDING, 0, 5, 0)); // padding entre component
+        font = jlabel.getFont();
+        jlabel.setFont(new Font(font.getName(), font.getStyle(), FONT_SIZE));
+
+        // text filed
         JTextField jtextField = new JTextField(size);
         jtextField.setToolTipText(tips);
+        font = jtextField.getFont();
+        jtextField.setFont(new Font(font.getName(), font.getStyle(), FONT_SIZE));
+
         container.add(jlabel);
         container.add(jtextField);
         return jtextField;
     }
 
     private JTextField addInputPasswordView(JPanel container, String label, String tips, int size) {
+        Font font = null;
+        // label
         JLabel jlabel = new JLabel(label);
         jlabel.setHorizontalAlignment(SwingConstants.LEADING);
-        jlabel.setBorder(new EmptyBorder(8, 0, 3, 0)); // padding entre component
+        jlabel.setBorder(new EmptyBorder(ITEM_PADDING, 0, 5, 0)); // padding entre component
+        font = jlabel.getFont();
+        jlabel.setFont(new Font(font.getName(), font.getStyle(), FONT_SIZE));
+
+        // text filed
         JTextField jtextField = new JPasswordField(size);
         jtextField.setToolTipText(tips);
+        font = jtextField.getFont();
+        jtextField.setFont(new Font(font.getName(), font.getStyle(), FONT_SIZE));
+
         container.add(jlabel);
         container.add(jtextField);
         return jtextField;
     }
 
+    private void dispose() {
+        LoginPage.this.setVisible(false);
+        frame.remove(LoginPage.this);
+    }
+
     public static void main(String[] args) {
-        new LoginPage(SysAL2000.SCREEN_WIDTH, SysAL2000.SCREEN_HEIGHT).setVisible(true);
+        JFrame frame = new JFrame(LoginPage.class.getSimpleName());
+        frame.add(new LoginPage(frame));
+        frame.setSize(1280, 960);
+        frame.setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setVisible(true);
     }
 
 }

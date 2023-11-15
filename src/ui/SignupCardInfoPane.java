@@ -8,7 +8,9 @@ import java.awt.event.ActionListener;
 
 public class SignupCardInfoPane extends JPanel {
 
-    public static final int DEF_TF_SIZE = 20;
+    public static final int DEF_TF_SIZE = 30;
+    public static final int ITEM_PADDING = 15;
+    private static final int FONT_SIZE = 19;
 
     public static final String FORMAT_NO_CARD = "#### #### #### ####";  // 16 chiffres
     public static final String FORMAT_DATE_EXP = "##/##";  // MM/YY
@@ -29,28 +31,41 @@ public class SignupCardInfoPane extends JPanel {
 
     public SignupCardInfoPane() {
         super(new GridBagLayout());
-        JPanel inputPanel = new JPanel();
-        BoxLayout boxLayout = new BoxLayout(inputPanel, BoxLayout.Y_AXIS);
-        inputPanel.setBorder(new EmptyBorder(5, 10, 5, 10));
-        inputPanel.setLayout(boxLayout);
-        noCardTF = addFormattedInputTextView(inputPanel, "No. de carte", "16 nombres de card", DEF_TF_SIZE, FORMAT_NO_CARD);
-        dateExpTF = addFormattedInputTextView(inputPanel, "Date exiprée", "", DEF_TF_SIZE/2, FORMAT_DATE_EXP);
-        codeSecTF = addFormattedInputTextView(inputPanel, "Code de sécurité", "", DEF_TF_SIZE/2, FORMAT_CODE_SEC);
 
-        JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 5));
+        // input text
+        JPanel inputPanel = new JPanel();
+        inputPanel.setLayout(new GridBagLayout());
+        inputPanel.setBorder(new EmptyBorder(5, 10, 5, 10));
+        noCardTF = addFormattedInputTextView(inputPanel, "No. de carte", "16 nombres de card", DEF_TF_SIZE/2, FORMAT_NO_CARD, 0, 0);
+        dateExpTF = addFormattedInputTextView(inputPanel, "Date exiprée", "", 6, FORMAT_DATE_EXP, 0, 2);
+        codeSecTF = addFormattedInputTextView(inputPanel, "Code de sécurité", "", 4, FORMAT_CODE_SEC, 0, 4);
+
+        // control button
+        JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 50, 10));
         confirmBtn = new JButton("Ajouter");
         confirmBtn.setActionCommand(ACT_ADD_CARD);
-        confirmBtn.setMargin(new Insets(5, 10, 5, 10));
         cancelBtn = new JButton("Plus tard");
         cancelBtn.setActionCommand(ACT_CANCEL);
-        cancelBtn.setMargin(new Insets(5, 10, 5, 10));
         controlPanel.add(confirmBtn);
         controlPanel.add(cancelBtn);
 
+        // subscribe button
         subscribeBtn = new JButton("<html>Demande<br>carte abonnée</html>");
         subscribeBtn.setHorizontalTextPosition(SwingConstants.CENTER);
         subscribeBtn.setActionCommand(ACT_SUBSCRIBE);
 
+        // size et font
+        confirmBtn.setMargin(new Insets(8, 12, 8, 12));
+        cancelBtn.setMargin(new Insets(8, 12, 8, 12));
+        subscribeBtn.setMargin(new Insets(8, 12, 8, 12));
+
+        Font font = confirmBtn.getFont();
+        font = new Font(font.getName(), font.getStyle(), FONT_SIZE);
+        confirmBtn.setFont(font);
+        cancelBtn.setFont(font);
+        subscribeBtn.setFont(font);
+
+        // position
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
@@ -61,24 +76,25 @@ public class SignupCardInfoPane extends JPanel {
         this.add(new JLabel(SignupCardInfoPane.class.getSimpleName()), c);
 
         c.gridy = 1;
-        c.gridwidth = 1;
-        c.gridheight = 3;
+        c.gridwidth = 2;
+        c.gridheight = 6;
         //c.insets = new Insets(15, 10, 15, 10);
         this.add(inputPanel, c);
 
         c.gridx = 0;
-        c.gridy = 4;
+        c.gridy = 8;
         c.gridwidth = 5;
         c.gridheight = 1;
         c.insets = new Insets(5, 10, 5, 10);
         this.add(controlPanel, c);
 
-        c.gridx = 3;
-        c.gridy = 3;
-        c.gridwidth = 2;
+        c.gridx = 4;
+        c.gridy = 6;
+        c.gridwidth = 1;
         c.gridheight = 1;
         c.ipadx = 5;
         c.ipady = 0;
+        c.insets = new Insets(0, 50, 0, 10);
         this.add(subscribeBtn, c);
     }
 
@@ -100,14 +116,29 @@ public class SignupCardInfoPane extends JPanel {
         return codeSecTF.getText().trim();
     }
 
-    private JFormattedTextField addFormattedInputTextView(JPanel container, String label, String tips, int size, String format) {
+    private JFormattedTextField addFormattedInputTextView(JPanel container, String label, String tips, int size, String format, int gridX, int gridY) {
+        Font font = null;
+        // label
         JLabel jlabel = new JLabel(label);
-        jlabel.setBorder(new EmptyBorder(8, 0, 3, 0)); // padding entre component
+        jlabel.setBorder(new EmptyBorder(ITEM_PADDING, 0, 5, 0)); // padding entre component
+        font = jlabel.getFont();
+        jlabel.setFont(new Font(font.getName(), font.getStyle(), FONT_SIZE));
+        // text filed
         JFormattedTextField jtextField = new JFormattedTextField(createFormatter(format));
-        jtextField.setToolTipText(tips);
         jtextField.setColumns(size);
-        container.add(jlabel);
-        container.add(jtextField);
+        jtextField.setToolTipText(tips);
+        font = jtextField.getFont();
+        jtextField.setFont(new Font(font.getName(), font.getStyle(), FONT_SIZE));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = gridX;
+        gbc.gridy = gridY;
+        gbc.ipady = 5;
+        gbc.weightx = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+        container.add(jlabel, gbc);
+        gbc.gridy = gridY+1;
+        container.add(jtextField, gbc);
         return jtextField;
     }
 
@@ -126,7 +157,7 @@ public class SignupCardInfoPane extends JPanel {
         JFrame frame = new JFrame();
         frame.add(new SignupCardInfoPane());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(500, 400);
+        frame.setSize(1280, 960);
         frame.setVisible(true);
     }
 

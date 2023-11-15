@@ -16,7 +16,7 @@ public class NavigationBar extends JPanel {
     public NavigationBar() {
         this.setLayout(new BorderLayout());
         this.setBackground(Color.WHITE);
-        this.setBorder(new EmptyBorder(3, 5, 3 ,5));
+        this.setBorder(new EmptyBorder(8, 10, 8 ,10));
         titleLabel = new JLabel();
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         this.add(titleLabel, BorderLayout.CENTER);

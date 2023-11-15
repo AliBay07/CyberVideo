@@ -7,7 +7,9 @@ import java.awt.event.ActionListener;
 
 public class SignupBasicInfoPane extends JPanel {
 
-    public static final int DEF_TF_SIZE = 25;
+    public static final int DEF_TF_SIZE = 22;
+    public static final int ITEM_PADDING = 15;
+    private static final int FONT_SIZE = 19;
 
     public static final String PREFIX = SignupBasicInfoPane.class.getSimpleName();
     public static final String ACT_CONFIRM = PREFIX+"_confirm";
@@ -20,18 +22,22 @@ public class SignupBasicInfoPane extends JPanel {
 
     public SignupBasicInfoPane() {
         super(new GridBagLayout());
-
+        // input text
         JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
         inputPanel.setBorder(new EmptyBorder(5, 10, 5, 10));
         firstnameTF = addInputTextView(inputPanel, "Nom", "", DEF_TF_SIZE);
         lastnameTF = addInputTextView(inputPanel, "Prénom", "", DEF_TF_SIZE);
         mailTF = addInputTextView(inputPanel, "Email", "Entrez votre email", DEF_TF_SIZE);
-        pwdTF = addInputTextView(inputPanel, "Mot de pass", "Entrez le mot de pass", DEF_TF_SIZE);
+        pwdTF = addInputPasswordView(inputPanel, "Mot de pass", "Entrez le mot de pass", DEF_TF_SIZE);
 
+        // button
         confirmBtn = new JButton("Valider");
+        Font font = confirmBtn.getFont();
+        confirmBtn.setFont(new Font(font.getName(), font.getStyle(), FONT_SIZE));
         confirmBtn.setActionCommand(ACT_CONFIRM);
 
+        // position
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 0;
         c.gridy = 0;
@@ -47,7 +53,7 @@ public class SignupBasicInfoPane extends JPanel {
 
         c.gridy = 2;
         c.ipady = 10;
-        c.insets = new Insets(5, 10, 5, 10);
+        c.insets = new Insets(8, 12, 8, 12);
         this.add(confirmBtn, c);
     }
 
@@ -72,10 +78,39 @@ public class SignupBasicInfoPane extends JPanel {
     }
 
     private JTextField addInputTextView(JPanel container, String label, String tips, int size) {
+        Font font = null;
+        // label
         JLabel jlabel = new JLabel(label);
-        jlabel.setBorder(new EmptyBorder(8, 0, 3, 0)); // padding entre component
+        jlabel.setBorder(new EmptyBorder(ITEM_PADDING, 0, 5, 0)); // padding entre component
+        font = jlabel.getFont();
+        jlabel.setFont(new Font(font.getName(), font.getStyle(), FONT_SIZE));
+
+        // text filed
         JTextField jtextField = new JTextField(size);
         jtextField.setToolTipText(tips);
+        font = jtextField.getFont();
+        jtextField.setFont(new Font(font.getName(), font.getStyle(), FONT_SIZE));
+
+        container.add(jlabel);
+        container.add(jtextField);
+        return jtextField;
+    }
+
+    private JTextField addInputPasswordView(JPanel container, String label, String tips, int size) {
+        Font font = null;
+        // label
+        JLabel jlabel = new JLabel(label);
+        jlabel.setHorizontalAlignment(SwingConstants.LEADING);
+        jlabel.setBorder(new EmptyBorder(ITEM_PADDING, 0, 5, 0)); // padding entre component
+        font = jlabel.getFont();
+        jlabel.setFont(new Font(font.getName(), font.getStyle(), FONT_SIZE));
+
+        // text filed
+        JTextField jtextField = new JPasswordField(size);
+        jtextField.setToolTipText(tips);
+        font = jtextField.getFont();
+        jtextField.setFont(new Font(font.getName(), font.getStyle(), FONT_SIZE));
+
         container.add(jlabel);
         container.add(jtextField);
         return jtextField;
@@ -85,7 +120,9 @@ public class SignupBasicInfoPane extends JPanel {
         JFrame frame = new JFrame();
         frame.add(new SignupBasicInfoPane());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(500, 400);
+        frame.setSize(1280, 960);
+        frame.setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setVisible(true);
     }
 
