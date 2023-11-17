@@ -9,9 +9,11 @@ public class SubscriberNavbar extends JPanel {
     private JLabel currentMoney;
     private JButton basket;
     private JButton rightMenu;
+    public static Dimension dimension = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+    public static int FRAME_WIDTH = (int) dimension.getWidth();
 
     public SubscriberNavbar(int nbLocations, int money){
-        this.setPreferredSize(new Dimension(1280,40)); //Mettre une constante pour avoir la taille de la fenetre ?
+        this.setPreferredSize(new Dimension(FRAME_WIDTH,40)); //Mettre une constante pour avoir la taille de la fenetre ?
         this.setLayout(new FlowLayout(FlowLayout.CENTER, 60, 0));
         leftMenu = new JButton("trois barres");
         currentLocations = new JLabel(nbLocations + " locations en cours",JLabel.CENTER); //Avoir le nombre de location avec la BD

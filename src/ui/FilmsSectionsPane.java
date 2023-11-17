@@ -2,6 +2,7 @@ package ui;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.util.ArrayList;
 
 public class FilmsSectionsPane extends JPanel {
@@ -10,6 +11,8 @@ public class FilmsSectionsPane extends JPanel {
     private JPanel showListsSectionsInterior;
     private ArrayList<FilmSection> filmsSections;
     private JScrollPane sectionsScrollPane;
+    public static Dimension dimension = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+    public static int FRAME_WIDTH = (int) dimension.getWidth();
 
     public FilmsSectionsPane(ArrayList<FilmSection> sections) {
         filmsSections = sections;
@@ -17,9 +20,20 @@ public class FilmsSectionsPane extends JPanel {
 
         //Panel avec éléments pour lancer une recherche spécifique
         researchElements = new JPanel();
-        researchElements.setPreferredSize(new Dimension(1280, 80)); //Mettre des constantes aussi !
+        researchElements.setPreferredSize(new Dimension(FRAME_WIDTH, 80)); //Mettre des constantes aussi !
         researchElements.setLayout(new FlowLayout(FlowLayout.CENTER, 70, this.getHeight()/6));
         JButton advancedResearch = new JButton("Recherche avancée");
+        advancedResearch.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                AdvancedResearchPopUp popUp = new AdvancedResearchPopUp();
+                //!!!! Catgories qui vont être récupérées depuis la facade !
+                String[] availableCategories = new String[10];
+                for(int i=0; i<10; i++){
+                    availableCategories[i] = "Categorie " + i;
+                }
+                popUp.showPopUp(availableCategories);
+            }
+        });
         JPanel researchByText = new JPanel(new FlowLayout(FlowLayout.LEADING, 10, 30));
         JTextField researchBar = new JTextField("Rechercher un film", 30);
         ImageIcon researchIcon = new ImageIcon("");
