@@ -17,8 +17,6 @@ public class BlueRayDao extends Dao<BlueRay> {
 		super(connection);
 	}
 	
-	// returns all available bluerays, available and not
-	// make sure to update the available bit when you rent or return a blueray
 	public List<BlueRay> getAllAvailableBlueRays() {
 		List<BlueRay> blueRays = new ArrayList<>();
 
@@ -59,52 +57,6 @@ public class BlueRayDao extends Dao<BlueRay> {
 		return blueRays;
 	}
 
-//	public boolean incrementBlueRayQuantity(BlueRay blueRay) {
-//		String query = "UPDATE BlueRay SET available_quantity = available_quantity + 1 WHERE id = ?";
-//		try (PreparedStatement statement = connection.prepareStatement(query)) {
-//			statement.setLong(1, blueRay.getId());
-//			int updatedRows = statement.executeUpdate();
-//			if (updatedRows > 0) {
-//				connection.commit();
-//				blueRay.setAvailableQuantity(blueRay.getAvailableQuantity() + 1);
-//				return true;
-//			}
-//			connection.rollback();
-//		} catch (SQLException e) {
-//			try {
-//				connection.rollback();
-//			} catch (SQLException e1) {
-//				e1.printStackTrace();
-//			}
-//			e.printStackTrace();
-//			return false;
-//		}
-//		return false;
-//	}
-//
-//	public boolean decrementBlueRayQuantity(BlueRay blueRay) {
-//		String query = "UPDATE BlueRay SET available_quantity = available_quantity - 1 WHERE id = ?";
-//		try (PreparedStatement statement = connection.prepareStatement(query)) {
-//			statement.setLong(1, blueRay.getId());
-//			int updatedRows = statement.executeUpdate();
-//			if (updatedRows > 0) {
-//				connection.commit();
-//				blueRay.setAvailableQuantity(blueRay.getAvailableQuantity() - 1);
-//				return true;
-//			}
-//			connection.rollback();
-//		} catch (SQLException e) {
-//			try {
-//				connection.rollback();
-//			} catch (SQLException e1) {
-//				e1.printStackTrace();
-//			}
-//			e.printStackTrace();
-//			return false;
-//		}
-//		return false;
-//	}
-
 	public boolean reportLostBlueRayDisc(Account account, BlueRay blueRay) {
 	    if (account != null && blueRay != null) {
 	        try {
@@ -131,7 +83,5 @@ public class BlueRayDao extends Dao<BlueRay> {
 	    }
 	    return false;
 	}
-
-	
 }
 
