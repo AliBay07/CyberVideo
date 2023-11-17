@@ -4,16 +4,8 @@ public class BlueRay {
 	
 	private long id;
 	private Film film;
-	private int availableQuantity;
-
-	public int getAvailableQuantity() {
-		return availableQuantity;
-	}
-
-	public void setAvailableQuantity(int availableQuantity) {
-		this.availableQuantity = availableQuantity;
-	}
-
+	private long available;
+	
 	public Film getFilm() {
 		return film;
 	}
@@ -32,7 +24,15 @@ public class BlueRay {
 	
 	@Override
 	public String toString() {
-		return "Id : " + this.getId() + "\n" + this.getFilm() + "\nAvailable Quantity : " + this.getAvailableQuantity();
+		return "Id : " + this.getId() + "\n" + this.getFilm();
+	}
+
+	public long getAvailable() {
+		return available;
+	}
+
+	public void setAvailable(long available) {
+		this.available = available;
 	}
 
 }

@@ -26,7 +26,6 @@ public class FilmDaoTest {
 		try {
 			session.open();
 			filmDao = new FilmDao(session.get());
-			filmDao.insertMockData();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -35,14 +34,11 @@ public class FilmDaoTest {
 	@AfterClass
 	public static void tearDown() {
 		try {
-			filmDao.removeMockData();
-		} finally {
-			try {
-				session.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			session.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
+
 	}
 
 

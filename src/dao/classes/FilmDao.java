@@ -23,7 +23,8 @@ public class FilmDao extends Dao<Film> {
 	public FilmDao(Connection connection) {
 		super(connection);
 	}
-
+	
+	// account == null <> normal subscriber behavior
 	public List<Film> getAllFilms(Account account) {
 
 		boolean is_subscriber = false;
@@ -147,7 +148,8 @@ public class FilmDao extends Dao<Film> {
 
 		return films;
 	}
-
+	
+	// account == null <> normal subscriber behavior
 	public List<List<Object>> getTopFilmsMonth(Account account) {
 
 		boolean is_subscriber = false;
@@ -281,7 +283,8 @@ public class FilmDao extends Dao<Film> {
 
 		return topFilms;
 	}
-
+	
+	// account == null <> normal subscriber behavior
 	public List<List<Object>> getTopFilmsWeek(Account account) {
 
 		boolean is_subscriber = false;
@@ -541,7 +544,7 @@ public class FilmDao extends Dao<Film> {
 		return null;
 	}
 
-
+	// Map<String, List<String>>
 	public List<Film> searchFilmByCriteria(Account account, Map<String, String> filters) {
 
 		boolean is_subscriber = false;
@@ -682,168 +685,5 @@ public class FilmDao extends Dao<Film> {
 		}
 
 		return films;
-	}
-
-	// For testing, adding mock data
-
-	public void insertMockData() {
-		try {
-			connection.setAutoCommit(false);
-
-			String insertFilmQuery = "INSERT INTO Film (name, duration, description) VALUES (?, ?, ?)";
-			String insertFilmCategoryQuery = "INSERT INTO FilmCategory (id_film, id_category) VALUES (?, ?)";
-			String insertActorQuery = "INSERT INTO Actor (first_name, last_name) VALUES (?, ?)";
-			String insertFilmActorQuery = "INSERT INTO FilmActor (id_film, id_actor) VALUES (?, ?)";
-			String insertAuthorQuery = "INSERT INTO Author (first_name, last_name) VALUES (?, ?)";
-			String insertFilmAuthorQuery = "INSERT INTO FilmAuthor (id_film, id_author) VALUES (?, ?)";
-			String insertTopFilmsMonthQuery = "INSERT INTO TopFilmsMonth (id_film, number_reservations) VALUES (?, ?)";
-			String insertTopFilmsWeekQuery = "INSERT INTO TopFilmsWeek (id_film, number_reservations) VALUES (?, ?)";
-			String insertCategoryQuery = "INSERT INTO Category (category_name) VALUES (?)";
-			String insertFilmCategoryFilter= "INSERT INTO AccountFilterCategory (id_account, id_category) VALUES (?, ?)";
-
-			for (int i = 1; i <= 10; i++) {
-				long filmId;
-				try (PreparedStatement insertFilmStatement = connection.prepareStatement(insertFilmQuery, new String[] {"ID"})) {
-					insertFilmStatement.setString(1, "Film " + i);
-					insertFilmStatement.setInt(2, 120);
-					insertFilmStatement.setString(3, "Description for Film " + i);
-					int rowsInserted = insertFilmStatement.executeUpdate();
-
-					if (rowsInserted > 0) {
-						try (ResultSet generatedKeys = insertFilmStatement.getGeneratedKeys()) {
-							if (generatedKeys.next()) {
-								filmId = generatedKeys.getLong(1);
-							} else {
-								throw new SQLException("Creating Film failed, no ID obtained.");
-							}
-						}
-					} else {
-						throw new SQLException("Creating Film failed, no rows affected.");
-					}
-				}
-
-				for (int j = 1; j <= 3; j++) {
-					long actorId;
-					try (PreparedStatement insertActorStatement = connection.prepareStatement(insertActorQuery, new String[] {"ID"})) {
-						insertActorStatement.setString(1, "Actor" + j);
-						insertActorStatement.setString(2, "Lastname" + j);
-						int rowsInserted = insertActorStatement.executeUpdate();
-
-						if (rowsInserted > 0) {
-							try (ResultSet generatedKeys = insertActorStatement.getGeneratedKeys()) {
-								if (generatedKeys.next()) {
-									actorId = generatedKeys.getLong(1);
-								} else {
-									throw new SQLException("Creating Actor failed, no ID obtained.");
-								}
-							}
-						} else {
-							throw new SQLException("Creating Actor failed, no rows affected.");
-						}
-					}
-
-					try (PreparedStatement insertFilmActorStatement = connection.prepareStatement(insertFilmActorQuery)) {
-						insertFilmActorStatement.setLong(1, filmId);
-						insertFilmActorStatement.setLong(2, actorId);
-						insertFilmActorStatement.executeUpdate();
-					}
-				}
-
-				for (int j = 1; j <= 2; j++) {
-					long authorId;
-					try (PreparedStatement insertAuthorStatement = connection.prepareStatement(insertAuthorQuery, new String[] {"ID"})) {
-						insertAuthorStatement.setString(1, "Author" + j);
-						insertAuthorStatement.setString(2, "Lastname" + j);
-						int rowsInserted = insertAuthorStatement.executeUpdate();
-
-						if (rowsInserted > 0) {
-							try (ResultSet generatedKeys = insertAuthorStatement.getGeneratedKeys()) {
-								if (generatedKeys.next()) {
-									authorId = generatedKeys.getLong(1);
-								} else {
-									throw new SQLException("Creating Author failed, no ID obtained.");
-								}
-							}
-						} else {
-							throw new SQLException("Creating Author failed, no rows affected.");
-						}
-					}
-
-					try (PreparedStatement insertFilmAuthorStatement = connection.prepareStatement(insertFilmAuthorQuery)) {
-						insertFilmAuthorStatement.setLong(1, filmId);
-						insertFilmAuthorStatement.setLong(2, authorId);
-						insertFilmAuthorStatement.executeUpdate();
-					}
-				} 
-
-				try (PreparedStatement insertTopFilmsMonthStatement = connection.prepareStatement(insertTopFilmsMonthQuery)) {
-					insertTopFilmsMonthStatement.setLong(1, filmId);
-					insertTopFilmsMonthStatement.setInt(2, (int) (Math.random() * 100));
-					insertTopFilmsMonthStatement.executeUpdate();
-				}
-
-				try (PreparedStatement insertTopFilmsWeekStatement = connection.prepareStatement(insertTopFilmsWeekQuery)) {
-					insertTopFilmsWeekStatement.setLong(1, filmId);
-					insertTopFilmsWeekStatement.setInt(2, (int) (Math.random() * 100));
-					insertTopFilmsWeekStatement.executeUpdate();
-				}
-				long categoryId = 0;
-				for (int j = 1; j <= 3; j++) {
-
-					try (PreparedStatement insertCategoryStatement = connection.prepareStatement(insertCategoryQuery, new String[] {"ID"})) {
-						insertCategoryStatement.setString(1, "Category " + j);
-						int rowsInserted = insertCategoryStatement.executeUpdate();
-
-						if (rowsInserted > 0) {
-							try (ResultSet generatedKeys = insertCategoryStatement.getGeneratedKeys()) {
-								if (generatedKeys.next()) {
-									categoryId = generatedKeys.getLong(1);
-								} else {
-									throw new SQLException("Creating Category failed, no ID obtained.");
-								}
-							}
-						} else {
-							throw new SQLException("Creating Category failed, no rows affected.");
-						}
-					}
-
-					try (PreparedStatement insertFilmCategoryStatement = connection.prepareStatement(insertFilmCategoryQuery)) {
-						insertFilmCategoryStatement.setLong(1, filmId);
-						insertFilmCategoryStatement.setLong(2, categoryId);
-						insertFilmCategoryStatement.executeUpdate();
-					}
-				}
-
-				if (Math.random() > 0.75) {
-					try (PreparedStatement insertFilmCategoryFilterStatement = connection.prepareStatement(insertFilmCategoryFilter)) {
-						insertFilmCategoryFilterStatement.setLong(1, 100);
-						insertFilmCategoryFilterStatement.setLong(2, categoryId);
-						insertFilmCategoryFilterStatement.executeUpdate();
-					}
-				}
-			}
-
-		} catch (SQLException e) {
-			try {
-				connection.rollback();
-			} catch (SQLException rollbackException) {
-				rollbackException.printStackTrace();
-			}
-			e.printStackTrace();
-		}
-	}
-
-	public void removeMockData() {
-		try {
-			connection.rollback();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				connection.setAutoCommit(true);
-			} catch (SQLException autoCommitException) {
-				autoCommitException.printStackTrace();
-			}
-		}
 	}
 }

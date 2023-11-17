@@ -126,6 +126,10 @@ public class ReservationDao extends Dao<Reservation>{
                     }
                     connection.rollback();
                 }
+                
+                
+                
+                // make available column to 0 
             } catch (SQLException e) {
                 try {
                     connection.rollback();
@@ -223,6 +227,7 @@ public class ReservationDao extends Dao<Reservation>{
                 }
                 connection.rollback();
             }
+            
         } catch (SQLException e) {
             e.printStackTrace();
         }

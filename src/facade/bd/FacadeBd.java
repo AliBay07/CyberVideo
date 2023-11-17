@@ -124,13 +124,13 @@ public class FacadeBd {
         return blueRayDao.getAllAvailableBlueRays();
     }
 
-    public boolean incrementBlueRayQuantity(BlueRay blueRay) {
-        return blueRayDao.incrementBlueRayQuantity(blueRay);
-    }
-
-    public boolean decrementBlueRayQuantity(BlueRay blueRay) {
-        return blueRayDao.decrementBlueRayQuantity(blueRay);
-    }
+//    public boolean incrementBlueRayQuantity(BlueRay blueRay) {
+//        return blueRayDao.incrementBlueRayQuantity(blueRay);
+//    }
+//
+//    public boolean decrementBlueRayQuantity(BlueRay blueRay) {
+//        return blueRayDao.decrementBlueRayQuantity(blueRay);
+//    }
 
     public boolean reportLostBlueRayDisc(Account account, BlueRay blueRay) {
         return blueRayDao.reportLostBlueRayDisc(account, blueRay);
