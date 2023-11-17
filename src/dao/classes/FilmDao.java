@@ -148,7 +148,6 @@ public class FilmDao extends Dao<Film> {
 		return films;
 	}
 
-	// account == null <> normal subscriber behavior
 	public List<List<Object>> getTopFilmsMonth(Account account) {
 
 		boolean is_subscriber = false;
@@ -283,7 +282,6 @@ public class FilmDao extends Dao<Film> {
 		return topFilms;
 	}
 
-	// account == null <> normal subscriber behavior
 	public List<List<Object>> getTopFilmsWeek(Account account) {
 
 		boolean is_subscriber = false;
