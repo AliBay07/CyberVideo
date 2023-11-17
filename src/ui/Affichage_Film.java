@@ -8,7 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 class Affichage_Film {
-    public JPanel afficher_film(Film film, SubscriberAccount account, JFrame frame) {
+    public JPanel afficher_film(Film film, Account account, JFrame frame) {
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setSize(800, 600);
         Payment payement = new Payment();

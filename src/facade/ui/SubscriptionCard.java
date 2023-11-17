@@ -47,10 +47,14 @@ public class SubscriptionCard {
     }
 
     // Méthode pour définir le solde de la carte
-    public Boolean setCardBalance(double balance) {
+    public Boolean setCardBalance(float balance) {
+
+        this.balance = balance;
         // Implémentez la logique pour définir le solde de la carte
         // Ici, vous pouvez définir la valeur de "balance" en fonction de "balance" passé en argument.
         // Par exemple : this.balance = (float) balance;
+
+
         return true; // Indique que la modification du solde a été effectuée avec succès.
     }
 }
