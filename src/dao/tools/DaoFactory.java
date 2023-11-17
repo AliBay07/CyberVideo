@@ -1,23 +1,45 @@
 package dao.tools;
 
+import java.sql.SQLException;
+
 import dao.classes.*;
 
 public class DaoFactory {
 
 	public static FilmDao getFilmDao() {
-		return new FilmDao(DatabaseConnection.getConnection());
+		try {
+			return new FilmDao(DatabaseConnection.getConnection());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	public static BlueRayDao getBlueRayDao() {
-		return new BlueRayDao(DatabaseConnection.getConnection());
+		try {
+			return new BlueRayDao(DatabaseConnection.getConnection());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	public static AccountDao getAccountDao() {
-		return new AccountDao(DatabaseConnection.getConnection());
+		try {
+			return new AccountDao(DatabaseConnection.getConnection());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	public static ReservationDao getReservationsDao() {
-		return new ReservationDao(DatabaseConnection.getConnection());
+		try {
+			return new ReservationDao(DatabaseConnection.getConnection());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }
