@@ -24,7 +24,11 @@ public class SubscriberAccount extends Account{
     public boolean addCardToSubscriber(String cardNumber){
         return false;
     }
-    public void setSubscriptionCard(SubscriptionCard subscriptionCard){
+    public void setSubscriptionCard(ArrayList<SubscriptionCard> subscriptionCard){
+        this.subscriptionCard = subscriptionCard;
+    }
+
+    public void addSubscriptionCard(SubscriptionCard subscriptionCard){
         this.subscriptionCard.add(subscriptionCard);
     }
     public ArrayList<SubscriptionCard> getSubscriptionCard(){
