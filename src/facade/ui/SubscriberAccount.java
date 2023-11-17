@@ -8,9 +8,9 @@ public class SubscriberAccount extends Account{
     private int maximumRentalPerWeek;
     private ArrayList<SubscriptionCard> subscriptionCard;
 
-    public SubscriberAccount(Long id, String password, User user, ArrayList<CreditCard> creditCard) {
+    public SubscriberAccount(Long id, String password, User user, ArrayList<CreditCard> creditCard,ArrayList<SubscriptionCard> subscriptionCard) {
         super(id, password, user, creditCard);
-        subscriptionCard = new ArrayList<>();
+        this.subscriptionCard = subscriptionCard;
     }
 
     public SubscriberAccount(){

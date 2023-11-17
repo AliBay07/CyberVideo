@@ -1,71 +1,111 @@
 package ui;
 
-import facade.ui.Account;
-import facade.ui.CreditCard;
 import facade.ui.SubscriberAccount;
 import facade.ui.SubscriptionCard;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
+import java.util.ArrayList;
+
+// ... (autres imports)
 
 public class CreditSubscriberCard {
+    private JRadioButton selectedRadioButton = null;
+    private SubscriptionCard selectedSubscriptionCard = null;
 
-    public static JPanel displaySubscriberCards(JFrame jFrame,Account account) {
+    public JPanel displaySubscriberCards(JFrame jFrame, SubscriberAccount account) {
         // Panel principal avec BoxLayout
-        JPanel subscriberCardsPanel = new JPanel();
-        subscriberCardsPanel.setLayout(new BoxLayout(subscriberCardsPanel, BoxLayout.Y_AXIS));
+        JDialog dialog = new JDialog(jFrame, "Cartes d'Abonnement", true);
+        dialog.setSize(500, 400);
+        dialog.setLocationRelativeTo(null);
 
-        // Liste de cartes abonnées (ici, nous supposons que vous avez une liste d'objets SubscriptionCard)
-        if (account instanceof SubscriberAccount) {
-            List<SubscriptionCard> subscriptionCards = ((SubscriberAccount) account).getSubscriptionCard();
+        // Panel principal avec GridBagLayout
+        JPanel mainPanel = new JPanel(new GridBagLayout());
+        dialog.getContentPane().add(mainPanel);
 
-            for (SubscriptionCard subscriptionCard : subscriptionCards) {
-                JPanel cardItemPanel = new JPanel();
-                cardItemPanel.setLayout(new BoxLayout(cardItemPanel, BoxLayout.X_AXIS));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.insets = new Insets(10, 10, 10, 10);
 
-                // Zone pour l'ID et le solde de la carte abonnée
-                JLabel cardInfoLabel = new JLabel("ID: " + subscriptionCard.getId() + ", Solde: " + subscriptionCard.getBalance());
-                cardItemPanel.add(cardInfoLabel);
+        // Texte en haut
+        JLabel labelTexte = new JLabel("Sélectionnez une carte d'abonnement :");
+        mainPanel.add(labelTexte, gbc);
 
-                // Bouton pour afficher les cartes de crédit
-                JButton showCreditCardsButton = new JButton("Voir les cartes de crédit");
-                cardItemPanel.add(showCreditCardsButton);
+        // Panel pour les cartes d'abonnement
+        JPanel subscriptionCardPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
-                // Ajouter cardItemPanel à subscriberCardsPanel
-                subscriberCardsPanel.add(cardItemPanel);
+        // ButtonGroup pour les cartes d'abonnement
+        ButtonGroup subscriptionCardGroup = new ButtonGroup();
 
-                List<CreditCard> creditCards = account.getCreditCard();
+        // Radio bouton pour la carte d'abonnement
+        JRadioButton subscriptionCardRadioButton = null;
 
-                // Ajouter un ActionListener au bouton pour afficher le dialogue des cartes de crédit
-                showCreditCardsButton.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        // Appeler une fonction pour afficher le dialogue des cartes de crédit
-                        JDialog creditCardsDialog = new JDialog(jFrame, "Paiement", true);
-                        creditCardsDialog.setTitle("Liste des cartes de crédit");
-                        creditCardsDialog.setSize(400, 300);
-                        creditCardsDialog.setLocationRelativeTo(null);
+        ArrayList<SubscriptionCard> subscriptionCards = account.getSubscriptionCard();
+        subscriptionCardPanel = new JPanel();
+        subscriptionCardPanel.setLayout(new BoxLayout(subscriptionCardPanel, BoxLayout.Y_AXIS));
 
-                        // Panel principal avec BoxLayout
-                        JPanel creditCardsPanel = new JPanel();
-                        creditCardsPanel.setLayout(new BoxLayout(creditCardsPanel, BoxLayout.Y_AXIS));
+        for (SubscriptionCard subscriptionCard : subscriptionCards) {
+            JPanel cardItemPanel = new JPanel();
+            cardItemPanel.setLayout(new BoxLayout(cardItemPanel, BoxLayout.X_AXIS));
 
-                        // Ajouter des JLabels pour chaque carte de crédit
-                        for (CreditCard creditCard : creditCards) {
-                            JLabel creditCardLabel = new JLabel("ID: " + creditCard.getId() + ", Banque: " + creditCard.getBank());
-                            creditCardsPanel.add(creditCardLabel);
-                        }
+            // Radio bouton pour la carte d'abonnement
+            subscriptionCardRadioButton = new JRadioButton();
+            cardItemPanel.add(subscriptionCardRadioButton);
+            subscriptionCardGroup.add(subscriptionCardRadioButton);
 
-                        creditCardsDialog.getContentPane().add(creditCardsPanel);
-                        creditCardsDialog.setVisible(true);
-                    }
-                });
-            }
+            // Informations utilisateur
+            JLabel userInfoLabel = new JLabel("ID: " + subscriptionCard.getId() + ", Solde: " + subscriptionCard.getBalance());
+            cardItemPanel.add(userInfoLabel);
+
+            // Ajouter cardItemPanel à subscriptionCardPanel
+            subscriptionCardPanel.add(cardItemPanel);
         }
 
-        return subscriberCardsPanel;
-    }
+        gbc.gridy = 1;
+        mainPanel.add(subscriptionCardPanel, gbc);
 
+        // Bouton "Sélectionner cette carte"
+        JButton selectCardButton = new JButton("Sélectionner cette carte");
+        gbc.gridy = 2;
+        mainPanel.add(selectCardButton, gbc);
+
+        if(subscriptionCardRadioButton.isSelected())
+        {
+            selectedRadioButton = subscriptionCardRadioButton;
+            //get selected card from the radio button
+            //selectedSubscriptionCard = subscriptionCards.get(subscriptionCardGroup.getButtonCount() - 1);
+        }
+
+
+        selectCardButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (selectedRadioButton.isSelected()) {
+                    //get selected card from the radio button
+                    selectedSubscriptionCard = subscriptionCards.get(subscriptionCardGroup.getButtonCount() - 1);
+                    System.out.println("Selected card: " + selectedSubscriptionCard.getId());
+
+                    // Affichez les données de la carte dans un nouveau dialogue
+                    JDialog cardInfoDialog = new JDialog(dialog, "Détails de la carte d'abonnement", true);
+                    cardInfoDialog.setSize(300, 200);
+                    cardInfoDialog.setLocationRelativeTo(dialog);
+
+                    JPanel cardInfoPanel = new JPanel(new GridLayout(3, 2));
+                    cardInfoPanel.add(new JLabel("ID:"));
+                    cardInfoPanel.add(new JLabel(String.valueOf(selectedSubscriptionCard.getId())));
+                    cardInfoPanel.add(new JLabel("Solde:"));
+                    cardInfoPanel.add(new JLabel(String.valueOf(selectedSubscriptionCard.getBalance())));
+
+                    cardInfoDialog.add(cardInfoPanel);
+                    cardInfoDialog.setVisible(true);
+                }
+            }
+        });
+
+        return subscriptionCardPanel;
+    }
 }
