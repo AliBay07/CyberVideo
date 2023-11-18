@@ -1,0 +1,63 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Machine",
+            "request": "launch",
+            "mainClass": "machine.Machine",
+            "projectName": "CyberVideo_7ea3d6e7"
+        },
+        {
+            "type": "java",
+            "name": "LoginPage",
+            "request": "launch",
+            "mainClass": "ui.LoginPage",
+            "projectName": "CyberVideo_7ea3d6e7"
+        },
+        {
+            "type": "java",
+            "name": "SignupBasicInfoPane",
+            "request": "launch",
+            "mainClass": "ui.SignupBasicInfoPane",
+            "projectName": "CyberVideo_7ea3d6e7"
+        },
+        {
+            "type": "java",
+            "name": "SignupCardInfoPane",
+            "request": "launch",
+            "mainClass": "ui.SignupCardInfoPane",
+            "projectName": "CyberVideo_7ea3d6e7"
+        },
+        {
+            "type": "java",
+            "name": "SignupPage",
+            "request": "launch",
+            "mainClass": "ui.SignupPage",
+            "projectName": "CyberVideo_7ea3d6e7"
+        },
+        {
+            "type": "java",
+            "name": "SysAL2000",
+            "request": "launch",
+            "mainClass": "ui.SysAL2000",
+            "projectName": "CyberVideo_7ea3d6e7"
+        },
+        {
+            "type": "java",
+            "name": "TestNico",
+            "request": "launch",
+            "mainClass": "ui.TestNico",
+            "projectName": "CyberVideo_7ea3d6e7"
+        }
+    ]
+}

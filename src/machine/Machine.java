@@ -49,6 +49,14 @@ public class Machine {
 		return false;	
 	}
 
+	public boolean unsubscribeFromService(Account account) {
+		Account retrievedAccount =  facadeBd.subscribeToService(account);
+		if (retrievedAccount != null) {
+			this.account = retrievedAccount;
+			return true;
+		}
+		return false;
+	}
 	public void getAllFilms() {
 		ArrayList<Film> films = (ArrayList<Film>) facadeBd.getAllFilms(account); 		 
 		for (Film film : films) {
@@ -73,5 +81,7 @@ public class Machine {
 	public void getAccountRentalHistory(Account account){
 		//TO DO we dont have a function for this in the dao
 	}
+	
+	public void  
 
 }		
