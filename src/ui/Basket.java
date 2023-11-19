@@ -6,9 +6,11 @@ import java.util.*;
 import javax.swing.*;
 
 public class Basket extends JDialog {
+    private NavigationBar navbar;
     private ArrayList<String> filmsList;
     private JPanel filmsPanel = new JPanel();
     private JPanel titresTableau = new JPanel(new BorderLayout());
+    private JButton validation;
     //Code dans mon Test.java pour dimensionner la JFrame et les JDialog
     public static Dimension dimension = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
     public static int DIALOG_WIDTH = (int) (dimension.getWidth()/3)*2;
@@ -19,6 +21,22 @@ public class Basket extends JDialog {
         filmsList = films;
     }
 
+    private void setNavbar(){
+        JButton backBtn = new JButton("<--");
+        JButton helpBtn = new JButton("Aide");
+
+        backBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // se termine
+                Basket.this.setVisible(false);
+            }
+        });
+        navbar = new NavigationBar("Panier", backBtn, helpBtn);
+        navbar.setPreferredSize(new Dimension(DIALOG_WIDTH, DIALOG_HEIGHT/8));
+        this.add(navbar);
+    }
+
     public void showTabTitles(){
         titresTableau.add(new JLabel("Numéro"), BorderLayout.WEST);
         titresTableau.add(new JLabel("Nom du film"), BorderLayout.CENTER);
@@ -27,7 +45,7 @@ public class Basket extends JDialog {
         this.add(titresTableau);
     }
 
-    public void afficheFilmDansPanier(){
+    public void showFilmsInBasket(){
         JButton bin = new JButton("Poubelle");
         ActionListener delete = new ActionListener() {
             @Override
@@ -43,7 +61,7 @@ public class Basket extends JDialog {
         bin.addActionListener(delete);
         for(int i=0; i<filmsList.size(); i++){
             JPanel filmPanel = new JPanel(new BorderLayout());
-            filmPanel.setSize(Test.DIALOG_WIDTH, Test.DIALOG_HEIGHT/5);
+            filmPanel.setSize(DIALOG_WIDTH, DIALOG_HEIGHT/5);
             filmPanel.setAlignmentX((float) 0.5);
             filmPanel.add(new JLabel(Integer.toString(i+1)), BorderLayout.WEST);
             ((JLabel) filmPanel.getComponent(0)).setHorizontalAlignment(JLabel.CENTER);
@@ -56,12 +74,25 @@ public class Basket extends JDialog {
         this.add(filmsPanel);
     }
 
+    //Crée le bouton pour valider la selection
+    private void setValidationButton() {
+        validation = new JButton("Louer");
+        this.add(validation);
+    }
+
     public void showBasket() {
         this.setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-		this.setSize(Test.DIALOG_WIDTH, Test.DIALOG_HEIGHT);
+		this.setSize(DIALOG_WIDTH, DIALOG_HEIGHT);
 		this.setLocationRelativeTo(null);
-        this.showTabTitles();
-        this.afficheFilmDansPanier();
+        this.setNavbar();
+        if(filmsList.size() == 0){
+            this.add(new JLabel("Panier vide"));
+        }
+        else {
+            this.showTabTitles();
+            this.showFilmsInBasket();
+            this.setValidationButton();
+        }
         this.setVisible(true);
     }
 }

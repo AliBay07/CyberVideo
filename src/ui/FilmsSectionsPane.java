@@ -6,6 +6,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 public class FilmsSectionsPane extends JPanel {
+    private boolean research = false; //Il faudra changer ça par des enum ou autre pour faire la transition d'états !!!
     private JPanel researchElements;
     private JPanel showListsSections;
     private JPanel showListsSectionsInterior;
@@ -19,6 +20,15 @@ public class FilmsSectionsPane extends JPanel {
         this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
 
         //Panel avec éléments pour lancer une recherche spécifique
+        this.setResearchPanel();
+
+        //Panel d'affichage des catégories proposées aux utilisateurs
+        this.setListsSectionPanel();
+        this.add(researchElements);
+        this.add(showListsSections);
+    }
+
+    private void setResearchPanel(){
         researchElements = new JPanel();
         researchElements.setPreferredSize(new Dimension(FRAME_WIDTH, 80)); //Mettre des constantes aussi !
         researchElements.setLayout(new FlowLayout(FlowLayout.CENTER, 70, this.getHeight()/6));
@@ -32,6 +42,11 @@ public class FilmsSectionsPane extends JPanel {
                     availableCategories[i] = "Categorie " + i;
                 }
                 popUp.showPopUp(availableCategories);
+                popUp.getValidationButton().addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        research = true;
+                    }
+                });
             }
         });
         JPanel researchByText = new JPanel(new FlowLayout(FlowLayout.LEADING, 10, 30));
@@ -42,8 +57,9 @@ public class FilmsSectionsPane extends JPanel {
         researchByText.add(launchResearch);
         researchElements.add(advancedResearch);
         researchElements.add(researchByText);
+    }
 
-        //Panel d'affichage des catégories proposées aux utilisateurs
+    private void setListsSectionPanel(){
         showListsSections = new JPanel(new BorderLayout());
         showListsSectionsInterior = new JPanel();
         showListsSectionsInterior.setLayout(new BoxLayout(showListsSectionsInterior, BoxLayout.Y_AXIS));
@@ -58,8 +74,10 @@ public class FilmsSectionsPane extends JPanel {
         sectionsScrollPane = new JScrollPane(showListsSectionsInterior, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,  
         ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         showListsSections.add(sectionsScrollPane, BorderLayout.CENTER);
-        this.add(researchElements);
-        this.add(showListsSections);
+    }
+
+    public boolean getValidationResearchButtonSelection(){
+        return research;
     }
 
 }

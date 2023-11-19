@@ -3,6 +3,7 @@ bin/
 .project
 *.class
 src/ui/Test.java
+src/ui/TestNico.java
 .idea/
 out/
 TP_CYBERVIDEO.iml

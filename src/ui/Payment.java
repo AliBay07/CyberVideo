@@ -323,7 +323,7 @@ public class Payment {
                     }
 
                     if (selectedCreditCard != null) {
-                        selectedCreditCard = account.getCreditCard().getFirst();
+                        selectedCreditCard = account.getCreditCard().get(0);
 
                         JPanel validateJPanel = new JPanel(new GridBagLayout());
                         GridBagConstraints gbc = new GridBagConstraints();

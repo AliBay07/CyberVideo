@@ -57,11 +57,11 @@ public class TestNico {
         User nicolas = new User("Nicolas","Guegan", date);
         CreditCard creditCard = new CreditCard(1L,"BNP");
         Account account = new NormalAccount();
-        SubscriberAccount account2 = new SubscriberAccount(1L,"password",nicolas,creditCard);
+        /*SubscriberAccount account2 = new SubscriberAccount(1L,"password",nicolas,creditCard);
 
         SubscriptionCard subscriptionCard = new SubscriptionCard(1L,1000);
         account2.setSubscriptionCard(subscriptionCard);
-        account2.setCreditCard(creditCard);
+        account2.setCreditCard(creditCard);*/
 
         //crée un JFrame qui va contenir le panel renvoyé par affichage film
         JFrame frame = new JFrame("Affichage film");

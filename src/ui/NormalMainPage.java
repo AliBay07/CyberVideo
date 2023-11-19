@@ -5,11 +5,8 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-/**
- * Classe définissant la page d'accueil d'un utilisateur abonné connecté
- */
-public class SubscriberMainPage extends JPanel {
-    private SubscriberNavbar navbar;
+public class NormalMainPage extends JPanel {
+    private NormalNavbar navbar;
     private FilmsSectionsPane filmsSectionsPane;
     private BottomBar bottomBar;
     //Code dans mon Test.java
@@ -17,14 +14,14 @@ public class SubscriberMainPage extends JPanel {
     public static int DIALOG_WIDTH = (int) (dimension.getWidth()/4);
     public static int DIALOG_HEIGHT = (int) (dimension.getHeight()*2)/3;
 
-    public SubscriberMainPage(JFrame frame){
+    public NormalMainPage(JFrame frame){
         this.setLayout(new BorderLayout());
 		this.setSize(frame.getSize());
 		this.setLocation(0,0);
 
         //-------- BARRE DE NAVIGATION --------
         //Creation de la barre de navigation
-        navbar = new SubscriberNavbar(0, 15);
+        navbar = new NormalNavbar(0);
         //Creation du menu gauche
         this.setLeftMenu(frame);
         //Creation du menu droit
@@ -80,7 +77,7 @@ public class SubscriberMainPage extends JPanel {
                         leftMenuDialog.dispose();
                     }
                 });
-                leftMenuDialog.setLocationRelativeTo(SubscriberMainPage.this);
+                leftMenuDialog.setLocationRelativeTo(NormalMainPage.this);
                 leftMenuDialog.setVisible(true);
             }
         };
@@ -107,14 +104,14 @@ public class SubscriberMainPage extends JPanel {
                         rightMenuDialog.dispose();
                     }
                 });
-                rightMenuDialog.setLocationRelativeTo(SubscriberMainPage.this);
+                rightMenuDialog.setLocationRelativeTo(NormalMainPage.this);
                 rightMenuDialog.setVisible(true);
             }
         };
         navbar.getRightMenu().addActionListener(openRightMenu);
     }
 
-    public SubscriberNavbar getNavbar() {
+    public NormalNavbar getNavbar() {
         return navbar;
     }
 
@@ -125,4 +122,5 @@ public class SubscriberMainPage extends JPanel {
     public FilmsSectionsPane getFilmsSectionsPane(){
         return filmsSectionsPane;
     }
+    
 }

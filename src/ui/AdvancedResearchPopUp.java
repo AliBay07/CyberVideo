@@ -2,7 +2,6 @@ package ui;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.util.*;
 import javax.swing.*;
 
 public class AdvancedResearchPopUp extends JDialog {
@@ -15,6 +14,9 @@ public class AdvancedResearchPopUp extends JDialog {
     private JPanel autorsChoice;
     private JPanel actorsChoice;
     private JButton validation;
+    public static Dimension dimension = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+    public static int DIALOG_WIDTH = (int) (dimension.getWidth()/3)*2;
+    public static int DIALOG_HEIGHT = (int) (dimension.getHeight()/3)*2;
 
     public AdvancedResearchPopUp(){
         //Initialisation des attributs de la pop-up
@@ -28,9 +30,9 @@ public class AdvancedResearchPopUp extends JDialog {
         categoriesChoice.setLayout(gl);
         autorsChoice.setLayout(gl);
         actorsChoice.setLayout(gl);
-        categoriesChoice.setPreferredSize(new Dimension(Test.DIALOG_WIDTH, Test.DIALOG_HEIGHT/5));
-        autorsChoice.setPreferredSize(new Dimension(Test.DIALOG_WIDTH, Test.DIALOG_HEIGHT/5));
-        actorsChoice.setPreferredSize(new Dimension(Test.DIALOG_WIDTH, Test.DIALOG_HEIGHT/5));
+        categoriesChoice.setPreferredSize(new Dimension(DIALOG_WIDTH, DIALOG_HEIGHT/5));
+        autorsChoice.setPreferredSize(new Dimension(DIALOG_WIDTH, DIALOG_HEIGHT/5));
+        actorsChoice.setPreferredSize(new Dimension(DIALOG_WIDTH, DIALOG_HEIGHT/5));
     }
 
     //Crée la navbar de la pop-uo
@@ -46,6 +48,7 @@ public class AdvancedResearchPopUp extends JDialog {
             }
         });
         navbar = new NavigationBar("Recherche avancée", backBtn, helpBtn);
+        navbar.setPreferredSize(new Dimension(DIALOG_WIDTH, DIALOG_HEIGHT/8));
         this.add(navbar);
     }
 
@@ -62,7 +65,7 @@ public class AdvancedResearchPopUp extends JDialog {
         JList<String> chosenCategories = new JList<String>(categories);
         chosenCategories.setVisibleRowCount(1);
         chosenCategories.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-        chosenCategories.setBackground(getForeground());
+        chosenCategories.setBackground(Color.LIGHT_GRAY);
         JButton deleteSelection = new JButton("Supprimer");
         if(categories.size() == 0)
             deleteSelection.setEnabled(false);
@@ -91,7 +94,7 @@ public class AdvancedResearchPopUp extends JDialog {
         JList<String> chosenAutors = new JList<String>(autors);
         chosenAutors.setVisibleRowCount(1);
         chosenAutors.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-        chosenAutors.setBackground(getForeground());
+        chosenAutors.setBackground(Color.LIGHT_GRAY);
         JButton deleteSelection = new JButton("Supprimer");
         if(autors.size() == 0)
             deleteSelection.setEnabled(false);
@@ -119,7 +122,7 @@ public class AdvancedResearchPopUp extends JDialog {
         JList<String> chosenActors = new JList<String>(actors);
         chosenActors.setVisibleRowCount(1);
         chosenActors.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-        chosenActors.setBackground(getForeground());
+        chosenActors.setBackground(Color.LIGHT_GRAY);
         JButton deleteSelection = new JButton("Supprimer");
         if(autors.size() == 0)
             deleteSelection.setEnabled(false);
@@ -211,5 +214,9 @@ public class AdvancedResearchPopUp extends JDialog {
             }
         };
         return a;
+    }
+
+    public JButton getValidationButton(){
+        return validation;
     }
 }
