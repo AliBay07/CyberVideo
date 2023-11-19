@@ -7,10 +7,12 @@ public class InitialNavbar extends JPanel {
     private JButton leftMenu;
     private JLabel mainPageName;
     private JButton signIn;
+    public static Dimension dimension = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+    public static int FRAME_WIDTH = (int) dimension.getWidth();
 
     public InitialNavbar(){
         this.setLayout(new BorderLayout());
-        this.setPreferredSize(new Dimension(1280,40)); //Mettre une constante pour avoir la taille de la fenetre ?
+        this.setPreferredSize(new Dimension(FRAME_WIDTH,40)); //Mettre une constante pour avoir la taille de la fenetre ?
         leftMenu = new JButton("trois barres");
         mainPageName = new JLabel("Cybervideo");
         mainPageName.setHorizontalAlignment(SwingConstants.CENTER);

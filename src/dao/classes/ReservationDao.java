@@ -60,6 +60,47 @@ public class ReservationDao extends Dao<Reservation>{
         return reservations;
     }
     
+    public ArrayList<Reservation> getCurrentQrCodeByAccount(Account account) {
+    		
+    	return null;
+//        ArrayList<Reservation> reservations = new ArrayList<>();
+//
+//        if (account != null) {
+//            String query = "SELECT r.id AS reservation_id, r.id_blueray, r.reservation_start_date, " +
+//                           "f.id AS film_id, f.name, f.duration, f.description " +
+//                           "FROM CurrentReservations r " +
+//                           "INNER JOIN BlueRay b ON r.id_blueray = b.id " +
+//                           "INNER JOIN Film f ON b.id_film = f.id " +
+//                           "WHERE r.id_account = ?";
+//
+//            try (PreparedStatement statement = connection.prepareStatement(query)) {
+//                statement.setLong(1, account.getId());
+//                ResultSet resultSet = statement.executeQuery();
+//
+//                while (resultSet.next()) {
+//                	CurrentReservation reservation = new CurrentReservation();
+//                    reservation.setAccount(account);
+//
+//                    Film film = new Film();
+//                    film.setId(resultSet.getLong("film_id"));
+//                    film.setName(resultSet.getString("name"));
+//                    film.setDuration(resultSet.getInt("duration"));
+//                    film.setDescription(resultSet.getString("description"));
+//                    film.setPath(resultSet.getString("image_path"));
+//
+//                    reservation.setFilm(film);
+//                    reservation.setStartReservationDate(resultSet.getDate("reservation_start_date"));
+//
+//                    reservations.add(reservation);
+//                }
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//        return reservations;
+    }
+    
     public boolean ReserveBlueRay(Account account, BlueRay blueRay) {
     	
         if (account != null && blueRay != null) {
@@ -120,16 +161,26 @@ public class ReservationDao extends Dao<Reservation>{
 
                     int updatedRows = insertReservationStatement.executeUpdate();
 
-                    if (updatedRows > 0) {
+                    if (updatedRows <= 0) {
+                    	connection.rollback();
+                        return false;
+                    }
+                }
+                
+                String updateQuery = "UPDATE BlueRay SET available = 0 WHERE id = ?";
+                
+                try (PreparedStatement updateStatement = connection.prepareStatement(updateQuery)) {
+                	updateStatement.setLong(1, blueRay.getId());
+                	
+                	int updatedRows = updateStatement.executeUpdate();
+                	
+                	if (updatedRows > 0) {
                         connection.commit();
                         return true;
                     }
                     connection.rollback();
                 }
                 
-                
-                
-                // make available column to 0 
             } catch (SQLException e) {
                 try {
                     connection.rollback();
@@ -213,7 +264,7 @@ public class ReservationDao extends Dao<Reservation>{
 
         return false;
     }
-    
+        
     public boolean removeCurrentReservation(BlueRay blueRay) {
         try {
             String deleteQuery = "DELETE FROM CurrentReservations WHERE id_blueray = ?";
@@ -221,7 +272,19 @@ public class ReservationDao extends Dao<Reservation>{
                 deleteStatement.setLong(1, blueRay.getId());
                 int rowsDeleted = deleteStatement.executeUpdate();
 
-                if (rowsDeleted > 0) {
+                if (rowsDeleted <= 0) {
+                    return false;
+                }
+            }
+            
+            String updateQuery = "UPDATE BlueRay SET available = 1 WHERE id = ?";
+            
+            try (PreparedStatement updateStatement = connection.prepareStatement(updateQuery)) {
+            	updateStatement.setLong(1, blueRay.getId());
+            	
+            	int updatedRows = updateStatement.executeUpdate();
+            	
+            	if (updatedRows > 0) {
                     connection.commit();
                     return true;
                 }

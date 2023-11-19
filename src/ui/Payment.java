@@ -6,14 +6,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 public class Payment {
+    private JRadioButton selectedRadioButton = null;
     public void afficherPaiement(Account account, JFrame jFrame, Film film) {
         if (account instanceof SubscriberAccount) {
             JDialog dialog = new JDialog(jFrame, "Paiement", true);
-            dialog.setSize(400, 300);
+            dialog.setSize(500, 400);
             dialog.setLocationRelativeTo(null);
 
             // Panel principal avec GridBagLayout
@@ -37,23 +40,37 @@ public class Payment {
             ButtonGroup creditCardGroup = new ButtonGroup();
 
             // Radio bouton pour la carte de crédit
-            JRadioButton creditCardRadioButton = new JRadioButton();
-            creditCardPanel.add(creditCardRadioButton);
-            creditCardGroup.add(creditCardRadioButton);
+            JRadioButton creditCardRadioButton = null;
 
-            // Récupérer la première carte de crédit (ou la seule carte si vous en avez qu'une)
-            CreditCard creditCard = account.getCreditCard();
+            ArrayList<CreditCard> creditCard = account.getCreditCard();
+            creditCardPanel = new JPanel();
+            creditCardPanel.setLayout(new BoxLayout(creditCardPanel, BoxLayout.Y_AXIS));
 
-            // Zone pour l'icône de la carte de crédit
-            ImageIcon creditCardIcon = new ImageIcon("src/ui/Images/credit_card.png");
-            creditCardIcon = ScaleImage.scaleImageIcon(creditCardIcon, 20, 20);
-            JLabel creditCardLabel = new JLabel(creditCardIcon);
-            creditCardPanel.add(creditCardLabel);
+            for (CreditCard creditCard1 : creditCard) {
+                JPanel cardItemPanel = new JPanel();
+                cardItemPanel.setLayout(new BoxLayout(cardItemPanel, BoxLayout.X_AXIS));
 
-            // Nom et prénom du user de la carte
-            User user = account.getUser();
-            JLabel userInfoLabel = new JLabel("Nom: " + user.getLastName() + ", Prénom: " + user.getFirstName());
-            creditCardPanel.add(userInfoLabel);
+                // ImageIcon de la carte de crédit
+                ImageIcon creditCardIcon = new ImageIcon("src/ui/Images/credit_card.png");
+                creditCardIcon = ScaleImage.scaleImageIcon(creditCardIcon, 20, 20);
+                JLabel creditCardLabel = new JLabel(creditCardIcon);
+
+                // Ajouter l'icône à cardItemPanel avant les informations
+                cardItemPanel.add(creditCardLabel);
+
+                // Radio bouton pour la carte abonnée
+                creditCardRadioButton = new JRadioButton();
+                cardItemPanel.add(creditCardRadioButton);
+                creditCardGroup.add(creditCardRadioButton);
+
+                // Informations utilisateur
+                User user = account.getUser();
+                JLabel userInfoLabel = new JLabel("Nom: " + user.getLastName() + ", Prénom: " + user.getFirstName());
+                cardItemPanel.add(userInfoLabel);
+
+                // Ajouter cardItemPanel à creditCardPanel
+                creditCardPanel.add(cardItemPanel);
+            }
 
             gbc.gridy = 1;
             mainPanel.add(creditCardPanel, gbc);
@@ -68,16 +85,16 @@ public class Payment {
             subscriberCardsPanel.setLayout(new BoxLayout(subscriberCardsPanel, BoxLayout.Y_AXIS));
 
             // Liste de cartes abonnées (ici, nous supposons que vous avez une liste d'objets SubscriptionCard)
-            List<SubscriptionCard> subscriptionCards = ((SubscriberAccount) account).getSubscriptionCard();
-
+            ArrayList<SubscriptionCard> subscriptionCards = ((SubscriberAccount) account).getSubscriptionCard();
+            JRadioButton subsciptionRadioButton = null;
             for (SubscriptionCard subscriptionCard : subscriptionCards) {
                 JPanel cardItemPanel = new JPanel();
                 cardItemPanel.setLayout(new BoxLayout(cardItemPanel, BoxLayout.X_AXIS));
 
                 // Radio bouton pour la carte abonnée
-                JRadioButton cardRadioButton = new JRadioButton();
-                cardItemPanel.add(cardRadioButton);
-                creditCardGroup.add(cardRadioButton);
+                subsciptionRadioButton = new JRadioButton();
+                cardItemPanel.add(subsciptionRadioButton);
+                creditCardGroup.add(subsciptionRadioButton);
 
                 // Zone pour l'ID et le solde de la carte abonnée
                 JLabel cardInfoLabel = new JLabel("ID: " + subscriptionCard.getId() + ", Solde: " + subscriptionCard.getBalance());
@@ -92,16 +109,25 @@ public class Payment {
             // Bouton "Sélectionner cette carte"
             JButton selectCardButton = new JButton("Sélectionner cette carte");
 
-            selectCardButton.addActionListener(new ActionListener() {
+            if(creditCardRadioButton.isSelected())
+            {
+                selectedRadioButton = creditCardRadioButton;
+            }
+            else if(subsciptionRadioButton.isSelected())
+            {
+                selectedRadioButton = subsciptionRadioButton;
+            }
+
+
+            selectCardButton.addActionListener(new ActionListener(){
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     // Vérifiez d'abord si la case à cocher de la carte de crédit est sélectionnée
-                    boolean creditCardSelected = creditCardRadioButton.isSelected();
-                    CreditCard selectedCreditCard;
+                    CreditCard selectedCreditCard = null;
                     SubscriptionCard selectedSubscriptionCard;
 
-                    if (creditCardSelected) {
-                        selectedCreditCard = account.getCreditCard();
+
+                    if (selectedRadioButton != null) {
 
                         JPanel validateJPanel = new JPanel(new GridBagLayout());
                         GridBagConstraints gbc = new GridBagConstraints();
@@ -210,9 +236,11 @@ public class Payment {
 
             jFrame.setVisible(true);
             dialog.setVisible(true);
-        } else {
+        }
+        //if not a subscriberAccount
+        else {
             JDialog dialog = new JDialog(jFrame, "Paiement", true);
-            dialog.setSize(400, 300);
+            dialog.setSize(500, 400);
             dialog.setLocationRelativeTo(null);
 
             // Panel principal avec GridBagLayout
@@ -232,23 +260,43 @@ public class Payment {
             // Panel pour les cartes de crédit
             JPanel creditCardPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
-            // Checkbox pour la carte de crédit
-            JCheckBox creditCardCheckbox = new JCheckBox();
-            creditCardPanel.add(creditCardCheckbox);
+            // ButtonGroup pour les cartes de crédit
+            ButtonGroup creditCardGroup = new ButtonGroup();
 
-            // Récupérer la première carte de crédit (ou la seule carte si vous en avez qu'une)
-            CreditCard creditCard = account.getCreditCard();
+            // Radio bouton pour la carte de crédit
+            JRadioButton creditCardRadioButton = new JRadioButton();
+            creditCardPanel.add(creditCardRadioButton);
+            creditCardGroup.add(creditCardRadioButton);
 
-            // Zone pour l'icône de la carte de crédit
-            ImageIcon creditCardIcon = new ImageIcon("src/ui/Images/credit_card.png");
-            creditCardIcon = ScaleImage.scaleImageIcon(creditCardIcon, 20, 20);
-            JLabel creditCardLabel = new JLabel(creditCardIcon);
-            creditCardPanel.add(creditCardLabel);
+            ArrayList<CreditCard> creditCard = account.getCreditCard();
+            creditCardPanel = new JPanel();
+            creditCardPanel.setLayout(new BoxLayout(creditCardPanel, BoxLayout.Y_AXIS));
 
-            // Nom et prénom du user de la carte
-            User user = account.getUser();
-            JLabel userInfoLabel = new JLabel("Nom: " + user.getLastName() + ", Prénom: " + user.getFirstName());
-            creditCardPanel.add(userInfoLabel);
+            for (CreditCard creditCard1 : creditCard) {
+                JPanel cardItemPanel = new JPanel();
+                cardItemPanel.setLayout(new BoxLayout(cardItemPanel, BoxLayout.X_AXIS));
+
+                // ImageIcon de la carte de crédit
+                ImageIcon creditCardIcon = new ImageIcon("src/ui/Images/credit_card.png");
+                creditCardIcon = ScaleImage.scaleImageIcon(creditCardIcon, 20, 20);
+                JLabel creditCardLabel = new JLabel(creditCardIcon);
+
+                // Ajouter l'icône à cardItemPanel avant les informations
+                cardItemPanel.add(creditCardLabel);
+
+                // Radio bouton pour la carte abonnée
+                JRadioButton cardRadioButton = new JRadioButton();
+                cardItemPanel.add(cardRadioButton);
+                creditCardGroup.add(cardRadioButton);
+
+                // Informations utilisateur
+                User user = account.getUser();
+                JLabel userInfoLabel = new JLabel("Nom: " + user.getLastName() + ", Prénom: " + user.getFirstName());
+                cardItemPanel.add(userInfoLabel);
+
+                // Ajouter cardItemPanel à creditCardPanel
+                creditCardPanel.add(cardItemPanel);
+            }
 
             gbc.gridy = 1;
             mainPanel.add(creditCardPanel, gbc);
@@ -264,11 +312,18 @@ public class Payment {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     // Vérifiez d'abord si la case à cocher de la carte de crédit est sélectionnée
-                    boolean creditCardSelected = creditCardCheckbox.isSelected();
-                    CreditCard selectedCreditCard;
+                    CreditCard selectedCreditCard = null;
+                    SubscriptionCard selectedSubscriptionCard;
 
-                    if (creditCardSelected) {
-                        selectedCreditCard = account.getCreditCard();
+                    for (CreditCard creditCard : account.getCreditCard()) {
+                        if (creditCard.getId().equals(creditCard.getId())) {
+                            selectedCreditCard = creditCard;
+                            break;  // Sortez de la boucle dès que la carte est trouvée
+                        }
+                    }
+
+                    if (selectedCreditCard != null) {
+                        selectedCreditCard = account.getCreditCard().get(0);
 
                         JPanel validateJPanel = new JPanel(new GridBagLayout());
                         GridBagConstraints gbc = new GridBagConstraints();
@@ -301,7 +356,6 @@ public class Payment {
                                 dialog.dispose();
                             }
                         });
-
                         dialog.setTitle("Paiement effectué");
                         dialog.getContentPane().removeAll();
                         dialog.getContentPane().add(validateJPanel);

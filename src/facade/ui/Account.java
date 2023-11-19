@@ -1,13 +1,15 @@
 package facade.ui;
 
+import java.util.ArrayList;
+
 public abstract class Account {
     private Long id;
     private String password;
     private User user;
-    private CreditCard creditCard;
+    private ArrayList<CreditCard> creditCard;
 
 
-    public Account(Long id, String password, User user, CreditCard creditCard) {
+    public Account(Long id, String password, User user, ArrayList<CreditCard> creditCard) {
         this.id = id;
         this.password = password;
         this.user = user;
@@ -45,12 +47,12 @@ public abstract class Account {
     }
 
     // Getter pour la carte de crédit (creditCard)
-    public CreditCard getCreditCard() {
-        return creditCard;
+    public ArrayList<CreditCard> getCreditCard() {
+        return this.creditCard;
     }
 
     // Setter pour la carte de crédit (creditCard)
-    public void setCreditCard(CreditCard creditCard) {
+    public void setCreditCard(ArrayList<CreditCard> creditCard) {
         this.creditCard = creditCard;
     }
 

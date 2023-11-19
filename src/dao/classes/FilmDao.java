@@ -23,8 +23,7 @@ public class FilmDao extends Dao<Film> {
 	public FilmDao(Connection connection) {
 		super(connection);
 	}
-	
-	// account == null <> normal subscriber behavior
+
 	public List<Film> getAllFilms(Account account) {
 
 		boolean is_subscriber = false;
@@ -35,20 +34,7 @@ public class FilmDao extends Dao<Film> {
 				statementAccount.setString(1, account.getEmail());
 				try (ResultSet resultSet = statementAccount.executeQuery()) {
 					if (resultSet.next()) {
-						if (resultSet.getString("is_subscriber").equals("N")) {
-							query = "SELECT f.id, f.name, f.duration, f.image_path, f.description, " +
-									"(SELECT LISTAGG(DISTINCT a.first_name || ' ' || a.last_name, ', ') WITHIN GROUP (ORDER BY a.id) " +
-									" FROM FilmActor fa INNER JOIN Actor a ON fa.id_actor = a.id " +
-									" WHERE fa.id_film = f.id) AS actors, " +
-									"(SELECT LISTAGG(DISTINCT au.first_name || ' ' || au.last_name, ', ') WITHIN GROUP (ORDER BY au.id) " +
-									" FROM FilmAuthor fau INNER JOIN Author au ON fau.id_author = au.id " +
-									" WHERE fau.id_film = f.id) AS authors, " +
-									"(SELECT LISTAGG(c.id || ':' || c.category_name, ', ') WITHIN GROUP (ORDER BY c.id) " +
-									" FROM FilmCategory fc " +
-									" INNER JOIN Category c ON fc.id_category = c.id " +
-									" WHERE fc.id_film = f.id) AS categories " +
-									"FROM Film f";
-						} else {
+						if (resultSet.getString("is_subscriber").equals("Y")) {
 							is_subscriber = true;
 							query = "SELECT f.id, f.name, f.duration, f.image_path, f.description, " +
 									"(SELECT LISTAGG(DISTINCT a.first_name || ' ' || a.last_name, ', ') WITHIN GROUP (ORDER BY a.id) " +
@@ -75,8 +61,21 @@ public class FilmDao extends Dao<Film> {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-		} else {
-			return null;
+		}
+
+		if (!is_subscriber) {
+			query = "SELECT f.id, f.name, f.duration, f.image_path, f.description, " +
+					"(SELECT LISTAGG(DISTINCT a.first_name || ' ' || a.last_name, ', ') WITHIN GROUP (ORDER BY a.id) " +
+					" FROM FilmActor fa INNER JOIN Actor a ON fa.id_actor = a.id " +
+					" WHERE fa.id_film = f.id) AS actors, " +
+					"(SELECT LISTAGG(DISTINCT au.first_name || ' ' || au.last_name, ', ') WITHIN GROUP (ORDER BY au.id) " +
+					" FROM FilmAuthor fau INNER JOIN Author au ON fau.id_author = au.id " +
+					" WHERE fau.id_film = f.id) AS authors, " +
+					"(SELECT LISTAGG(c.id || ':' || c.category_name, ', ') WITHIN GROUP (ORDER BY c.id) " +
+					" FROM FilmCategory fc " +
+					" INNER JOIN Category c ON fc.id_category = c.id " +
+					" WHERE fc.id_film = f.id) AS categories " +
+					"FROM Film f";
 		}
 
 		List<Film> films = new ArrayList<>();
@@ -93,7 +92,7 @@ public class FilmDao extends Dao<Film> {
 				film.setDuration(resultSet.getInt("duration"));
 				film.setDescription(resultSet.getString("description"));
 				film.setPath(resultSet.getString("image_path"));
-				
+
 				String actorNames = resultSet.getString("actors");
 				if (actorNames != null) {
 					String[] actorNameArray = actorNames.split(",");
@@ -148,8 +147,7 @@ public class FilmDao extends Dao<Film> {
 
 		return films;
 	}
-	
-	// account == null <> normal subscriber behavior
+
 	public List<List<Object>> getTopFilmsMonth(Account account) {
 
 		boolean is_subscriber = false;
@@ -160,22 +158,7 @@ public class FilmDao extends Dao<Film> {
 				statementAccount.setString(1, account.getEmail());
 				try (ResultSet resultSet = statementAccount.executeQuery()) {
 					if (resultSet.next()) {
-						if (resultSet.getString("is_subscriber").equals("N")) {
-							query = "SELECT f.id, f.name, f.duration, f.image_path, f.description, " +
-									"tm.number_reservations, " +
-									"(SELECT LISTAGG(DISTINCT a.first_name || ' ' || a.last_name, ', ') WITHIN GROUP (ORDER BY a.id) " +
-									" FROM FilmActor fa INNER JOIN Actor a ON fa.id_actor = a.id " +
-									" WHERE fa.id_film = f.id) AS actors, " +
-									"(SELECT LISTAGG(DISTINCT au.first_name || ' ' || au.last_name, ', ') WITHIN GROUP (ORDER BY au.id) " +
-									" FROM FilmAuthor fau INNER JOIN Author au ON fau.id_author = au.id " +
-									" WHERE fau.id_film = f.id) AS authors, " +
-									"(SELECT LISTAGG(c.id || ':' || c.category_name, ', ') WITHIN GROUP (ORDER BY c.id)  " +
-									" FROM FilmCategory fc INNER JOIN Category c ON fc.id_category = c.id " +
-									" WHERE fc.id_film = f.id) AS categories " +
-									"FROM Film f " +
-									"INNER JOIN TopFilmsMonth tm ON f.id = tm.id_film " +
-									"ORDER BY tm.number_reservations DESC";
-						} else {
+						if (resultSet.getString("is_subscriber").equals("Y")) {
 							is_subscriber = true;
 							query = "SELECT f.id, f.name, f.duration, f.image_path, f.description, " +
 									"tm.number_reservations, " +
@@ -205,8 +188,23 @@ public class FilmDao extends Dao<Film> {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-		} else {
-			return null;
+		}
+
+		if (!is_subscriber) {
+			query = "SELECT f.id, f.name, f.duration, f.image_path, f.description, " +
+					"tm.number_reservations, " +
+					"(SELECT LISTAGG(DISTINCT a.first_name || ' ' || a.last_name, ', ') WITHIN GROUP (ORDER BY a.id) " +
+					" FROM FilmActor fa INNER JOIN Actor a ON fa.id_actor = a.id " +
+					" WHERE fa.id_film = f.id) AS actors, " +
+					"(SELECT LISTAGG(DISTINCT au.first_name || ' ' || au.last_name, ', ') WITHIN GROUP (ORDER BY au.id) " +
+					" FROM FilmAuthor fau INNER JOIN Author au ON fau.id_author = au.id " +
+					" WHERE fau.id_film = f.id) AS authors, " +
+					"(SELECT LISTAGG(c.id || ':' || c.category_name, ', ') WITHIN GROUP (ORDER BY c.id)  " +
+					" FROM FilmCategory fc INNER JOIN Category c ON fc.id_category = c.id " +
+					" WHERE fc.id_film = f.id) AS categories " +
+					"FROM Film f " +
+					"INNER JOIN TopFilmsMonth tm ON f.id = tm.id_film " +
+					"ORDER BY tm.number_reservations DESC";
 		}
 
 		List<List<Object>> topFilms = new ArrayList<>();
@@ -283,8 +281,7 @@ public class FilmDao extends Dao<Film> {
 
 		return topFilms;
 	}
-	
-	// account == null <> normal subscriber behavior
+
 	public List<List<Object>> getTopFilmsWeek(Account account) {
 
 		boolean is_subscriber = false;
@@ -295,22 +292,7 @@ public class FilmDao extends Dao<Film> {
 				statementAccount.setString(1, account.getEmail());
 				try (ResultSet resultSet = statementAccount.executeQuery()) {
 					if (resultSet.next()) {
-						if (resultSet.getString("is_subscriber").equals("N")) {
-							query = "SELECT f.id, f.name, f.duration, f.image_path, f.description, " +
-									"tw.number_reservations, " +
-									"(SELECT LISTAGG(DISTINCT a.first_name || ' ' || a.last_name, ', ') WITHIN GROUP (ORDER BY a.id) " +
-									" FROM FilmActor fa INNER JOIN Actor a ON fa.id_actor = a.id " +
-									" WHERE fa.id_film = f.id) AS actors, " +
-									"(SELECT LISTAGG(DISTINCT au.first_name || ' ' || au.last_name, ', ') WITHIN GROUP (ORDER BY au.id) " +
-									" FROM FilmAuthor fau INNER JOIN Author au ON fau.id_author = au.id " +
-									" WHERE fau.id_film = f.id) AS authors, " +
-									"(SELECT LISTAGG(c.id || ':' || c.category_name, ', ') WITHIN GROUP (ORDER BY c.id)  " +
-									" FROM FilmCategory fc INNER JOIN Category c ON fc.id_category = c.id " +
-									" WHERE fc.id_film = f.id) AS categories " +
-									"FROM Film f " +
-									"INNER JOIN TopFilmsWeek tw ON f.id = tw.id_film " +
-									"ORDER BY tw.number_reservations DESC";
-						} else {
+						if (resultSet.getString("is_subscriber").equals("Y")) {
 							is_subscriber = true;
 							query = "SELECT f.id, f.name, f.duration, f.image_path, f.description, " +
 									"tw.number_reservations, " +
@@ -339,8 +321,23 @@ public class FilmDao extends Dao<Film> {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-		} else {
-			return null;
+		}
+
+		if (!is_subscriber) {
+			query = "SELECT f.id, f.name, f.duration, f.image_path, f.description, " +
+					"tw.number_reservations, " +
+					"(SELECT LISTAGG(DISTINCT a.first_name || ' ' || a.last_name, ', ') WITHIN GROUP (ORDER BY a.id) " +
+					" FROM FilmActor fa INNER JOIN Actor a ON fa.id_actor = a.id " +
+					" WHERE fa.id_film = f.id) AS actors, " +
+					"(SELECT LISTAGG(DISTINCT au.first_name || ' ' || au.last_name, ', ') WITHIN GROUP (ORDER BY au.id) " +
+					" FROM FilmAuthor fau INNER JOIN Author au ON fau.id_author = au.id " +
+					" WHERE fau.id_film = f.id) AS authors, " +
+					"(SELECT LISTAGG(c.id || ':' || c.category_name, ', ') WITHIN GROUP (ORDER BY c.id)  " +
+					" FROM FilmCategory fc INNER JOIN Category c ON fc.id_category = c.id " +
+					" WHERE fc.id_film = f.id) AS categories " +
+					"FROM Film f " +
+					"INNER JOIN TopFilmsWeek tw ON f.id = tw.id_film " +
+					"ORDER BY tw.number_reservations DESC";
 		}
 
 		List<List<Object>> topFilms = new ArrayList<>();
@@ -571,23 +568,23 @@ public class FilmDao extends Dao<Film> {
 						} else {
 							is_subscriber = true;
 							queryBuilder.append("SELECT f.id, f.name, f.duration, f.image_path, f.description, " +
-								    "(SELECT LISTAGG(DISTINCT a.first_name || ' ' || a.last_name, ', ') WITHIN GROUP (ORDER BY a.id) " +
-								    "FROM FilmActor fa INNER JOIN Actor a ON fa.id_actor = a.id " +
-								    "WHERE fa.id_film = f.id) AS actors, " +
-								    "(SELECT LISTAGG(DISTINCT au.first_name || ' ' || au.last_name, ', ') WITHIN GROUP (ORDER BY au.id) " +
-								    "FROM FilmAuthor fau INNER JOIN Author au ON fau.id_author = au.id " +
-								    "WHERE fau.id_film = f.id) AS authors, " +
-								    "(SELECT LISTAGG(c.id || ':' || c.category_name, ', ') WITHIN GROUP (ORDER BY c.id) " +
-								    "FROM FilmCategory fc INNER JOIN Category c ON fc.id_category = c.id " +
-								    "WHERE fc.id_film = f.id) AS categories " +
-								    "FROM Film f " +
-								    "WHERE 1=1 AND f.id NOT IN ( " +
-								    "SELECT DISTINCT f.id " +
-								    "FROM Film f " +
-								    "INNER JOIN FilmCategory fc ON f.id = fc.id_film " +
-								    "INNER JOIN Category c ON fc.id_category = c.id " +
-								    "INNER JOIN AccountFilterCategory afc ON c.id = afc.id_category " +
-								    "WHERE afc.id_account = ?)");
+									"(SELECT LISTAGG(DISTINCT a.first_name || ' ' || a.last_name, ', ') WITHIN GROUP (ORDER BY a.id) " +
+									"FROM FilmActor fa INNER JOIN Actor a ON fa.id_actor = a.id " +
+									"WHERE fa.id_film = f.id) AS actors, " +
+									"(SELECT LISTAGG(DISTINCT au.first_name || ' ' || au.last_name, ', ') WITHIN GROUP (ORDER BY au.id) " +
+									"FROM FilmAuthor fau INNER JOIN Author au ON fau.id_author = au.id " +
+									"WHERE fau.id_film = f.id) AS authors, " +
+									"(SELECT LISTAGG(c.id || ':' || c.category_name, ', ') WITHIN GROUP (ORDER BY c.id) " +
+									"FROM FilmCategory fc INNER JOIN Category c ON fc.id_category = c.id " +
+									"WHERE fc.id_film = f.id) AS categories " +
+									"FROM Film f " +
+									"WHERE 1=1 AND f.id NOT IN ( " +
+									"SELECT DISTINCT f.id " +
+									"FROM Film f " +
+									"INNER JOIN FilmCategory fc ON f.id = fc.id_film " +
+									"INNER JOIN Category c ON fc.id_category = c.id " +
+									"INNER JOIN AccountFilterCategory afc ON c.id = afc.id_category " +
+									"WHERE afc.id_account = ?)");
 						}
 					}
 				}

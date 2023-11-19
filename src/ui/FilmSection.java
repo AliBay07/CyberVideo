@@ -13,6 +13,8 @@ public class FilmSection extends JPanel {
     private JPanel filmsPaneInterior = new JPanel();
     private JScrollPane showFilmsPane;
     private JButton showMoreFilms;
+    public static Dimension dimension = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+    public static int FRAME_WIDTH = (int) dimension.getWidth();
 
     public FilmSection(ArrayList<String> films, String titleName, boolean moreFilms){
         listFilms = films;
@@ -21,7 +23,7 @@ public class FilmSection extends JPanel {
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
         filmsPane = new JPanel(new BorderLayout());
         filmsPane.setAlignmentX(Component.CENTER_ALIGNMENT);
-        filmsPane.setPreferredSize(new Dimension(1000, 200));
+        filmsPane.setPreferredSize(new Dimension(FRAME_WIDTH, 200));
         for (int i=0; i<10; i++){ //listFilms.size()
             //Il faut récupérer les infos depuis la BDD et mettre l'affiche du film avec son nom
             JButton film = new JButton("nomFilm "+(i+1));
