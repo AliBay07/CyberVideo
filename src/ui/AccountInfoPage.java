@@ -278,7 +278,22 @@ public class AccountInfoPage extends JPanel implements ActionListener {
     }
 
     private void showBirthdayEditDialog() {
-        //@TODO à compléter
+        BirthdayEditDialog dialogBirthday = new BirthdayEditDialog(frame, "Change Birthday",
+                "", tfBirthday.getText(), "SAVE", "CANCEL");
+        dialogBirthday.setButtonClickListener(new BirthdayEditDialog.ButtonClickListener() {
+            @Override
+            public void leftBtnClicked(BirthdayEditDialog dialog) {
+                String newBirthday = dialog.getDate();
+                tfBirthday.setText(newBirthday);
+                dialog.close();
+            }
+
+            @Override
+            public void rightBtnClicked(BirthdayEditDialog dialog) {
+                dialog.close();
+            }
+        });
+        dialogBirthday.show();
     }
 
     private void showEmailEditDialog() {
