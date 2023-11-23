@@ -126,19 +126,21 @@ public class FilmDao extends Dao<Film> {
 				}
 
 				String categoryNames = resultSet.getString("categories");
-				if (!(categoryNames.replace(":", "").equals(""))) {
-					String[] categoryNameArray = categoryNames.split(",");
-					List<Category> categories = new ArrayList<>();
-					for (String categoryName : categoryNameArray) {
-						Category category = new Category();
-						String[] categoryNameIdArray = categoryName.split(":");
-						category.setId(Long.parseLong(categoryNameIdArray[0].trim()));
-						category.setCategoryName(categoryNameIdArray[1].trim());
-						categories.add(category);
+//				System.out.println(categoryNames);
+				if (categoryNames != null) {
+					if (!(categoryNames.replace(":", "").equals(""))) {
+						String[] categoryNameArray = categoryNames.split(",");
+						List<Category> categories = new ArrayList<>();
+						for (String categoryName : categoryNameArray) {
+							Category category = new Category();
+							String[] categoryNameIdArray = categoryName.split(":");
+							category.setId(Long.parseLong(categoryNameIdArray[0].trim()));
+							category.setCategoryName(categoryNameIdArray[1].trim());
+							categories.add(category);
+						}
+						film.setCategories(categories);
 					}
-					film.setCategories(categories);
 				}
-
 				films.add(film);
 			}
 		} catch (SQLException e) {

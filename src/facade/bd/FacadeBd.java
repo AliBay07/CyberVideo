@@ -21,6 +21,8 @@ import dao.classes.ReservationDao;
 import dao.tools.DaoFactory;
 
 public class FacadeBd {
+
+    private static DaoFactory daoFactory;
     private FilmDao filmDao;
     private AccountDao accountDao;
     private BlueRayDao blueRayDao;
