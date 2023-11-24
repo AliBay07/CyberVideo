@@ -21,5 +21,9 @@ public class InitialNavbar extends JPanel {
         this.add(mainPageName, BorderLayout.CENTER);
         this.add(signIn, BorderLayout.EAST);
     }
+
+    public JButton getSignInButton(){
+        return signIn;
+    }
     
 }

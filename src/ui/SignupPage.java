@@ -5,12 +5,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class SignupPage extends JPanel implements ActionListener {
+public class SignupPage extends BasePage implements ActionListener {
 
     public static final String PANEL_BASIC_INFO = "basic_info";
     public static final String PANEL_CARD_INFO = "card_info";
-
-    private final JFrame frame;
 
     private String pageTitle = "Signup";
     private JPanel contentPanel;
@@ -21,8 +19,7 @@ public class SignupPage extends JPanel implements ActionListener {
     private SignupCardInfoPane cardInfoPane;
 
     public SignupPage(JFrame frame) {
-        super();
-        this.frame = frame;
+        super(frame);
         this.setLayout(new BorderLayout());
         initViews();
     }
@@ -116,11 +113,6 @@ public class SignupPage extends JPanel implements ActionListener {
             // demande une carte abonnee
             //@TODO à compléter
         }
-    }
-
-    private void dispose() {
-        SignupPage.this.setVisible(false);
-        frame.remove(SignupPage.this);
     }
 
     public static void main(String[] args) {

@@ -6,13 +6,11 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class LoginPage extends JPanel {
+public class LoginPage extends BasePage {
 
     public static final int DEF_TF_SIZE = 18;
     public static final int ITEM_PADDING = 15;
     private static final int FONT_SIZE = 19;
-
-    private final JFrame frame;
 
     private JTextField idTF;
     private JTextField pwdTF;
@@ -24,30 +22,38 @@ public class LoginPage extends JPanel {
         public void actionPerformed(ActionEvent e) {
             if(e.getSource()==loginBtn){
                 // login
-                if(login()){
-                    dispose();
-                }
+                login();
             }else
             if(e.getSource()==signupBtn){
                 // signup
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        SysAL2000.getInstance().showSignupPage();
-                    }
-                });
+                showSignupPage();
             }
         }
     };
 
     public LoginPage(JFrame frame) {
-        super();
-        this.frame = frame;
+        super(frame);
         this.setLayout(new BorderLayout());
         initViews();
     }
 
-    private boolean login() {
+    public String getEmail() {
+        return idTF.getText().trim();
+    }
+
+    public String getPassword() {
+        return pwdTF.getText().trim();
+    }
+
+    public void showLoading(boolean isShow) {
+
+    }
+
+    public void showError() {
+
+    }
+
+    private void login() {
         String id = idTF.getText().trim();
         String pwd = pwdTF.getText().trim();
 
@@ -56,8 +62,15 @@ public class LoginPage extends JPanel {
         System.out.println("pwd: "+pwd);
 
         //@TODO à compléter
+        if(controller!=null){
+            controller.login(this);
+        }
+    }
 
-        return true;
+    private void showSignupPage() {
+        if(controller!=null){
+            controller.showSignupPage();
+        }
     }
 
     private void initViews() {
@@ -158,11 +171,6 @@ public class LoginPage extends JPanel {
         container.add(jlabel);
         container.add(jtextField);
         return jtextField;
-    }
-
-    private void dispose() {
-        LoginPage.this.setVisible(false);
-        frame.remove(LoginPage.this);
     }
 
     public static void main(String[] args) {

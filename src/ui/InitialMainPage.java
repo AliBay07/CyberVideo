@@ -10,9 +10,10 @@ import java.awt.*;
 /**
  * Classe définissant la page d'accueil initiale
  */
-public class InitialMainPage extends JPanel {
+public class InitialMainPage extends BasePage {
 
     public InitialMainPage(JFrame frame) {
+        super(frame);
         this.setLayout(new BorderLayout());
 		this.setSize(frame.getSize());
 		this.setLocation(0,0);
@@ -20,6 +21,14 @@ public class InitialMainPage extends JPanel {
         //-------- BARRE DE NAVIGATION --------
         //Creation de la barre de navigation
         InitialNavbar navbar = new InitialNavbar();
+        navbar.getSignInButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(controller!=null){
+                    controller.showLoginPage();
+                }
+            }
+        });
 
 
         //-------- PAGE PRINCIPALE D AFFICHAGE DES FILMS --------

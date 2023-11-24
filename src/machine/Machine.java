@@ -8,12 +8,10 @@ import java.util.List;
 import beans.*;
 import dao.tools.Session;
 import facade.bd.FacadeBd;
-import facade.ui.FacadeUi;
 
 public class Machine {
 
 	private static FacadeBd facadeBd = new FacadeBd();
-	private FacadeUi facadeUi = new FacadeUi();
 	private Account account;
 	public Machine(Account account) {
 		this.account = account;
