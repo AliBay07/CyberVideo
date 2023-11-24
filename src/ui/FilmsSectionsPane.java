@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class FilmsSectionsPane extends JPanel {
     private boolean research = false; //Il faudra changer ça par des enum ou autre pour faire la transition d'états !!!
@@ -78,6 +79,10 @@ public class FilmsSectionsPane extends JPanel {
 
     public boolean getValidationResearchButtonSelection(){
         return research;
+    }
+
+    public ArrayList<FilmSection> getFilmSections() {
+        return filmsSections;
     }
 
 }

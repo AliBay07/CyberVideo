@@ -1,6 +1,7 @@
 package ui;
 
-import facade.ui.*;
+import beans.*;
+import facade.ui.FacadeIHM;
 
 import javax.swing.*;
 
@@ -36,10 +37,11 @@ public class Controller {
     }
 
     public void showMainPage() {
-        InitialMainPage page = new InitialMainPage(frame);
-        page.setController(this);
+        MainPage page = new MainPage(frame, this);
+        //page.setController(this);
         showPage(page);
     }
+
 
     public void showLoginPage() {
         LoginPage page = new LoginPage(frame);
@@ -65,6 +67,10 @@ public class Controller {
 
     public FacadeIHM getFacadeIHM(){
         return facadeIHM;
+    }
+
+    public Account getCurrentAccount(){
+        return currentAccount;
     }
 
     public void setAccount(Account acc){
