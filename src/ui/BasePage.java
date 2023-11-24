@@ -22,4 +22,20 @@ public abstract class BasePage extends JPanel {
         controller.exitPage(this);
     }
 
+    public void showInfo(String title, String msg) {
+        showMessage(JOptionPane.DEFAULT_OPTION, title, msg);
+    }
+
+    public void showWarning(String title, String msg) {
+        showMessage(JOptionPane.WARNING_MESSAGE, title, msg);
+    }
+
+    public void showError(String title, String msg) {
+        showMessage(JOptionPane.ERROR_MESSAGE, title, msg);
+    }
+
+    private void showMessage(int type, String title, String msg) {
+        JOptionPane.showMessageDialog(frame, msg, title, type);
+    }
+
 }

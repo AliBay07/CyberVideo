@@ -1,5 +1,7 @@
 package ui;
 
+import facade.ui.User;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -58,9 +60,17 @@ public class SignupPage extends BasePage implements ActionListener {
         System.out.println("email: "+email);
         System.out.println("pwd: "+pwd);
 
-        //@TODO à compléter
-
-        return true;
+        User user = new User();
+        user.setFirstName(firstname);
+        user.setLastName(lastname);
+//            user.setDateOfBirth(basicInfoPane.get);
+        boolean isOk = controller.getFacadeIHM().createUserAccount(user, email, pwd);
+        if(isOk) {
+            controller.traite(this, Keyword.SIGNUP);
+        } else {
+            showError("Signup failed", "Veuillez vérifier vos informations données.");
+        }
+        return isOk;
     }
 
     public void addCard() {
@@ -112,6 +122,9 @@ public class SignupPage extends BasePage implements ActionListener {
         if(cmd.equals(SignupCardInfoPane.ACT_SUBSCRIBE)){
             // demande une carte abonnee
             //@TODO à compléter
+            if(controller!=null){
+                // manque une fonction to addCard ?
+            }
         }
     }
 

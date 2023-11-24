@@ -22,19 +22,11 @@ public class LoginPage extends BasePage {
         @Override
         public void actionPerformed(ActionEvent e) {
             if(e.getSource()==loginBtn){
-                Account acc = controller.getFacadeIHM().userLogin(idTF.getText().trim(), pwdTF.getText().trim());
-                if(!acc.equals(null)){
-                    controller.setAccount(acc);
-                    controller.traite(LoginPage.this, Keyword.LOGIN);
-                }
-                else{
-                    //Afficher une JDialog avec une erreur !
-                }
-                
+                login();
             }else
             if(e.getSource()==signupBtn){
-                // signup
-                showSignupPage();
+                dispose();
+                signup();
             }
         }
     };
@@ -53,14 +45,6 @@ public class LoginPage extends BasePage {
         return pwdTF.getText().trim();
     }
 
-    public void showLoading(boolean isShow) {
-
-    }
-
-    public void showError() {
-
-    }
-
     private void login() {
         String id = idTF.getText().trim();
         String pwd = pwdTF.getText().trim();
@@ -69,16 +53,25 @@ public class LoginPage extends BasePage {
         System.out.println("id: "+id);
         System.out.println("pwd: "+pwd);
 
-        //@TODO à compléter
-        if(controller!=null){
-            controller.traite(this, Keyword.LOGIN);
+        Account acc = controller.getFacadeIHM().userLogin(id, pwd);
+        if(acc!=null){
+            controller.setAccount(acc);
+            controller.traite(LoginPage.this, Keyword.LOGIN);
+        }
+        else{
+            //Afficher une JDialog avec une erreur !
+            showError("Login failed", "Veuillez vérifier ton mail et ton mot de pass.");
         }
     }
 
-    private void showSignupPage() {
+    private void signup() {
         if(controller!=null){
             controller.showSignupPage();
         }
+    }
+
+    public void showLoading(boolean isShow) {
+
     }
 
     private void initViews() {

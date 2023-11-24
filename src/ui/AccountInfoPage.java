@@ -1,5 +1,7 @@
 package ui;
 
+import facade.ui.Account;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.MaskFormatter;
@@ -7,7 +9,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class AccountInfoPage extends JPanel implements ActionListener {
+public class AccountInfoPage extends BasePage implements ActionListener {
 
     public static final int DEF_TF_SIZE = 30;
     public static final int ITEM_PADDING = 15;
@@ -24,19 +26,17 @@ public class AccountInfoPage extends JPanel implements ActionListener {
     private static final String ACT_EDIT_BIRTHDAY = "edit_birthday";
     private static final String ACT_TOGGLE_ABONNE = "toggle_abonne";
 
-    private JFrame frame;
-
     private JTextField tfId;
     private JTextField tfFirstName;
     private JTextField tfLastName;
     private JTextField tfEmail;
     private JTextField tfBirthday;
     private JTextField tfState;
+    private String password;
 
     public AccountInfoPage(JFrame frame){
-        super();
+        super(frame);
         this.setLayout(new BorderLayout());
-        this.frame = frame;
         initViews();
     }
 
@@ -206,11 +206,6 @@ public class AccountInfoPage extends JPanel implements ActionListener {
         return formatter;
     }
 
-    private void dispose() {
-        AccountInfoPage.this.setVisible(false);
-        frame.remove(AccountInfoPage.this);
-    }
-
     public static void main(String[] args) {
         JFrame frame = new JFrame();
         frame.add(new AccountInfoPage(frame));
@@ -248,6 +243,7 @@ public class AccountInfoPage extends JPanel implements ActionListener {
                 String newFirstname = dialog.getTextInput();
                 tfFirstName.setText(newFirstname);
                 dialog.close();
+                changeFirstname(newFirstname);
             }
 
             @Override
@@ -267,6 +263,7 @@ public class AccountInfoPage extends JPanel implements ActionListener {
                 String newLastname = dialog.getTextInput();
                 tfLastName.setText(newLastname);
                 dialog.close();
+                changeLastname(newLastname);
             }
 
             @Override
@@ -286,6 +283,7 @@ public class AccountInfoPage extends JPanel implements ActionListener {
                 String newBirthday = dialog.getDate();
                 tfBirthday.setText(newBirthday);
                 dialog.close();
+                changeBirthday(newBirthday);
             }
 
             @Override
@@ -302,9 +300,10 @@ public class AccountInfoPage extends JPanel implements ActionListener {
         dialogEmail.setButtonClickListener(new TextEditDialog.ButtonClickListener() {
             @Override
             public void leftBtnClicked(TextEditDialog dialog) {
-                String newLastname = dialog.getTextInput();
-                tfEmail.setText(newLastname);
+                String newMail = dialog.getTextInput();
+                tfEmail.setText(newMail);
                 dialog.close();
+                changeEmail(newMail);
             }
 
             @Override
@@ -340,8 +339,43 @@ public class AccountInfoPage extends JPanel implements ActionListener {
         dialogPassword.show();
     }
 
+    private void changeFirstname(String newFirstname) {
+        Account acc = controller.getFacadeIHM().modifyAccountInformation(newFirstname, tfLastName.getName(), password);
+        if(acc!=null){
+            controller.setAccount(acc);
+            controller.traite(this, Keyword.CHANGE_ACCOUNT_INFO);
+        }else{
+            showError("Change Firstname failed", "Veuillez vérifier votre entrée.");
+        }
+    }
+
+    private void changeLastname(String newLastname) {
+        Account acc = controller.getFacadeIHM().modifyAccountInformation(tfFirstName.getName(), newLastname, password);
+        if(acc!=null){
+            controller.setAccount(acc);
+            controller.traite(this, Keyword.CHANGE_ACCOUNT_INFO);
+        }else{
+            showError("Change Lastname failed", "Veuillez vérifier votre entrée.");
+        }
+    }
+
+    private void changeBirthday(String birthday) {
+        // manque une fonction correspondant ?
+    }
+
+    private void changeEmail(String newMail) {
+        // manque une fonction correspondant ?
+    }
+
     private void changePassword(String newPassword) {
-        //@TODO à compléter
+        password = newPassword;
+        Account acc = controller.getFacadeIHM().modifyAccountInformation(tfFirstName.getName(), tfLastName.getName(), newPassword);
+        if(acc!=null){
+            controller.setAccount(acc);
+            controller.traite(this, Keyword.CHANGE_ACCOUNT_INFO);
+        }else{
+            showError("Change password failed", "Veuillez vérifier votre entrée.");
+        }
     }
 
     private boolean isOldPasswordCorrect(String oldPassword) {

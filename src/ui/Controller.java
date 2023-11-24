@@ -3,6 +3,8 @@ package ui;
 import facade.ui.*;
 
 import javax.swing.*;
+import java.awt.*;
+import java.util.Stack;
 
 /**
  * Controller pour le mode MVC
@@ -16,9 +18,12 @@ public class Controller {
     enum State { IDLE, SIGNIN_NORMAL, SIGNUP_NORMAL, SIGNIN_FOR_RENT, SIGNUP_FOR_RENT, SIGNIN_FOR_SUBSCRIBE, SIGNUP_FOR_SUBSCRIBE, SIGNIN_FOR_RETURN_FILM, LOGGED_NORMAL, LOGGED_PREMIUM, CHANGE_ACCOUNT_SETTING, SHOW_TOP10W_NO_CONNECT, SHOW_TOP10M_NO_CONNECT, SHOW_FILMS_NO_CONNECT, SHOW_BLURAY_NO_CONNECT, SHOW_RESEARCH_RESULTS_NO_CONNECT, SHOW_FILM_DETAILS_NO_CONNECT, SHOW_TOP10W_CONNECT, SHOW_TOP10M_CONNECT, SHOW_FILMS_CONNECT, SHOW_BLURAY_CONNECT, SHOW_RESEARCH_RESULTS_CONNECT, SHOW_FILM_DETAILS_CONNECT, RENT_FILM, SHOW_VALIDATION_RENT, SHOW_ERROR_RENT, SHOW_VALIDATION_SUBSCRIBE, SHOW_RETURN_PAGE, SHOW_VALIDATION_RETURN_PAGE, SHOW_ERROR_RETURN_PAGE};
     State state = State.IDLE;
 
+    Stack<BasePage> pagePile;   // modifier
+
     public Controller(JFrame frame, FacadeIHM fihm) {
         this.frame = frame;
         facadeIHM = fihm;
+        pagePile = new Stack<>();   // modifier
     }
 
     public void traite(BasePage page, Keyword action){
@@ -35,10 +40,33 @@ public class Controller {
         back();
     }
 
-    public void showMainPage() {
-        InitialMainPage page = new InitialMainPage(frame);
-        page.setController(this);
-        showPage(page);
+    public void showMainPage() {  // modifier
+        BasePage page = null;
+        switch (state) {
+            case IDLE:   // au début est InitialMainPage
+                if(currentPage==null || !(currentPage instanceof InitialMainPage)){
+                    clearAllPages();   // remove tous les pages
+                    page = new InitialMainPage(frame);
+                }
+                break;
+            case LOGGED_NORMAL:
+//                if(currentPage==null || !(currentPage instanceof NormalMainPage)){
+//                    clearAllPages();
+//                    page = new NormalMainPage(frame);
+//                }
+                break;
+            case LOGGED_PREMIUM:
+//                if(currentPage==null || !(currentPage instanceof SubscriberMainPage)){
+//                    clearAllPages();
+//                    page = new SubscriberMainPage(frame);
+//                }
+                break;
+        }
+
+        if(page!=null){
+            page.setController(this);
+            showPage(page);
+        }
     }
 
     public void showLoginPage() {
@@ -57,30 +85,42 @@ public class Controller {
         if(currentPage!=null){
             currentPage.setVisible(false);
         }
+        pagePile.add(page);  // modifier
         currentPage = page;
         currentPage.setVisible(true);
         frame.add(currentPage);
         frame.setVisible(true);
     }
 
-    public FacadeIHM getFacadeIHM(){
+    public FacadeIHM getFacadeIHM() {
         return facadeIHM;
     }
 
-    public void setAccount(Account acc){
+    public void setAccount(Account acc) {
         this.currentAccount = acc;
     }
 
+    private void clearAllPages() {   // modifier
+        pagePile.clear();
+        for(Component comp : frame.getComponents()){
+            if(!(comp instanceof JRootPane)){   // ne pas supprimer le JRootPane, sinon rien à afficher
+                frame.remove(comp);
+            }
+        }
+        currentPage = null;
+    }
+
     // sortie le current page
-    private void back() {
-        /*BasePage lastPage = pagePile.pop();
-        if(lastPage!=null){
+    private void back() {   // modifier
+        BasePage lastPage = pagePile.pop();
+        if(lastPage!=null) {
             frame.remove(lastPage);
         }
-        curPage = pagePile.getLast();
-        if(curPage!=null){
-            System.out.println("Back to :["+curPage.getClass()+"]... pile_size:"+pagePile.size());
-            curPage.setVisible(true);
-        }*/
+        currentPage = pagePile.getLast();
+        if(currentPage!=null){
+            System.out.println("Back to :["+currentPage.getClass()+"]... pile_size:"+pagePile.size());
+            currentPage.setVisible(true);
+        }
     }
+
 }
