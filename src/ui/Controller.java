@@ -1,62 +1,38 @@
 package ui;
 
-import facade.ui.Account;
-import facade.ui.FacadeIHM;
+import facade.ui.*;
 
 import javax.swing.*;
-import java.util.Stack;
 
 /**
  * Controller pour le mode MVC
  */
-public class Controller implements PageActionListener {
+public class Controller {
 
     FacadeIHM facadeIHM;
     JFrame frame;
-
-    BasePage oldPage;
-    BasePage curPage;
-
-    Stack<BasePage> pagePile;
+    BasePage currentPage;
+    Account currentAccount;
+    enum State { IDLE, SIGNIN_NORMAL, SIGNUP_NORMAL, SIGNIN_FOR_RENT, SIGNUP_FOR_RENT, SIGNIN_FOR_SUBSCRIBE, SIGNUP_FOR_SUBSCRIBE, SIGNIN_FOR_RETURN_FILM, LOGGED_NORMAL, LOGGED_PREMIUM, CHANGE_ACCOUNT_SETTING, SHOW_TOP10W_NO_CONNECT, SHOW_TOP10M_NO_CONNECT, SHOW_FILMS_NO_CONNECT, SHOW_BLURAY_NO_CONNECT, SHOW_RESEARCH_RESULTS_NO_CONNECT, SHOW_FILM_DETAILS_NO_CONNECT, SHOW_TOP10W_CONNECT, SHOW_TOP10M_CONNECT, SHOW_FILMS_CONNECT, SHOW_BLURAY_CONNECT, SHOW_RESEARCH_RESULTS_CONNECT, SHOW_FILM_DETAILS_CONNECT, RENT_FILM, SHOW_VALIDATION_RENT, SHOW_ERROR_RENT, SHOW_VALIDATION_SUBSCRIBE, SHOW_RETURN_PAGE, SHOW_VALIDATION_RETURN_PAGE, SHOW_ERROR_RETURN_PAGE};
+    State state = State.IDLE;
 
     public Controller(JFrame frame, FacadeIHM fihm) {
         this.frame = frame;
         facadeIHM = fihm;
-        pagePile = new Stack<>();
     }
 
-    @Override
-    public void login(BasePage page) {
-        if(!(page instanceof LoginPage)){
-            return;
+    public void traite(BasePage page, Keyword action){
+        if(action==Keyword.LOGIN) {
+            if(currentAccount instanceof NormalAccount)
+                state = State.LOGGED_NORMAL;
+            else if(currentAccount instanceof SubscriberAccount)
+                state = State.LOGGED_PREMIUM;
+            frame.remove(currentPage);
         }
-        LoginPage loginPage = (LoginPage)page;
-        loginPage.showLoading(true);
-
-        String email = loginPage.getEmail();
-        String password = loginPage.getPassword();
-        if(!userLogin(email, password)){
-            loginPage.showLoading(false);
-            loginPage.showError();
-        }
-
-        // réussi
-        loginPage.showLoading(false);
-        back();
     }
 
-    @Override
     public void exitPage(BasePage page) {
         back();
-    }
-
-    private boolean userLogin(String email, String password) {
-        Account acount = facadeIHM.userLogin(email, password);
-        // pour le page, il n'a pas besoin
-        if(acount==null){
-            return false;
-        }
-        return true;
     }
 
     public void showMainPage() {
@@ -78,22 +54,26 @@ public class Controller implements PageActionListener {
     }
 
     private void showPage(BasePage page) {
-        if(curPage!=null){
-            curPage.setVisible(false);
+        if(currentPage!=null){
+            currentPage.setVisible(false);
         }
-        oldPage = curPage;
-        curPage = page;
-        pagePile.add(page);
-        System.out.println("Show :["+page.getClass()+"]... pile_size:"+pagePile.size());
-
-        page.setVisible(true);
-        frame.add(page);
+        currentPage = page;
+        currentPage.setVisible(true);
+        frame.add(currentPage);
         frame.setVisible(true);
+    }
+
+    public FacadeIHM getFacadeIHM(){
+        return facadeIHM;
+    }
+
+    public void setAccount(Account acc){
+        this.currentAccount = acc;
     }
 
     // sortie le current page
     private void back() {
-        BasePage lastPage = pagePile.pop();
+        /*BasePage lastPage = pagePile.pop();
         if(lastPage!=null){
             frame.remove(lastPage);
         }
@@ -101,7 +81,6 @@ public class Controller implements PageActionListener {
         if(curPage!=null){
             System.out.println("Back to :["+curPage.getClass()+"]... pile_size:"+pagePile.size());
             curPage.setVisible(true);
-        }
+        }*/
     }
-
 }

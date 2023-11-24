@@ -39,13 +39,8 @@ public class SysAL2000 extends JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                getInstance().showMainPage();
+                getInstance().controller.showMainPage();
             }
         });
     }
-
-    public void showMainPage() {
-        controller.showMainPage();
-    }
-
 }

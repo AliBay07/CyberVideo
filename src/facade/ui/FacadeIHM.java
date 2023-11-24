@@ -1,11 +1,11 @@
 package facade.ui;
 
 import facade.ui.Account;
-import machine.Machine;
+//import machine.Machine;
 
 public class FacadeIHM {
 
-    private Machine machine;
+    //private Machine machine;
 
     public Account userLogin(String email, String password) {
         return null;

@@ -5,7 +5,7 @@ package ui;
  */
 public interface PageActionListener {
 
-    public void login(BasePage page);
+    public boolean login(BasePage page);
 
     public void exitPage(BasePage page);
 

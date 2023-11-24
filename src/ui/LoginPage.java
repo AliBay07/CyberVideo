@@ -1,5 +1,6 @@
 package ui;
 
+import facade.ui.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -21,8 +22,15 @@ public class LoginPage extends BasePage {
         @Override
         public void actionPerformed(ActionEvent e) {
             if(e.getSource()==loginBtn){
-                // login
-                login();
+                Account acc = controller.getFacadeIHM().userLogin(idTF.getText().trim(), pwdTF.getText().trim());
+                if(!acc.equals(null)){
+                    controller.setAccount(acc);
+                    controller.traite(LoginPage.this, Keyword.LOGIN);
+                }
+                else{
+                    //Afficher une JDialog avec une erreur !
+                }
+                
             }else
             if(e.getSource()==signupBtn){
                 // signup
@@ -63,7 +71,7 @@ public class LoginPage extends BasePage {
 
         //@TODO à compléter
         if(controller!=null){
-            controller.login(this);
+            controller.traite(this, Keyword.LOGIN);
         }
     }
 
