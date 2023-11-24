@@ -1,26 +1,27 @@
 package ui;
 
 import facade.ui.FacadeIHM;
-
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * Application
  */
 public class SysAL2000 extends JFrame {
 
-    public static final int SCREEN_WIDTH = 1280;
-    public static final int SCREEN_HEIGHT = 960;
+    public static Dimension dimension = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+    public static int FRAME_WIDTH = (int) dimension.getWidth();
+    public static int FRAME_HEIGHT = (int) dimension.getHeight();
+    public static int DIALOG_WIDTH = (int) (dimension.getWidth()/3)*2;
+    public static int DIALOG_HEIGHT = (int) (dimension.getHeight()/3)*2;
     public static final int NAVBAR_HEIGHT = 40;
 
-    public static int DIALOG_WIDTH = 500;
-    public static int DIALOG_HEIGHT = 400;
 
     private static SysAL2000 instance;
     private Controller controller;
 
     private SysAL2000() {
-        this.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+        this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setVisible(true);

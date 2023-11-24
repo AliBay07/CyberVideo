@@ -14,6 +14,11 @@ public abstract class BasePage extends JPanel {
         this.frame = frame;
     }
 
+    public BasePage(JFrame frame, Controller controller) {
+        this.frame = frame;
+        this.controller = controller;
+    }
+
     public void setController(Controller controller) {
         this.controller = controller;
     }

@@ -1,9 +1,8 @@
 package ui;
 
-import facade.ui.*;
-
+import beans.*;
+import facade.ui.FacadeIHM;
 import javax.swing.*;
-import java.awt.*;
 import java.util.Stack;
 
 /**
@@ -92,11 +91,15 @@ public class Controller {
         frame.setVisible(true);
     }
 
-    public FacadeIHM getFacadeIHM() {
+    public FacadeIHM getFacadeIHM(){
         return facadeIHM;
     }
 
-    public void setAccount(Account acc) {
+    public Account getCurrentAccount(){
+        return currentAccount;
+    }
+
+    public void setAccount(Account acc){
         this.currentAccount = acc;
     }
 
@@ -122,5 +125,4 @@ public class Controller {
             currentPage.setVisible(true);
         }
     }
-
 }

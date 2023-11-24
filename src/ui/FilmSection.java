@@ -43,4 +43,8 @@ public class FilmSection extends JPanel {
             this.add(showMoreFilms);
         }
     }
+
+    public JButton getMoreFilmsButton(){
+        return showMoreFilms;
+    }
 }

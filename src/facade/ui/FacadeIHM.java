@@ -16,11 +16,11 @@ public class FacadeIHM {
         return false;
     }
 
-    public Account userLogin(String email, String password) {
+    public beans.Account userLogin(String email, String password) {
         return null;
     }
 
-    public Account userLoginWithCard(String cardNumber, String password) {
+    public beans.Account userLoginWithCard(String cardNumber, String password) {
         return null;
     }
 
@@ -51,11 +51,11 @@ public class FacadeIHM {
         return null;
     }
 
-    public Account subscribeToService() {
+    public beans.Account subscribeToService() {
         return null;
     }
 
-    public Account unsubscribeToService() {
+    public beans.Account unsubscribeToService() {
         return null;
     }
 
@@ -79,7 +79,7 @@ public class FacadeIHM {
         return null;
     }
 
-    public Account modifyAccountInformation(Account account, String newFirstName, String newLastName, String NewPassword) {
+    public beans.Account modifyAccountInformation(Account account, String newFirstName, String newLastName, String NewPassword) {
         return null;
     }
 
@@ -103,7 +103,7 @@ public class FacadeIHM {
         return false;
     }
 
-    public Account modifyAccountInformation(String newFirstName, String newLastName, String NewPassword) {
+    public beans.Account modifyAccountInformation(String newFirstName, String newLastName, String NewPassword) {
         return null;
     }
 

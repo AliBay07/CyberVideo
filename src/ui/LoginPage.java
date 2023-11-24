@@ -1,6 +1,7 @@
 package ui;
 
-import facade.ui.*;
+import facade.ui.FacadeIHM;
+import beans.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
