@@ -1,7 +1,6 @@
 package ui;
 
-import facade.ui.Account;
-
+import beans.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.MaskFormatter;

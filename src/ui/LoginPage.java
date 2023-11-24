@@ -1,6 +1,5 @@
 package ui;
 
-import facade.ui.FacadeIHM;
 import beans.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
