@@ -2,6 +2,9 @@ package ui;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import javax.swing.*;
 
 public class AdvancedResearchPopUp extends JDialog {
@@ -20,7 +23,7 @@ public class AdvancedResearchPopUp extends JDialog {
 
     public AdvancedResearchPopUp(){
         //Initialisation des attributs de la pop-up
-        categories = new DefaultListModel<String>();
+        categories = new DefaultListModel<String>(); //A changer par les bonnes classes : Categorie, Autors, Actors
         autors = new DefaultListModel<String>();
         actors = new DefaultListModel<String>();
         categoriesChoice = new JPanel();
@@ -214,6 +217,33 @@ public class AdvancedResearchPopUp extends JDialog {
             }
         };
         return a;
+    }
+
+    //Faire un get pour avoir la liste des critères
+    public HashMap<String, ArrayList<String>> getChosenCriterias(){
+        HashMap<String, ArrayList<String>> criterias = new HashMap<String, ArrayList<String>> ();
+        if(categories.size() > 0){
+            ArrayList<String> chosenCategories = new ArrayList<String>();
+            for(int i=0; i<categories.size(); i++){
+                chosenCategories.add(categories.getElementAt(i));
+            }
+            criterias.put("categorie", chosenCategories); //Vérifier avec la classe DAO et la facade comment écrire les clés catégorie, acteurs et réalisateurs !
+        }
+        if(actors.size() > 0){
+            ArrayList<String> chosenActors = new ArrayList<String>();
+            for(int i=0; i<actors.size(); i++){
+                chosenActors.add(actors.getElementAt(i));
+            }
+            criterias.put("actors", chosenActors); //Vérifier avec la classe DAO et la facade comment écrire les clés catégorie, acteurs et réalisateurs !
+        }
+        if(autors.size() > 0){
+            ArrayList<String> chosenAutors = new ArrayList<String>();
+            for(int i=0; i<autors.size(); i++){
+                chosenAutors.add(autors.getElementAt(i));
+            }
+            criterias.put("autors", chosenAutors); //Vérifier avec la classe DAO et la facade comment écrire les clés catégorie, acteurs et réalisateurs !
+        }
+        return criterias;
     }
 
     public JButton getValidationButton(){

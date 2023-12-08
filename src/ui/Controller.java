@@ -20,15 +20,62 @@ public class Controller {
     public Controller(JFrame frame, FacadeIHM fihm) {
         this.frame = frame;
         facadeIHM = fihm;
+        currentAccount = null;
     }
 
     public void traite(BasePage page, Keyword action){
-        if(action==Keyword.LOGIN) {
+        if(action==Keyword.LOGIN) { //Faire les cas ou l'utilisateur se login à cause d'une demande d'abonnement ou de location
             if(currentAccount instanceof NormalAccount)
                 state = State.LOGGED_NORMAL;
             else if(currentAccount instanceof SubscriberAccount)
                 state = State.LOGGED_PREMIUM;
             frame.remove(currentPage);
+        }
+        if(action==Keyword.SHOWLOGINPAGE) {
+            showLoginPage();
+            state = State.SIGNIN_NORMAL;
+        }
+        if(action==Keyword.SUBSCRIBE){
+            switch (state) {
+                case IDLE:
+                    showLoginPage();
+                    state = State.SIGNIN_FOR_SUBSCRIBE;
+                    break;
+                case LOGGED_NORMAL: 
+                    //Voir s'il faut afficher une pop up pour informer l'utilisateur qu'il s'est bien abonné
+                    facadeIHM.subscribeToService();
+                    break;
+                case LOGGED_PREMIUM:
+                    //Show pop up ou page pour créditer sa carte abonnée
+                default:
+                    break;
+            }
+        }
+        if(action==Keyword.RETURN_BLURAY){
+            switch(state) {
+                case IDLE:
+                    showLoginPage();
+                    state = State.SIGNIN_FOR_RETURN_FILM;
+                    break;
+                default:
+                    break;
+            }
+        }
+        if(action == Keyword.SHOWADVANCEDRESEARCH){
+            switch(state){
+                case IDLE :
+                    state = State.SHOW_RESEARCH_RESULTS_NO_CONNECT;
+                    break;
+                case LOGGED_NORMAL :
+                    state = State.SHOW_RESEARCH_RESULTS_CONNECT;
+                    break;
+                case LOGGED_PREMIUM :
+                    state = State.SHOW_RESEARCH_RESULTS_CONNECT;
+                    break;
+                default:
+                    break;
+            }
+            showResearchPage(Section.ADVANCED); //Vérifier le state !
         }
     }
 
@@ -38,7 +85,7 @@ public class Controller {
 
     public void showMainPage() {
         MainPage page = new MainPage(frame, this);
-        //page.setController(this);
+        page.setController(this);
         showPage(page);
     }
 
@@ -51,6 +98,12 @@ public class Controller {
 
     public void showSignupPage() {
         SignupPage page = new SignupPage(frame);
+        page.setController(this);
+        showPage(page);
+    }
+
+    public void showResearchPage(Section s){
+        ResearchResults page = new ResearchResults(frame, s, ((MainPage) currentPage).getChosenCriterias());
         page.setController(this);
         showPage(page);
     }
@@ -69,7 +122,9 @@ public class Controller {
         return facadeIHM;
     }
 
-    public Account getCurrentAccount(){
+    public Account getCurrentAccount(){ //Trouver un moyen lorsque utilisateur non connecté de pouvoir avoir un Account par défaut pour faire les vérifications pour la MainPage
+        if(currentAccount == null)
+            return null;
         return currentAccount;
     }
 

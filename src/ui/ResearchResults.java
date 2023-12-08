@@ -6,10 +6,10 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-public class ResearchResults extends JPanel {
-    enum Section {TOP10W, TOP10M, BLURAY, ALL, CATEGORY, ADVANCED, NOTHING};
+public class ResearchResults extends BasePage {
     Section choice = Section.NOTHING;
-    private ArrayList<String> criteria;
+    private HashMap<String, ArrayList<String>> criteria;
+    //private ArrayList<String> criteria;
     private ArrayList<Film> filmsResults;
     private SubscriberNavbar navbar;
     private JPanel mainPage;
@@ -22,7 +22,8 @@ public class ResearchResults extends JPanel {
     public static int FRAME_WIDTH = (int) dimension.getWidth();
     public static int FRAME_HEIGHT = (int) dimension.getHeight();
 
-    public ResearchResults(JFrame f, Section s, ArrayList<String> criterias){
+    public ResearchResults(JFrame f, Section s, HashMap<String, ArrayList<String>> criterias){
+        super(f);
         //Création des listes ayant le contenu des critères/films
         choice = s;
         criteria = criterias;
@@ -120,7 +121,7 @@ public class ResearchResults extends JPanel {
         else if(choice == Section.ALL)
             title.setText("Tous les films");
         else if(choice == Section.CATEGORY && criteria.size()>0)
-            title.setText(criteria.get(0));
+            title.setText(criteria.get("categorie").get(0));
         else if(choice == Section.ADVANCED && criteria.size()>0)
             title.setText("Films correspondants");
         return title;
