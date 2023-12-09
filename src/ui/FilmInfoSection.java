@@ -1,9 +1,9 @@
 package ui;
 
-import facade.ui.*;
+//import facade.ui.*;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
-
+import beans.*;
 import java.awt.*;
 
 public class FilmInfoSection extends JPanel {
@@ -28,7 +28,7 @@ public class FilmInfoSection extends JPanel {
         c.gridy = 0;
         c.weightx = 0.2;
         c.gridheight = 4;
-        this.add(new JLabel(film.getImageIcon()),c);
+        this.add(new JLabel("Image",new ImageIcon(film.getPath()),JLabel.CENTER),c); //Trouver le moyen d'avoir l'image plutot que son lien
 
         //Ajout des informations du film
         c.fill = GridBagConstraints.NONE;
@@ -45,14 +45,7 @@ public class FilmInfoSection extends JPanel {
         c.gridy = 1;
         c.gridheight = 1;
         c.weightx = 0.5;
-        this.add(new JLabel(film.getAuthor().getName()), c);
-        /*String infos = "Réalisateur : " + film.getAuthor().getName() + "\n";
-        infos += "Acteurs : ";
-        for(int i=0; i < film.getActors().size() && i < 2; i++){
-            infos += film.getActors().get(i).getName() + ", ";
-        }
-        infos = infos.substring(0, infos.length()-2);
-        this.add(new JTextArea(infos),c);*/
+        this.add(new JLabel(film.getAuthors().get(0).getFirstName() + " " + film.getAuthors().get(0).getLastName()), c); //Il faut demander à ce que ce soit un réalisateur et pas une liste !
 
         c.fill = GridBagConstraints.NONE;
         c.gridx = 1;
@@ -61,7 +54,7 @@ public class FilmInfoSection extends JPanel {
         c.weightx = 0.5;
         String actors = "";
         for(int i=0; i < film.getActors().size() && i < 2; i++){
-            actors += film.getActors().get(i).getName() + ", ";
+            actors += film.getActors().get(i).getFirstName() +" " + film.getActors().get(i).getLastName() + ", ";
         }
         actors = actors.substring(0, actors.length()-2);
         this.add(new JLabel(actors), c);
@@ -90,4 +83,13 @@ public class FilmInfoSection extends JPanel {
         c.gridheight = 2;
         this.add(rent, c);
     }
+
+    public JButton getRentButton(){
+        return rent;
+    }
+    
+    public JButton getShowMoreButton(){
+        return showMore;
+    }
+
 }

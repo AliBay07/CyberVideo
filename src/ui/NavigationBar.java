@@ -57,4 +57,11 @@ public class NavigationBar extends JPanel {
         }
     }
 
+    public Component getLeftComponent(){
+        return leftComp;
+    }
+
+    public Component getRightComponent(){
+        return rightComp;
+    }
 }

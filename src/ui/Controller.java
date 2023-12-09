@@ -77,6 +77,122 @@ public class Controller {
             }
             showResearchPage(Section.ADVANCED); //Vérifier le state !
         }
+        if(action == Keyword.MAINPAGE){
+            //Autre cas de retour sur la page principale certainement à prévoir !
+            switch(state) {
+                case SHOW_RESEARCH_RESULTS_NO_CONNECT :
+                    BasePage oldPage = currentPage;
+                    showMainPage();
+                    frame.remove(oldPage);
+                    state = State.IDLE;
+                    break;
+                case SHOW_RESEARCH_RESULTS_CONNECT :
+                    BasePage oldPage2 = currentPage;
+                    showMainPage();
+                    frame.remove(oldPage2);
+                    if(currentAccount instanceof NormalAccount)
+                        state = State.LOGGED_NORMAL;
+                    else if(currentAccount instanceof SubscriberAccount)
+                        state = State.LOGGED_PREMIUM;
+                    break;
+                case SHOW_FILM_DETAILS_NO_CONNECT :
+                    BasePage oldPage3 = currentPage;
+                    showMainPage();
+                    frame.remove(oldPage3);
+                    state = State.SHOW_RESEARCH_RESULTS_NO_CONNECT ;
+                    break;
+                case SHOW_FILM_DETAILS_CONNECT :
+                    BasePage oldPage4 = currentPage;
+                    showMainPage();
+                    frame.remove(oldPage4);
+                    state = State.SHOW_RESEARCH_RESULTS_CONNECT ;
+                default:
+                    break;
+            }   
+        }
+        if(action == Keyword.RENT){
+            switch(state){
+                //Trouver le moyen de garder le film selectionné dans le cas du passage par la page de connexion
+                case SHOW_BLURAY_NO_CONNECT:
+                    showLoginPage();
+                    state = State.SIGNIN_FOR_RENT;
+                case SHOW_TOP10M_NO_CONNECT:
+                    showLoginPage();
+                    state = State.SIGNIN_FOR_RENT;
+                case SHOW_TOP10W_NO_CONNECT:
+                    showLoginPage();
+                    state = State.SIGNIN_FOR_RENT;
+                case SHOW_FILMS_NO_CONNECT:
+                    showLoginPage();
+                    state = State.SIGNIN_FOR_RENT;
+                case SHOW_RESEARCH_RESULTS_NO_CONNECT:
+                    showLoginPage();
+                    state = State.SIGNIN_FOR_RENT;
+                case SHOW_RESEARCH_RESULTS_CONNECT:
+                    //Afficher la page de location du film !
+                    state = State.RENT_FILM;
+                case SIGNIN_FOR_RENT:
+                    //Afficher la page de location du film !
+                    state = State.RENT_FILM; 
+                case SIGNUP_FOR_RENT:
+                    //Afficher la page de location du film !
+                    state = State.RENT_FILM; 
+                case SHOW_FILM_DETAILS_CONNECT:
+                    //Afficher la page de location du film !
+                    state = State.RENT_FILM; 
+                case SHOW_BLURAY_CONNECT:
+                    //Afficher la page de location du film !
+                    state = State.RENT_FILM; 
+                case SHOW_TOP10M_CONNECT:
+                    //Afficher la page de location du film !
+                    state = State.RENT_FILM; 
+                case SHOW_TOP10W_CONNECT:
+                    //Afficher la page de location du film !
+                    state = State.RENT_FILM; 
+                case SHOW_FILMS_CONNECT:
+                    //Afficher la page de location du film !
+                    state = State.RENT_FILM; 
+                default:
+                    break;
+            }
+        }
+        //A voir si cela est nécessaire car dans l'idéal il vaudrait mieux une popup et gérer seulement un changement de page si appui sur location sur cette popup
+        /*if(action == Keyword.SHOWFILMDETAILS){
+            switch(state){
+                case SHOW_RESEARCH_RESULTS_NO_CONNECT:
+                    //Afficher la page de détails du film
+                    state = State.SHOW_FILM_DETAILS_NO_CONNECT;
+                case SHOW_BLURAY_NO_CONNECT:
+                    //Afficher la page de détails du film
+                    state = State.SHOW_FILM_DETAILS_NO_CONNECT;
+                case SHOW_TOP10M_NO_CONNECT:
+                    //Afficher la page de détails du film
+                    state = State.SHOW_FILM_DETAILS_NO_CONNECT;
+                case SHOW_TOP10W_NO_CONNECT:
+                    //Afficher la page de détails du film
+                    state = State.SHOW_FILM_DETAILS_NO_CONNECT;
+                case SHOW_FILMS_NO_CONNECT:
+                    //Afficher la page de détails du film
+                    state = State.SHOW_FILM_DETAILS_NO_CONNECT;
+                case SHOW_RESEARCH_RESULTS_CONNECT:
+                    //Afficher la page de détails du film
+                    state = State.SHOW_FILM_DETAILS_CONNECT;
+                case SHOW_BLURAY_CONNECT:
+                    //Afficher la page de détails du film
+                    state = State.SHOW_FILM_DETAILS_CONNECT;
+                case SHOW_TOP10M_CONNECT:
+                    //Afficher la page de détails du film
+                    state = State.SHOW_FILM_DETAILS_CONNECT;
+                case SHOW_TOP10W_CONNECT:
+                    //Afficher la page de détails du film
+                    state = State.SHOW_FILM_DETAILS_CONNECT;
+                case SHOW_FILMS_CONNECT:
+                    //Afficher la page de détails du film
+                    state = State.SHOW_FILM_DETAILS_CONNECT;
+                default:
+                    break;
+            }
+        }*/
     }
 
     public void exitPage(BasePage page) {
