@@ -7,7 +7,17 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-class Affichage_Film {
+class Affichage_Film extends BasePage {
+
+    public Affichage_Film(JFrame frame) {
+        super(frame);
+    }
+
+    public Affichage_Film(JFrame frame, Film film, Account account) {
+        super(frame);
+        afficher_film(film, account, frame);
+    }
+
     public JPanel afficher_film(Film film, Account account, JFrame frame) {
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setSize(800, 600);
