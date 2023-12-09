@@ -2,6 +2,8 @@ package ui;
 
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import javax.swing.*;
 import beans.*;
 //import facade.ui.*;
@@ -25,13 +27,24 @@ public class MainPage extends BasePage {
             else if(e.getSource()==filmsSectionsPane.getFilmSections().get(2).getMoreFilmsButton()){
                 controller.traite(MainPage.this, Keyword.SHOWBLURAY);
             }
-            if(!controller.getCurrentAccount().equals(null)){
+            if(controller.getCurrentAccount() != null){
                 if(e.getSource()==filmsSectionsPane.getFilmSections().get(4).getMoreFilmsButton()){
                     controller.traite(MainPage.this, Keyword.SHOWCATEGORIES); 
                 }
                 else if(e.getSource()==filmsSectionsPane.getFilmSections().get(5).getMoreFilmsButton()){
                     controller.traite(MainPage.this, Keyword.SHOWALLFILMS);
                 }
+            }
+            if(controller.getCurrentAccount() == null){
+                if(e.getSource()==((InitialNavbar)navbar).getSignInButton()){
+                    controller.traite(MainPage.this, Keyword.SHOWLOGINPAGE);
+                }
+            }
+            if(e.getSource()==bottomBar.getSubscribeButton()){
+                controller.traite(MainPage.this, Keyword.SUBSCRIBE);
+            }
+            else if(e.getSource()==bottomBar.getButtonBluRay()){
+                controller.traite(MainPage.this, Keyword.RETURN_BLURAY);
             }
         }
     };
@@ -51,9 +64,7 @@ public class MainPage extends BasePage {
     }
 
     private ActionListener setRightMenu(String[] tabFonctions){
-        String[] tabFonctions1 = {"Modifier mes données personnelles", "Modifier mes cartes bancaires", "Commander une carte abonné", "Arreter mon abonnement", "Se deconnecter"};
-        String[] tabFonctions2 = {"Modifier mes données personnelles", "Modifier mes cartes bancaires", "S'abonner", "Se deconnecter"};
-        JList<String> rightMenu = new JList<String>(tabFonctions1);
+        JList<String> rightMenu = new JList<String>(tabFonctions);
         rightMenu.setPreferredSize(new Dimension(7*SysAL2000.DIALOG_WIDTH/8, 7*SysAL2000.DIALOG_HEIGHT/8));
         rightMenu.setLayoutOrientation(JList.VERTICAL);
         rightMenu.setFont(new Font("serif", Font.PLAIN, 15));
@@ -119,6 +130,7 @@ public class MainPage extends BasePage {
     private void initNavbar(){
         if(controller.getCurrentAccount() == null){
             navbar = new InitialNavbar();
+            ((InitialNavbar)navbar).getSignInButton().addActionListener(actionListener);
         }
         else if(controller.getCurrentAccount() instanceof NormalAccount){
             navbar = new NormalNavbar(1);//controller.getCurrentAccount(). Il faut une méthode pour obtenir le nb de locations en cours
@@ -151,7 +163,7 @@ public class MainPage extends BasePage {
             filmsSections.add(new FilmSection(new ArrayList<String>(),"Par catégorie", true));
             filmsSections.add(new FilmSection(new ArrayList<String>(),"Tous les films", true));
         }
-        filmsSectionsPane = new FilmsSectionsPane(filmsSections);
+        filmsSectionsPane = new FilmsSectionsPane(controller, filmsSections);
     }
 
     private void initBottomBar(){
@@ -166,6 +178,8 @@ public class MainPage extends BasePage {
         else{
             bottomBar = new BottomBar(false);
         }
+        bottomBar.getSubscribeButton().addActionListener(actionListener);
+        bottomBar.getButtonBluRay().addActionListener(actionListener);
     }
 
     private void initView(){
@@ -179,5 +193,9 @@ public class MainPage extends BasePage {
         this.add(navbar, BorderLayout.NORTH);
         this.add(filmsSectionsPane, BorderLayout.CENTER);
         this.add(bottomBar, BorderLayout.SOUTH);
+    }
+
+    public HashMap<String, ArrayList<String>> getChosenCriterias(){
+        return filmsSectionsPane.getCriterias();
     }
 }

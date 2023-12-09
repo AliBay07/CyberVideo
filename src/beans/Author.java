@@ -1,5 +1,7 @@
 package beans;
 
+import java.util.Objects;
+
 public class Author {
 
 	private Long id;
@@ -29,5 +31,23 @@ public class Author {
 	public void setLastName(String last_name) {
 		this.last_name = last_name;
 	}
+	
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Author other = (Author) obj;
+        return Objects.equals(this.first_name.trim().toLowerCase(), other.first_name.trim().toLowerCase())
+                && Objects.equals(this.last_name.trim().toLowerCase(), other.last_name.trim().toLowerCase());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(first_name.trim().toLowerCase(), last_name.trim().toLowerCase());
+    }
 
 }

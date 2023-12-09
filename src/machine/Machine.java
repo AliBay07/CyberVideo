@@ -1,20 +1,26 @@
 package machine;
 
-import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import beans.*;
+import beans.Account;
+import beans.Actor;
+import beans.Author;
+import beans.Category;
+import beans.Film;
+import beans.SubscriberAccount;
+import beans.User;
+import coo.classes.FilmFilterIterator;
 import dao.tools.Session;
 import facade.bd.FacadeBd;
 
 public class Machine {
 
 	private static FacadeBd facadeBd = new FacadeBd();
-	private Account account;
+	private static Account account;
 	public Machine(Account account) {
-		this.account = account;
+		Machine.account = account;
 	}
 	public static void main(String[] args) {
 		SubscriberAccount firstAccount = new SubscriberAccount();
@@ -24,19 +30,52 @@ public class Machine {
 
 		try {
 			session.open();
-//			machine.getAllFilms();
-//			machine.getTopFilmsWeek();
-//			machine.getTopFilmsMonth();
-			User user = new User();
-			user.setFirstName("Nizar");
-			user.setLastName("adfh");
-			user.setDateOfBirth(new Date(2000,11,1));
-			String email = "nizar@gmail.com";
-			String pwd = "password;jfd";
-//			machine.createUserAccount(user,"nizar@gmail.com","password;jfd");
-			machine.userLogin(email,pwd);
-			machine.unsubscribeFromService();
-			System.out.println(machine.account);
+			//			machine.getAllFilms();
+			//			machine.getTopFilmsWeek();
+			//			machine.getTopFilmsMonth();
+			//			User user = new User();
+			//			user.setFirstName("Nizar");
+			//			user.setLastName("adfh");
+			//			user.setDateOfBirth(new Date(2000,11,1));
+			//			String email = "nizar@gmail.com";
+			//			String pwd = "password;jfd";
+			////			machine.createUserAccount(user,"nizar@gmail.com","password;jfd");
+			//			machine.userLogin(email,pwd);
+			//			machine.unsubscribeFromService();
+			//			System.out.println(machine.account);
+
+			List<Film> allFilms = facadeBd.getAllFilms(account);
+			
+			String nameFilter = "";
+			
+			Author author = new Author();
+			author.setId((long) 1);
+			author.setFirstName("christopher");
+			author.setLastName("nolan");
+			
+			Actor actor =  new Actor();
+			actor.setId((long) 1);
+			actor.setFirstName("tom");
+			actor.setLastName("hanks");
+			
+			Category category = new Category();
+			category.setId((long) 1);
+			category.setCategoryName("action");
+			
+			
+			List<Author> authorFilter = new ArrayList<Author>();
+			authorFilter.add(author);
+			List<Actor> actorFilter = new ArrayList<Actor>();
+			actorFilter.add(actor);
+			List<Category> categoryFilter = new ArrayList<Category>();
+			categoryFilter.add(category);
+			FilmFilterIterator filmIterator = new FilmFilterIterator(allFilms, nameFilter, authorFilter, actorFilter, categoryFilter);
+
+			while (filmIterator.hasNext()) {
+				Film filteredFilm = filmIterator.next();
+				System.out.println(filteredFilm.toString());
+			}
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {

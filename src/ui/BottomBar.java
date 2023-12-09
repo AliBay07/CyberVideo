@@ -26,4 +26,15 @@ public class BottomBar extends JPanel {
         this.add(returnBluRay);
         this.add(help);
     }
+
+    public JButton getSubscribeButton(){
+        return subscribe;
+    }
+    public JButton getButtonBluRay() {
+        return returnBluRay;
+    }
+
+    public JButton getHelp(){
+        return help;
+    }
 }

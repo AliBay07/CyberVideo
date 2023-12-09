@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class FilmsSectionsPane extends JPanel {
+    private Controller controller;
+    private HashMap<String, ArrayList<String>> criterias;
     private boolean research = false; //Il faudra changer ça par des enum ou autre pour faire la transition d'états !!!
     private JPanel researchElements;
     private JPanel showListsSections;
@@ -16,7 +18,8 @@ public class FilmsSectionsPane extends JPanel {
     public static Dimension dimension = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
     public static int FRAME_WIDTH = (int) dimension.getWidth();
 
-    public FilmsSectionsPane(ArrayList<FilmSection> sections) {
+    public FilmsSectionsPane(Controller c, ArrayList<FilmSection> sections) {
+        controller = c;
         filmsSections = sections;
         this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
 
@@ -45,7 +48,10 @@ public class FilmsSectionsPane extends JPanel {
                 popUp.showPopUp(availableCategories);
                 popUp.getValidationButton().addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        research = true;
+                        criterias = popUp.getChosenCriterias();
+                        popUp.setVisible(false);
+                        popUp.dispose();
+                        controller.traite((BasePage) FilmsSectionsPane.this.getParent(), Keyword.SHOWADVANCEDRESEARCH);
                     }
                 });
             }
@@ -83,6 +89,10 @@ public class FilmsSectionsPane extends JPanel {
 
     public ArrayList<FilmSection> getFilmSections() {
         return filmsSections;
+    }
+
+    public HashMap<String, ArrayList<String>> getCriterias(){
+        return criterias;
     }
 
 }

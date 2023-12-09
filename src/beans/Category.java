@@ -1,5 +1,7 @@
 package beans;
 
+import java.util.Objects;
+
 public class Category {
 	
 	private long id;
@@ -18,8 +20,26 @@ public class Category {
 		CategoryName = categoryName;
 	}
 	
-	@Override
-	public String toString() {
-		return this.getId() + " : " + this.getCategoryName();
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Category other = (Category) obj;
+        return Objects.equals(this.CategoryName.trim().toLowerCase(), other.CategoryName.trim().toLowerCase());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(CategoryName.trim().toLowerCase());
+    }
+
+    @Override
+    public String toString() {
+        return this.getId() + " : " + this.getCategoryName();
+    }
+    
 }
