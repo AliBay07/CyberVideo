@@ -221,6 +221,7 @@ public class Controller {
     public void showResearchPage(Section s){
         ResearchResults page = new ResearchResults(frame, s, ((MainPage) currentPage).getChosenCriterias());
         page.setController(this);
+        page.showResearchResults();
         showPage(page);
     }
 
