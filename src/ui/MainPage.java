@@ -44,7 +44,7 @@ public class MainPage extends BasePage {
                 controller.traite(MainPage.this, Keyword.SUBSCRIBE);
             }
             else if(e.getSource()==bottomBar.getButtonBluRay()){
-                controller.traite(MainPage.this, Keyword.RETURN_BLURAY);
+                controller.traite(MainPage.this, Keyword.SHOWRETURNBLURAYPAGE);
             }
         }
     };

@@ -24,12 +24,19 @@ public class Controller {
     }
 
     public void traite(BasePage page, Keyword action){
+        State old_state = state;
         if(action==Keyword.LOGIN) { //Faire les cas ou l'utilisateur se login à cause d'une demande d'abonnement ou de location
+            frame.remove(currentPage);
             if(currentAccount instanceof NormalAccount)
                 state = State.LOGGED_NORMAL;
             else if(currentAccount instanceof SubscriberAccount)
                 state = State.LOGGED_PREMIUM;
-            frame.remove(currentPage);
+            // continue l'action prévue
+            switch (old_state){
+                case SIGNIN_FOR_RETURN_FILM:
+                    showReturnBlueRayPage();
+                    break;
+            }
         }else
         if(action==Keyword.SHOWLOGINPAGE) {
             showLoginPage();
@@ -51,11 +58,16 @@ public class Controller {
                     break;
             }
         }else
-        if(action==Keyword.RETURN_BLURAY){
+        if(action==Keyword.SHOWRETURNBLURAYPAGE){
             switch(state) {
                 case IDLE:
                     showLoginPage();
                     state = State.SIGNIN_FOR_RETURN_FILM;
+                    break;
+                case LOGGED_NORMAL:
+                case LOGGED_PREMIUM:
+                    showReturnBlueRayPage();
+                    state = State.SHOW_RETURN_PAGE;
                     break;
                 default:
                     break;
@@ -222,6 +234,11 @@ public class Controller {
         ResearchResults page = new ResearchResults(frame, s, ((MainPage) currentPage).getChosenCriterias());
         page.setController(this);
         page.showResearchResults();
+        showPage(page);
+    }
+
+    public void showReturnBlueRayPage() {
+        ReturnBlueRayPage page = new ReturnBlueRayPage(frame, this);
         showPage(page);
     }
 
