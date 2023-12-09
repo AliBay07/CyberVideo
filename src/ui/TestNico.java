@@ -1,4 +1,4 @@
-package ui;
+/*package ui;
 import facade.ui.*;
 
 import javax.swing.*;
@@ -64,7 +64,7 @@ public class TestNico {
         account2.setCreditCard(creditCard);*/
 
         //crée un JFrame qui va contenir le panel renvoyé par affichage film
-        JFrame frame = new JFrame("Affichage film");
+        /*JFrame frame = new JFrame("Affichage film");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
         frame.setSize(800, 600);
@@ -73,4 +73,4 @@ public class TestNico {
         frame.setVisible(true);
     }
 
-}
+}*/

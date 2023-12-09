@@ -144,4 +144,10 @@ public class Controller {
             curPage.setVisible(true);
         }*/
     }
+
+    public void showFilm() {
+        BasePage page = new Affichage_Film(frame);
+        page.setController(this);
+        showPage(page);
+    }
 }

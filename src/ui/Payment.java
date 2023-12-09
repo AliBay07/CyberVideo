@@ -33,9 +33,6 @@ public class Payment {
             JLabel labelTexte = new JLabel("Sélectionnez une carte de paiement :");
             mainPanel.add(labelTexte, gbc);
 
-            // Panel pour les cartes de crédit
-            JPanel creditCardPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-
             // ButtonGroup pour les cartes de crédit
             ButtonGroup creditCardGroup = new ButtonGroup();
 
@@ -43,7 +40,7 @@ public class Payment {
             JRadioButton creditCardRadioButton = null;
 
             ArrayList<CreditCard> creditCard = account.getCreditCard();
-            creditCardPanel = new JPanel();
+            JPanel creditCardPanel = new JPanel();
             creditCardPanel.setLayout(new BoxLayout(creditCardPanel, BoxLayout.Y_AXIS));
 
             for (CreditCard creditCard1 : creditCard) {
@@ -123,56 +120,69 @@ public class Payment {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     // Vérifiez d'abord si la case à cocher de la carte de crédit est sélectionnée
-                    CreditCard selectedCreditCard = null;
+                    CreditCard selectedCreditCard;
                     SubscriptionCard selectedSubscriptionCard;
+                    boolean boolcredit = false;
 
+                        for (int i = 0; i < creditCardPanel.getComponentCount(); i++) {
+                            if (creditCardPanel.getComponent(i) instanceof JPanel) {
+                                JPanel cardItemPanel = (JPanel) creditCardPanel.getComponent(i);
+                                if (cardItemPanel.getComponent(1) instanceof JRadioButton) {
+                                    System.out.println("hihi");
+                                    JRadioButton radioButton = (JRadioButton) cardItemPanel.getComponent(1);
+                                    if (radioButton.isSelected()) {
+                                        selectedCreditCard = creditCard.get(i);
+                                        //get the radio button selected contained in selectedRadioButton
+                                        //get the parent of the radio button
+                                        boolcredit = true;
+                                        JPanel validateJPanel = new JPanel(new GridBagLayout());
+                                        GridBagConstraints gbc = new GridBagConstraints();
+                                        gbc.gridx = 0;
+                                        gbc.gridy = 0;
+                                        gbc.anchor = GridBagConstraints.CENTER;
+                                        gbc.insets = new Insets(5, 5, 5, 5);
 
-                    if (selectedRadioButton != null) {
+                                        JLabel labelName = new JLabel("Film : " + film.getName());
+                                        validateJPanel.add(labelName, gbc);
 
-                        JPanel validateJPanel = new JPanel(new GridBagLayout());
-                        GridBagConstraints gbc = new GridBagConstraints();
-                        gbc.gridx = 0;
-                        gbc.gridy = 0;
-                        gbc.anchor = GridBagConstraints.CENTER;
-                        gbc.insets = new Insets(5, 5, 5, 5);
+                                        gbc.gridy++;
+                                        JLabel labelDate = new JLabel("Date : " + String.valueOf(Calendar.getInstance().getTime()));
+                                        validateJPanel.add(labelDate, gbc);
 
-                        JLabel labelName = new JLabel("Film : " + film.getName());
-                        validateJPanel.add(labelName, gbc);
+                                        gbc.gridy++;
+                                        JLabel labelCarte = new JLabel("Paiement par carte bancaire");
+                                        validateJPanel.add(labelCarte, gbc);
 
-                        gbc.gridy++;
-                        JLabel labelDate = new JLabel("Date : " + String.valueOf(Calendar.getInstance().getTime()));
-                        validateJPanel.add(labelDate, gbc);
+                                        gbc.gridy++;
+                                        JLabel labelBank = new JLabel(selectedCreditCard.getBank());
+                                        validateJPanel.add(labelBank, gbc);
 
-                        gbc.gridy++;
-                        JLabel labelCarte = new JLabel("Paiement par carte bancaire");
-                        validateJPanel.add(labelCarte, gbc);
-
-                        gbc.gridy++;
-                        JLabel labelBank = new JLabel(selectedCreditCard.getBank());
-                        validateJPanel.add(labelBank, gbc);
-
-                        gbc.gridy++;
-                        JButton validateButton = new JButton("Valider");
-                        validateJPanel.add(validateButton, gbc);
-                        validateButton.addActionListener(new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                dialog.dispose();
+                                        gbc.gridy++;
+                                        JButton validateButton = new JButton("Valider");
+                                        validateJPanel.add(validateButton, gbc);
+                                        validateButton.addActionListener(new ActionListener() {
+                                            @Override
+                                            public void actionPerformed(ActionEvent e) {
+                                                dialog.dispose();
+                                            }
+                                        });
+                                        dialog.setTitle("Paiement effectué");
+                                        dialog.getContentPane().removeAll();
+                                        dialog.getContentPane().add(validateJPanel);
+                                        dialog.revalidate();
+                                        //accepter paiement et renvoyer vers une page de validation
+                                        //la page est surement dans affichage film et cette fonction return la carte
+                                    }
+                                }
                             }
-                        });
-                        dialog.setTitle("Paiement effectué");
-                        dialog.getContentPane().removeAll();
-                        dialog.getContentPane().add(validateJPanel);
-                        dialog.revalidate();
-                        //accepter paiement et renvoyer vers une page de validation
-                        //la page est surement dans affichage film et cette fonction return la carte
-                    } else {
+                        }
+                    if (!boolcredit) {
                         for (int i = 0; i < subscriberCardsPanel.getComponentCount(); i++) {
                             if (subscriberCardsPanel.getComponent(i) instanceof JPanel) {
-                                JPanel cardItemPanel = (JPanel) subscriberCardsPanel.getComponent(i);
-                                if (cardItemPanel.getComponent(0) instanceof JRadioButton) {
-                                    JRadioButton radioButton = (JRadioButton) cardItemPanel.getComponent(0);
-                                    if (radioButton.isSelected()) {
+                                JPanel cardItemPanel2 = (JPanel) subscriberCardsPanel.getComponent(i);
+                                if (cardItemPanel2.getComponent(0) instanceof JRadioButton) {
+                                    JRadioButton radioButton2 = (JRadioButton) cardItemPanel2.getComponent(0);
+                                    if (radioButton2.isSelected()) {
                                         selectedSubscriptionCard = subscriptionCards.get(i);
                                         if (selectedSubscriptionCard.getBalance() >= 4) {
                                             //creer un panel qui va avoir un gridbaglayout et qui va contenir les infos de la carte
