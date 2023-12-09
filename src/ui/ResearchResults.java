@@ -9,12 +9,11 @@ import javax.swing.*;
 
 public class ResearchResults extends BasePage {
     Section choice = Section.NOTHING;
-    private HashMap<String, ArrayList<String>> criteria;
-    //private ArrayList<String> criteria;
+    //private HashMap<String, ArrayList<String>> criteria;
+    private String criteria;
     private ArrayList<Film> filmsResults;
     private NavigationBar navbar;
     private JPanel mainPage;
-    private JPanel researchElements;
     private JPanel listResults;
     private JPanel listResultsInterior;
     private ArrayList<FilmInfoSection> filmsSections;
@@ -28,28 +27,30 @@ public class ResearchResults extends BasePage {
         @Override
         public void actionPerformed(ActionEvent e) {
             if(e.getSource()==navbar.getLeftComponent()){
-                controller.traite(ResearchResults.this, Keyword.MAINPAGE); 
+                controller.traite(ResearchResults.this, Keyword.BACK); 
+            }
+            if(e.getSource()==navbar.getRightComponent()){
+                controller.traite(ResearchResults.this, Keyword.SHOWLOGINPAGE); 
             }
             for(int i=0; i<filmsSections.size(); i++){
-                if(e.getSource()==filmsSections.get(i).getRentButton()) {
-                    controller.traite(ResearchResults.this, Keyword.RENT);
-                    selectedFilm = filmsResults.get(i);
-                }
-                else if(e.getSource()==filmsSections.get(i).getShowMoreButton()){
+                if(e.getSource()==filmsSections.get(i).getShowMoreButton()){
                     controller.traite(ResearchResults.this, Keyword.SHOWFILMDETAILS);
                     selectedFilm = filmsResults.get(i);
                 }
-                    
+                else if(!(controller.getCurrentAccount()==null) && e.getSource()==filmsSections.get(i).getRentButton()) {
+                    controller.traite(ResearchResults.this, Keyword.RENT);
+                    selectedFilm = filmsResults.get(i);
+                } 
             }
-            System.out.println("Message bien reçu !");
         }
     };
 
-    public ResearchResults(JFrame f, Section s, HashMap<String, ArrayList<String>> criterias){
-        super(f);
+    public ResearchResults(JFrame f, Controller c, Section s, String criteria, ArrayList<Film> films){
+        super(f,c);
         //Création des listes ayant le contenu des critères/films
         choice = s;
-        criteria = criterias;
+        this.criteria = criteria;
+        filmsResults = films;
         filmsResults = new ArrayList<Film>(); //Ici faire un appel à la BD (ou en paramètre et gestion dans le main ?)
         //Génération de films pour tester
         for(int i=1; i<6; i++){
@@ -58,8 +59,9 @@ public class ResearchResults extends BasePage {
         //Vérifier qu'il y a des films dans la liste !!
         filmsSections = new ArrayList<FilmInfoSection>();
         for(int i=0; i< filmsResults.size(); i++){
-            filmsSections.add(new FilmInfoSection(filmsResults.get(i)));
-            filmsSections.get(i).getRentButton().addActionListener(actionListener);
+            filmsSections.add(new FilmInfoSection(filmsResults.get(i),controller));
+            if(controller.getCurrentAccount() != null)
+                filmsSections.get(i).getRentButton().addActionListener(actionListener);
             filmsSections.get(i).getShowMoreButton().addActionListener(actionListener);
         }
         selectedFilm = null;
@@ -68,33 +70,6 @@ public class ResearchResults extends BasePage {
 		this.setPreferredSize(f.getSize());
 		this.setLocation(0,0);
     }
-
-    /*private void setResearchPanel(){
-        researchElements = new JPanel();
-        researchElements.setPreferredSize(new Dimension(FRAME_WIDTH, 40)); //Mettre des constantes aussi !
-        researchElements.setLayout(new FlowLayout(FlowLayout.CENTER, 70, this.getHeight()/6));
-        JButton advancedResearch = new JButton("Recherche avancée");
-        advancedResearch.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                AdvancedResearchPopUp popUp = new AdvancedResearchPopUp();
-                //!!!! Catgories qui vont être récupérées depuis la facade !
-                String[] availableCategories = new String[10];
-                for(int i=0; i<10; i++){
-                    availableCategories[i] = "Categorie " + i;
-                }
-                popUp.showPopUp(availableCategories);
-            }
-        });
-        JPanel researchByText = new JPanel(new FlowLayout(FlowLayout.LEADING, 10, 30));
-        JTextField researchBar = new JTextField("Rechercher un film", 30);
-        ImageIcon researchIcon = new ImageIcon("");
-        JButton launchResearch = new JButton("loupe",researchIcon);
-        researchByText.add(researchBar);
-        researchByText.add(launchResearch);
-        researchElements.add(advancedResearch);
-        researchElements.add(researchByText);
-        researchElements.setVisible(true);
-    }*/
 
     private void initResultsPanel(){
         listResults = new JPanel(new BorderLayout());
@@ -151,6 +126,7 @@ public class ResearchResults extends BasePage {
             connexionButton = new JButton("Connexion");
             //Faire un actionListener pour relier au controlleur
             //connexionButton.addActionListener(this.setRightMenu(null));
+            connexionButton.addActionListener(actionListener);
             navbar = new NavigationBar("Résultats de la recherche", backButton, connexionButton);
         }
         else {
@@ -165,6 +141,10 @@ public class ResearchResults extends BasePage {
             }
             navbar = new NavigationBar("Résultats de la recherche", backButton, connexionButton);
         }
+    }
+
+    public Film getSelectedFilm(){
+        return selectedFilm;
     }
 
     public void showResearchResults(){
@@ -183,7 +163,6 @@ public class ResearchResults extends BasePage {
         //Panel d'affichage des films résultats aux utilisateurs
         this.initResultsPanel();
 
-        //mainPage.add(researchElements);
         mainPage.add(Box.createRigidArea(new Dimension(0,20)));
         mainPage.add(listResults);
 
@@ -202,10 +181,10 @@ public class ResearchResults extends BasePage {
             title.setText("Blu-Ray disponibles");
         else if(choice == Section.ALL)
             title.setText("Tous les films");
-        else if(choice == Section.CATEGORY && criteria.size()>0)
-            title.setText(criteria.get("categorie").get(0));
-        else if(choice == Section.ADVANCED && criteria.size()>0)
-            title.setText("Recherche par critères");
+        else if(choice == Section.CATEGORY)
+            title.setText(criteria);
+        else if(choice == Section.ADVANCED)
+            title.setText("Recherche avancée par critères");
         return title;
     }
 

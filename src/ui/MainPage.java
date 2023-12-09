@@ -28,10 +28,11 @@ public class MainPage extends BasePage {
                 controller.traite(MainPage.this, Keyword.SHOWBLURAY);
             }
             if(controller.getCurrentAccount() != null){
-                if(e.getSource()==filmsSectionsPane.getFilmSections().get(4).getMoreFilmsButton()){
+                if(e.getSource()==filmsSectionsPane.getFilmSections().get(3).getMoreFilmsButton()){
                     controller.traite(MainPage.this, Keyword.SHOWCATEGORIES); 
+                    //Il faut changer ça car on veut avoir le nom de la catégorie selectionnée !
                 }
-                else if(e.getSource()==filmsSectionsPane.getFilmSections().get(5).getMoreFilmsButton()){
+                else if(e.getSource()==filmsSectionsPane.getFilmSections().get(4).getMoreFilmsButton()){
                     controller.traite(MainPage.this, Keyword.SHOWALLFILMS);
                 }
             }
@@ -162,6 +163,9 @@ public class MainPage extends BasePage {
             filmsSections.add(new FilmSection(new ArrayList<String>(),"Blu-ray disponibles", true));
             filmsSections.add(new FilmSection(new ArrayList<String>(),"Par catégorie", true));
             filmsSections.add(new FilmSection(new ArrayList<String>(),"Tous les films", true));
+        }
+        for(int i=2; i < filmsSections.size(); i++){
+            filmsSections.get(i).getMoreFilmsButton().addActionListener(actionListener);
         }
         filmsSectionsPane = new FilmsSectionsPane(controller, filmsSections);
     }
