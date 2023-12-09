@@ -30,11 +30,11 @@ public class Controller {
             else if(currentAccount instanceof SubscriberAccount)
                 state = State.LOGGED_PREMIUM;
             frame.remove(currentPage);
-        }
+        }else
         if(action==Keyword.SHOWLOGINPAGE) {
             showLoginPage();
             state = State.SIGNIN_NORMAL;
-        }
+        }else
         if(action==Keyword.SUBSCRIBE){
             switch (state) {
                 case IDLE:
@@ -50,7 +50,7 @@ public class Controller {
                 default:
                     break;
             }
-        }
+        }else
         if(action==Keyword.RETURN_BLURAY){
             switch(state) {
                 case IDLE:
@@ -60,7 +60,7 @@ public class Controller {
                 default:
                     break;
             }
-        }
+        }else
         if(action == Keyword.SHOWADVANCEDRESEARCH){
             switch(state){
                 case IDLE :
