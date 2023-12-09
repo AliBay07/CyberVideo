@@ -13,6 +13,7 @@ public class Controller {
     FacadeIHM facadeIHM;
     JFrame frame;
     BasePage currentPage;
+    BasePage oldPage;
     Account currentAccount;
     enum State { IDLE, SIGNIN_NORMAL, SIGNUP_NORMAL, SIGNIN_FOR_RENT, SIGNUP_FOR_RENT, SIGNIN_FOR_SUBSCRIBE, SIGNUP_FOR_SUBSCRIBE, SIGNIN_FOR_RETURN_FILM, LOGGED_NORMAL, LOGGED_PREMIUM, CHANGE_ACCOUNT_SETTING, SHOW_TOP10W_NO_CONNECT, SHOW_TOP10M_NO_CONNECT, SHOW_FILMS_NO_CONNECT, SHOW_BLURAY_NO_CONNECT, SHOW_RESEARCH_RESULTS_NO_CONNECT, SHOW_FILM_DETAILS_NO_CONNECT, SHOW_TOP10W_CONNECT, SHOW_TOP10M_CONNECT, SHOW_FILMS_CONNECT, SHOW_BLURAY_CONNECT, SHOW_RESEARCH_RESULTS_CONNECT, SHOW_FILM_DETAILS_CONNECT, RENT_FILM, SHOW_VALIDATION_RENT, SHOW_ERROR_RENT, SHOW_VALIDATION_SUBSCRIBE, SHOW_RETURN_PAGE, SHOW_VALIDATION_RETURN_PAGE, SHOW_ERROR_RETURN_PAGE};
     State state = State.IDLE;
@@ -251,6 +252,14 @@ public class Controller {
 
     // sortie le current page
     private void back() {
+        if(currentPage!=null){
+            currentPage.setVisible(false);
+        }
+        currentPage = oldPage;
+        oldPage = null;
+        currentPage.setVisible(true);
+        frame.add(currentPage);
+        frame.setVisible(true);
         /*BasePage lastPage = pagePile.pop();
         if(lastPage!=null){
             frame.remove(lastPage);

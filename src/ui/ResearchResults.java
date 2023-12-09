@@ -65,7 +65,7 @@ public class ResearchResults extends BasePage {
         selectedFilm = null;
         //Création des éléments visuels de l'interface
         this.setLayout(new BorderLayout());
-		this.setSize(f.getSize());
+		this.setPreferredSize(f.getSize());
 		this.setLocation(0,0);
     }
 
