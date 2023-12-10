@@ -120,28 +120,12 @@ public class Controller {
 							showResearchPage(Section.ADVANCED, results); //Vérifier le state !
 						}
 						else if(action == Keyword.SHOWTOP10W){
-							ArrayList<Film> results = new ArrayList<>();
-							List<List<Object>> topFilmsList = facadeIHM.getTopFilmsOfTheWeek();
-
-							for (List<Object> filmInfo : topFilmsList) {
-								if (filmInfo.size() >= 2) {
-									Film film = (Film) filmInfo.get(1);
-									results.add(film);
-								}
-							}
+							ArrayList<Film> results = facadeIHM.getTopFilmsOfTheWeek();
 							state = State.SHOW_TOP10W_CONNECT;
 							showResearchPage(Section.TOP10W, results);
 						}
 						else if(action == Keyword.SHOWTOP10M){
-							ArrayList<Film> results = new ArrayList<>();
-							List<List<Object>> topFilmsList = facadeIHM.getTopFilmsOfTheMonth();
-
-							for (List<Object> filmInfo : topFilmsList) {
-								if (filmInfo.size() >= 2) {
-									Film film = (Film) filmInfo.get(1);
-									results.add(film);
-								}
-							}
+							ArrayList<Film> results = facadeIHM.getTopFilmsOfTheMonth();
 							state = State.SHOW_TOP10M_CONNECT;
 							showResearchPage(Section.TOP10M, results);
 						}

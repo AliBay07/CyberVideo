@@ -137,13 +137,29 @@ public class Machine {
 		return films;
 	}
 
-	public List<List<Object>> getTopFilmsWeek(){
+	public ArrayList<Film>  getTopFilmsWeek(){
 		List<List<Object>> topWeekFilms =  facadeBd.getTopFilmsWeek(this.account);
-		return topWeekFilms;
+		ArrayList<Film> results = new ArrayList<>();
+		
+        for (List<Object> filmInfo : topWeekFilms) {
+            if (filmInfo.size() >= 2) {
+                Film film = (Film) filmInfo.get(1);
+                results.add(film);
+            }
+        }
+		return results;
 	}
-	public List<List<Object>> getTopFilmsMonth(){
+	public ArrayList<Film>  getTopFilmsMonth(){
 		List<List<Object>> topMonthFilms =  facadeBd.getTopFilmsMonth(this.account);
-		return topMonthFilms;
+		ArrayList<Film> results = new ArrayList<>();
+		
+        for (List<Object> filmInfo : topMonthFilms) {
+            if (filmInfo.size() >= 2) {
+                Film film = (Film) filmInfo.get(1);
+                results.add(film);
+            }
+        }
+		return results;
 	}
 	public ArrayList<Category> getAccountBannedCategories(Account account) {
 		ArrayList<Category> bannedCategories = (ArrayList<Category>) facadeBd.getBannedCategories(account);

@@ -32,11 +32,11 @@ public class FacadeIHM {
         return machine.createUserAccount(user, email, password);
     }
     
-    public List<List<Object>> getTopFilmsOfTheWeek() {
+    public ArrayList<Film> getTopFilmsOfTheWeek() {
         return machine.getTopFilmsWeek();
     }
 
-    public List<List<Object>> getTopFilmsOfTheMonth() {
+    public ArrayList<Film>  getTopFilmsOfTheMonth() {
         return machine.getTopFilmsMonth();
     }
 

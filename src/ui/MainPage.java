@@ -154,26 +154,8 @@ public class MainPage extends BasePage {
         ArrayList<FilmSection> filmsSections = new ArrayList<FilmSection>(); 
         ArrayList<Film> allfilms = controller.getFacadeIHM().getAllFilms();
         
-        ArrayList<Film> topFilmsMonth = new ArrayList<>();
-        List<List<Object>> topFilmsList = controller.getFacadeIHM().getTopFilmsOfTheMonth();
-
-        for (List<Object> filmInfo : topFilmsList) {
-            if (filmInfo.size() >= 2) {
-                Film film = (Film) filmInfo.get(1);
-                topFilmsMonth.add(film);
-            }
-        }
-
-        ArrayList<Film> topFilmsWeek = new ArrayList<>();
-        List<List<Object>> topFilmsWeekList = controller.getFacadeIHM().getTopFilmsOfTheWeek();
-
-        for (List<Object> filmInfo : topFilmsWeekList) {
-            if (filmInfo.size() >= 2) {
-                Film film = (Film) filmInfo.get(1);
-                topFilmsWeek.add(film);
-            }
-        }
-
+        ArrayList<Film> topFilmsMonth = controller.getFacadeIHM().getTopFilmsOfTheMonth();
+        ArrayList<Film> topFilmsWeek = controller.getFacadeIHM().getTopFilmsOfTheWeek();
         
         if(controller.getCurrentAccount() == null){
             filmsSections.add(new FilmSection(this.frame, controller, topFilmsWeek, "Top 10 de la semaine", false));
