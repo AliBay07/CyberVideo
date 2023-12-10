@@ -16,6 +16,9 @@ public class Controller {
     JFrame frame;
     BasePage currentPage;
     Account currentAccount;
+    Film currentFilm;
+    BlueRay currentBlueRay;
+    QrCode currentQrCode;
 
     // State des pages
     enum State { IDLE, SIGNIN_NORMAL, SIGNUP_NORMAL, SIGNIN_FOR_RENT, SIGNUP_FOR_RENT, SIGNIN_FOR_SUBSCRIBE,
@@ -215,13 +218,26 @@ public class Controller {
         if (action == Keyword.RENT) {
             showFilm();
             state = State.RENT_FILM;
-            //appeler metyhode afficher_film
-            //il faut louer le film => appel de fonction de la BD ?
-            //quel état mettre ?
         }
-        if (action == Keyword.RENTED_FILM) {
+        if (action == Keyword.RENTED_BlueRay_FILM) {
             showMainPage();
-            state = State.IDLE;
+            BlueRay blueRay = this.getCurrentBlueRay();
+            facadeIHM.rentBlueRay(blueRay);
+
+            if(currentAccount instanceof NormalAccount)
+                state = State.LOGGED_NORMAL;
+            else if(currentAccount instanceof SubscriberAccount)
+                state = State.LOGGED_PREMIUM;
+        }
+
+        if(action == Keyword.RENTED_QrCode_FILM)
+        {
+            showMainPage();
+            facadeIHM.printQrCode(this.getCurrentQrCode());
+            if(currentAccount instanceof NormalAccount)
+                state = State.LOGGED_NORMAL;
+            else if(currentAccount instanceof SubscriberAccount)
+                state = State.LOGGED_PREMIUM;
         }
     }
 
@@ -347,5 +363,29 @@ public class Controller {
         BasePage page = new Affichage_Film(frame);
         page.setController(this);
         showPage(page);
+    }
+
+    public void setCurrentFilm(Film film) {
+        this.currentFilm = film;
+    }
+
+    public Film getCurrentFilm() {
+        return this.currentFilm;
+    }
+
+    public BlueRay getCurrentBlueRay() {
+        return this.currentBlueRay;
+    }
+
+    public void setCurrentBlueRay(BlueRay blueRay) {
+        this.currentBlueRay = blueRay;
+    }
+
+    public QrCode getCurrentQrCode() {
+        return this.currentQrCode;
+    }
+
+    public void setCurrentQrCode(QrCode qrCode) {
+        this.currentQrCode = qrCode;
     }
 }
