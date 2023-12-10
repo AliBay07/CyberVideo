@@ -19,7 +19,7 @@ import java.util.List;
 public class Payment {
     private JRadioButton selectedRadioButton = null;
     public void afficherPaiement(Account account, JFrame jFrame, Film film,Controller controller,BasePage afficherFilm) {
-        if (account instanceof SubscriberAccount) {
+        if (account instanceof SubscriberAccount ) { //and nb de reservation < 3
             JDialog dialog = new JDialog(jFrame, "Paiement", true);
             dialog.setSize(500, 400);
             dialog.setLocationRelativeTo(null);

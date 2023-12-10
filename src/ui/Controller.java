@@ -219,6 +219,10 @@ public class Controller {
             //il faut louer le film => appel de fonction de la BD ?
             //quel état mettre ?
         }
+        if (action == Keyword.RENTED_FILM) {
+            showMainPage();
+            state = State.IDLE;
+        }
     }
 
 //    public void exitPage(BasePage page) {

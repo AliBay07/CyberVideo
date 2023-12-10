@@ -1,8 +1,5 @@
 package ui;
 
-import facade.ui.SubscriberAccount;
-import facade.ui.SubscriptionCard;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
