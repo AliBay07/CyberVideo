@@ -119,6 +119,7 @@ public class LoginPage extends BasePage {
         loginBtn.addActionListener(actionListener);
         signupBtn.addActionListener(actionListener);
 
+        this.setLayout(new BorderLayout());
         this.add(navbar, BorderLayout.NORTH);
         this.add(contentPanel, BorderLayout.CENTER);
     }
