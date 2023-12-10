@@ -204,6 +204,8 @@ public class Controller {
             state = State.SIGNUP_NORMAL;
         }
         if (action == Keyword.RENT) {
+            showFilm();
+            state = State.RENT_FILM;
             //appeler metyhode afficher_film
             //il faut louer le film => appel de fonction de la BD ?
             //quel état mettre ?

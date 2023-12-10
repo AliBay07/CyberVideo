@@ -171,14 +171,14 @@ public class Payment {
                                                 dialog.dispose();
                                             }
                                         });
+                                        //vérfifier que c'est bien ajouté à la bd
+                                        //=> fermer la dispose
+                                        //fermer après 4 secondes
                                         dialog.setTitle("Paiement effectué");
                                         dialog.getContentPane().removeAll();
                                         dialog.getContentPane().add(validateJPanel);
                                         dialog.revalidate();
 
-                                        //vérfifier que c'est bien ajouté à la bd
-                                        //=> fermer la dispose
-                                        //fermer après 4 secondes
                                         Timer timer = new Timer(4000, new ActionListener() {
                                             @Override
                                             public void actionPerformed(ActionEvent e) {
@@ -187,6 +187,7 @@ public class Payment {
                                         });
                                         timer.setRepeats(false); // Le timer ne se répétera pas
                                         timer.start();
+
                                         //accepter paiement et renvoyer vers une page de validation
                                         //la page est surement dans affichage film et cette fonction return la carte
                                     }
