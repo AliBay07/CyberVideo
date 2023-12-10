@@ -176,7 +176,15 @@ public class Payment {
                                         dialog.getContentPane().add(validateJPanel);
                                         dialog.revalidate();
 
-                                        controller.traite(afficherFilm,Keyword.RENT);
+                                        //fermer après 4 secondes
+                                        Timer timer = new Timer(4000, new ActionListener() {
+                                            @Override
+                                            public void actionPerformed(ActionEvent e) {
+                                                dialog.dispose();
+                                            }
+                                        });
+                                        timer.setRepeats(false); // Le timer ne se répétera pas
+                                        timer.start();
                                         //accepter paiement et renvoyer vers une page de validation
                                         //la page est surement dans affichage film et cette fonction return la carte
                                     }
@@ -235,7 +243,16 @@ public class Payment {
                                             dialog.getContentPane().removeAll();
                                             dialog.getContentPane().add(validateJPanel);
                                             dialog.revalidate();
-                                            controller.traite(afficherFilm,Keyword.RENT);
+
+                                            //fermer après 4 secondes
+                                            Timer timer = new Timer(4000, new ActionListener() {
+                                                @Override
+                                                public void actionPerformed(ActionEvent e) {
+                                                    dialog.dispose();
+                                                }
+                                            });
+                                            timer.setRepeats(false); // Le timer ne se répétera pas
+                                            timer.start();
                                         }
                                         //accepter paiement si solde >= 4e sinon erreur choisir autre carte puis renvoyer vers une page de validation
                                     }
@@ -377,6 +394,16 @@ public class Payment {
                         dialog.getContentPane().removeAll();
                         dialog.getContentPane().add(validateJPanel);
                         dialog.revalidate();
+
+                        Timer timer = new Timer(4000, new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                dialog.dispose();
+                            }
+                        });
+                        timer.setRepeats(false); // Le timer ne se répétera pas
+                        timer.start();
+
                         //accepter paiement et renvoyer vers une page de validation
                         //la page est surement dans affichage film et cette fonction return la carte
                     }
