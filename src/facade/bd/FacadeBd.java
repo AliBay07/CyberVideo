@@ -11,6 +11,7 @@ import beans.BlueRay;
 import beans.Category;
 import beans.CreditCard;
 import beans.Film;
+import beans.HistoricReservation;
 import beans.Reservation;
 import beans.SubscriberCard;
 import beans.User;
@@ -157,5 +158,9 @@ public class FacadeBd {
 
     public boolean removeCurrentReservation(BlueRay blueRay) {
         return reservationDao.removeCurrentReservation(blueRay);
+    }
+    
+    public List<HistoricReservation> getHistoricReservations(Account account) {
+    	return reservationDao.getHistoricReservations(account);
     }
 }

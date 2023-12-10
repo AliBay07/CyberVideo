@@ -6,12 +6,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import beans.Account;
 import beans.BlueRay;
 import beans.CurrentReservation;
 import beans.Film;
+import beans.HistoricReservation;
 import beans.Reservation;
 
 public class ReservationDao extends Dao<Reservation>{
@@ -25,7 +27,7 @@ public class ReservationDao extends Dao<Reservation>{
         ArrayList<Reservation> reservations = new ArrayList<>();
 
         if (account != null) {
-            String query = "SELECT r.id AS reservation_id, r.id_blueray, r.reservation_start_date, " +
+            String query = "SELECT b.available, r.id AS reservation_id, r.id_blueray, r.reservation_start_date, " +
                            "f.id AS film_id, f.name, f.duration, f.description " +
                            "FROM CurrentReservations r " +
                            "INNER JOIN BlueRay b ON r.id_blueray = b.id " +
@@ -46,8 +48,13 @@ public class ReservationDao extends Dao<Reservation>{
                     film.setDuration(resultSet.getInt("duration"));
                     film.setDescription(resultSet.getString("description"));
                     film.setPath(resultSet.getString("image_path"));
+                    
+                    BlueRay blueray = new BlueRay();
+                    blueray.setId(resultSet.getLong("id_blueray"));
+                    blueray.setFilm(film);
+                    blueray.setAvailable(resultSet.getLong("available"));
 
-                    reservation.setFilm(film);
+                    reservation.setBlueray(blueray);
                     reservation.setStartReservationDate(resultSet.getDate("reservation_start_date"));
 
                     reservations.add(reservation);
@@ -58,47 +65,6 @@ public class ReservationDao extends Dao<Reservation>{
         }
 
         return reservations;
-    }
-    
-    public ArrayList<Reservation> getCurrentQrCodeByAccount(Account account) {
-    		
-    	return null;
-//        ArrayList<Reservation> reservations = new ArrayList<>();
-//
-//        if (account != null) {
-//            String query = "SELECT r.id AS reservation_id, r.id_blueray, r.reservation_start_date, " +
-//                           "f.id AS film_id, f.name, f.duration, f.description " +
-//                           "FROM CurrentReservations r " +
-//                           "INNER JOIN BlueRay b ON r.id_blueray = b.id " +
-//                           "INNER JOIN Film f ON b.id_film = f.id " +
-//                           "WHERE r.id_account = ?";
-//
-//            try (PreparedStatement statement = connection.prepareStatement(query)) {
-//                statement.setLong(1, account.getId());
-//                ResultSet resultSet = statement.executeQuery();
-//
-//                while (resultSet.next()) {
-//                	CurrentReservation reservation = new CurrentReservation();
-//                    reservation.setAccount(account);
-//
-//                    Film film = new Film();
-//                    film.setId(resultSet.getLong("film_id"));
-//                    film.setName(resultSet.getString("name"));
-//                    film.setDuration(resultSet.getInt("duration"));
-//                    film.setDescription(resultSet.getString("description"));
-//                    film.setPath(resultSet.getString("image_path"));
-//
-//                    reservation.setFilm(film);
-//                    reservation.setStartReservationDate(resultSet.getDate("reservation_start_date"));
-//
-//                    reservations.add(reservation);
-//                }
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//
-//        return reservations;
     }
     
     public boolean ReserveBlueRay(Account account, BlueRay blueRay) {
@@ -296,6 +262,49 @@ public class ReservationDao extends Dao<Reservation>{
         }
 
         return false;
+    }
+    
+    public List<HistoricReservation> getHistoricReservations(Account account) {
+        List<HistoricReservation> historicReservations = new ArrayList<>();
+
+        if (account != null) {
+            String sql = "SELECT rh.*, b.*, f.* FROM ReservationHistory rh " +
+                         "JOIN BlueRay b ON rh.id_blueray = b.id " +
+                         "JOIN Film f ON b.id_film = f.id " +
+                         "WHERE rh.id_account = ?";
+
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+                preparedStatement.setLong(1, account.getId());
+
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    while (resultSet.next()) {
+                        HistoricReservation historicReservation = new HistoricReservation();
+                        historicReservation.setAccount(account);
+
+                        BlueRay blueRay = new BlueRay();
+                        blueRay.setId(resultSet.getLong("id_blueray"));
+                        blueRay.setAvailable(resultSet.getLong("available"));
+
+                        Film film = new Film();
+                        film.setId(resultSet.getLong("id_film"));
+                        film.setName(resultSet.getString("name"));
+                        film.setDescription(resultSet.getString("description"));
+                        film.setDuration(resultSet.getInt("duration"));
+                        blueRay.setFilm(film);
+
+                        historicReservation.setBlueray(blueRay);
+                        historicReservation.setStartReservationDate(resultSet.getDate("reservation_start_date"));
+                        historicReservation.setEndReservationDate(resultSet.getDate("reservation_end_date"));
+
+                        historicReservations.add(historicReservation);
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return historicReservations;
     }
 
 }

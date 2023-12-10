@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 public abstract class Reservation {
 	
 	private Account account;
-	private Film film;
+	private BlueRay blueray;
 	private Date StartReservationDate;
 	
 	public Account getAccount() {
@@ -17,14 +17,6 @@ public abstract class Reservation {
 		this.account = account;
 	}
 	
-	public Film getFilm() {
-		return film;
-	}
-	
-	public void setFilm(Film film) {
-		this.film = film;
-	}
-	
 	public Date getStartReservationDate() {
 		return StartReservationDate;
 	}
@@ -32,13 +24,21 @@ public abstract class Reservation {
 	public void setStartReservationDate(Date startReservationDate) {
 		StartReservationDate = startReservationDate;
 	}
+	
+	public BlueRay getBlueray() {
+		return blueray;
+	}
+
+	public void setBlueray(BlueRay blueray) {
+		this.blueray = blueray;
+	}
 
     @Override
     public String toString() {
 
         return "Reservation Information:\n" +
                account +
-               "Film: " + film.getName() + " (ID: " + film.getId() + ")\n" +
+               "Film: " + blueray.getFilm().getName() + " (ID: " + blueray.getFilm().getId() + ")\n" +
                "Start Reservation Date: " + StartReservationDate + "\n";
     }
 }
