@@ -25,6 +25,10 @@ public class FilmFilterIterator implements Iterator<Film> {
 		this.categoryFilter = categoryFilter;
 		this.currentIndex = 0;
 	}
+	
+	public void reset() {
+		this.currentIndex = 0;
+	}
 
 	@Override
 	public boolean hasNext() {
