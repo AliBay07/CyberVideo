@@ -2,7 +2,11 @@ package ui;
 
 import facade.ui.FacadeIHM;
 import javax.swing.*;
+
+import dao.tools.Session;
+
 import java.awt.*;
+import java.sql.SQLException;
 
 /**
  * Application
@@ -40,7 +44,18 @@ public class SysAL2000 extends JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                getInstance().controller.showMainPage();
+            	Session session = new Session(false);
+            	try {
+//					session.open();
+					getInstance().controller.showMainPage();
+				} catch (Exception e) {
+					try {
+						session.close();
+					} catch (SQLException e1) {
+						e1.printStackTrace();
+					}
+					e.printStackTrace();
+				}
             }
         });
     }

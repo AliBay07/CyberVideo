@@ -24,79 +24,79 @@ public class Machine {
 		}
 		return instance;
 	}
-	public static void main(String[] args) {
-		SubscriberAccount firstAccount = new SubscriberAccount();
-		Session session = new Session(false);
-		//Account myAccount = new beans.NormalAccount();
-		Machine machine = new Machine(firstAccount);
-		try {
-			session.open();
-			String email = "johndoe@example.com";
-			String pwd = "password123";
-			machine.userLogin(email,pwd);
-			System.out.println(machine.getAccount().getEmail());
-			//machine.getTopFilmsWeek();
-			//machine.getTopFilmsMonth();
-			//			User user = new User();
-			//			user.setFirstName("Nizar");
-			//			user.setLastName("adfh");
-			//			user.setDateOfBirth(new Date(2000,11,1));
-			//
-			////			machine.createUserAccount(user,"nizar@gmail.com","password;jfd");
-			//			machine.userLogin(email,pwd);
-			//			machine.unsubscribeFromService();
-			//			System.out.println(machine.account);
-			
-			List<Film> allFilms = facadeBd.getAllFilms(machine.getAccount());
-
-			String nameFilter = "";
-
-			Author author = new Author();
-			author.setId((long) 1);
-			author.setFirstName("christopher");
-			author.setLastName("nolan");
-
-			Actor actor =  new Actor();
-			actor.setId((long) 1);
-			actor.setFirstName("tom");
-			actor.setLastName("hanks");
-
-			Category category = new Category();
-			category.setId((long) 1);
-			category.setCategoryName("action");
-
-
-			List<Author> authorFilter = new ArrayList<Author>();
-			authorFilter.add(author);
-			List<Actor> actorFilter = new ArrayList<Actor>();
-			actorFilter.add(actor);
-			List<Category> categoryFilter = new ArrayList<Category>();
-			categoryFilter.add(category);
-			
-			FilmFilterIterator filmIterator = new FilmFilterIterator();
-			
-			filmIterator.setFilms(allFilms);
-			filmIterator.setNameFilter(nameFilter);
-			filmIterator.setAuthorFilter(authorFilter);
-			filmIterator.setActorFilter(actorFilter);
-			filmIterator.setCategoryFilter(categoryFilter);
-
-			while (filmIterator.hasNext()) {
-				Film filteredFilm = filmIterator.next();
-				System.out.println(filteredFilm.toString());
-			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				session.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-
-		}
-	}
+//	public static void main(String[] args) {
+//		SubscriberAccount firstAccount = new SubscriberAccount();
+//		
+//		//Account myAccount = new beans.NormalAccount();
+//		Machine machine = new Machine(firstAccount);
+//		try {
+//			
+//			String email = "johndoe@example.com";
+//			String pwd = "password123";
+//			machine.userLogin(email,pwd);
+//			System.out.println(machine.getAccount().getEmail());
+//			//machine.getTopFilmsWeek();
+//			//machine.getTopFilmsMonth();
+//			//			User user = new User();
+//			//			user.setFirstName("Nizar");
+//			//			user.setLastName("adfh");
+//			//			user.setDateOfBirth(new Date(2000,11,1));
+//			//
+//			////			machine.createUserAccount(user,"nizar@gmail.com","password;jfd");
+//			//			machine.userLogin(email,pwd);
+//			//			machine.unsubscribeFromService();
+//			//			System.out.println(machine.account);
+//			
+//			List<Film> allFilms = facadeBd.getAllFilms(machine.getAccount());
+//
+//			String nameFilter = "";
+//
+//			Author author = new Author();
+//			author.setId((long) 1);
+//			author.setFirstName("christopher");
+//			author.setLastName("nolan");
+//
+//			Actor actor =  new Actor();
+//			actor.setId((long) 1);
+//			actor.setFirstName("tom");
+//			actor.setLastName("hanks");
+//
+//			Category category = new Category();
+//			category.setId((long) 1);
+//			category.setCategoryName("action");
+//
+//
+//			List<Author> authorFilter = new ArrayList<Author>();
+//			authorFilter.add(author);
+//			List<Actor> actorFilter = new ArrayList<Actor>();
+//			actorFilter.add(actor);
+//			List<Category> categoryFilter = new ArrayList<Category>();
+//			categoryFilter.add(category);
+//			
+//			FilmFilterIterator filmIterator = new FilmFilterIterator();
+//			
+//			filmIterator.setFilms(allFilms);
+//			filmIterator.setNameFilter(nameFilter);
+//			filmIterator.setAuthorFilter(authorFilter);
+//			filmIterator.setActorFilter(actorFilter);
+//			filmIterator.setCategoryFilter(categoryFilter);
+//
+//			while (filmIterator.hasNext()) {
+//				Film filteredFilm = filmIterator.next();
+//				System.out.println(filteredFilm.toString());
+//			}
+//
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		} finally {
+//			try {
+//				
+//			} catch (SQLException e) {
+//				e.printStackTrace();
+//			}
+//
+//		}
+//	}
 	public boolean createUserAccount(User user, String email, String password) {
 		return facadeBd.createUserAccount(user, email, password);
 	}
