@@ -1,7 +1,6 @@
 package ui;
 
-import facade.ui.User;
-
+import beans.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;

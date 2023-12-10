@@ -1,7 +1,6 @@
 package facade.ui;
 
 import beans.*;
-import facade.ui.Account;
 
 import java.util.ArrayList;
 import java.util.List;
