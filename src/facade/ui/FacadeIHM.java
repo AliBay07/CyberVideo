@@ -82,10 +82,6 @@ public class FacadeIHM {
         return null;
     }
 
-    public ArrayList<HistoricReservation> getAccountRentalHistory() {
-        return null;
-    }
-
     public ArrayList<beans.Film> searchFilmByCriteria(Map<String,ArrayList<String>> filters) {
         return null;
     }

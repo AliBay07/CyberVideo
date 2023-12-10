@@ -348,4 +348,26 @@ public class Controller {
         page.setController(this);
         showPage(page);
     }
+
+    public void showRentalHistoryDialog() {
+        RentalHistoryPage historyPage = new RentalHistoryPage(frame, this);
+        JDialog dialog = showDialog(historyPage);
+        historyPage.setBackListener(new RentalHistoryPage.BackListener() {
+            @Override
+            public void backClicked() {
+                dialog.dispose();
+            }
+        });
+    }
+
+    private JDialog showDialog(JPanel panel) {
+        JDialog dialog = new JDialog();
+//        dialog.setLayout(new BoxLayout(dialog, BoxLayout.Y_AXIS));
+        dialog.setSize(SysAL2000.DIALOG_WIDTH, SysAL2000.DIALOG_HEIGHT);
+        dialog.setLocationRelativeTo(null);
+        dialog.add(panel);
+        dialog.setVisible(true);
+        return dialog;
+    }
+
 }
