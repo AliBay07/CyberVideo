@@ -45,24 +45,24 @@ public class Machine {
 			//			System.out.println(machine.account);
 
 			List<Film> allFilms = facadeBd.getAllFilms(account);
-			
+
 			String nameFilter = "";
-			
+
 			Author author = new Author();
 			author.setId((long) 1);
 			author.setFirstName("christopher");
 			author.setLastName("nolan");
-			
+
 			Actor actor =  new Actor();
 			actor.setId((long) 1);
 			actor.setFirstName("tom");
 			actor.setLastName("hanks");
-			
+
 			Category category = new Category();
 			category.setId((long) 1);
 			category.setCategoryName("action");
-			
-			
+
+
 			List<Author> authorFilter = new ArrayList<Author>();
 			authorFilter.add(author);
 			List<Actor> actorFilter = new ArrayList<Actor>();
@@ -75,7 +75,7 @@ public class Machine {
 				Film filteredFilm = filmIterator.next();
 				System.out.println(filteredFilm.toString());
 			}
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -93,66 +93,47 @@ public class Machine {
 	}
 
 	public void userLogin(String email, String pwd){
-		//i think we should get this info from facadeUI to make this function work correctly.
-		this.account = facadeBd.userLogin(email, pwd);
+		Machine.account = facadeBd.userLogin(email, pwd);
 	}
 	public boolean subscribeToService() {
 		SubscriberAccount subAccount = (SubscriberAccount) facadeBd.subscribeToService(account);
 		if (subAccount != null) {
-			this.account = subAccount;
+			Machine.account = subAccount;
 			return true;
 		}
 		return false;
 	}
 
 	public boolean unsubscribeFromService() {
-		Account retrievedAccount = facadeBd.unsubscribeFromService(account);
+		Account retrievedAccount = facadeBd.unsubscribeFromService(Machine.account);
 		if (retrievedAccount != null) {
-			this.account = retrievedAccount;
+			Machine.account = retrievedAccount;
 			return true;
 		}
 		return false;
 	}
 
-	public void getAllFilms() {
-		ArrayList<Film> films = (ArrayList<Film>) facadeBd.getAllFilms(this.account);
-		for (Film film : films) {
-			System.out.println(film);
-		}
+	public ArrayList<Film> getAllFilms() {
+		ArrayList<Film> films = (ArrayList<Film>) facadeBd.getAllFilms(Machine.account);
+		return films;
 	}
 
-	public void getTopFilmsWeek(){
-		List<List<Object>> topWeekFilms =  facadeBd.getTopFilmsWeek(this.account);
-		for (List<Object> film: topWeekFilms){
-			System.out.println(film.get(0) + "Number of reservations: " + film.get(1));
-		}
+	public List<List<Object>> getTopFilmsWeek(){
+		List<List<Object>> topWeekFilms =  facadeBd.getTopFilmsWeek(Machine.account);
+		return topWeekFilms;
 	}
-	public void getTopFilmsMonth(){
-		List<List<Object>> topMonthFilms =  facadeBd.getTopFilmsMonth(this.account);
-		for (List<Object> film: topMonthFilms){
-			System.out.println(film.get(0) + "Number of reservations: " + film.get(1));
-		}
+	public List<List<Object>> getTopFilmsMonth(){
+		List<List<Object>> topMonthFilms =  facadeBd.getTopFilmsMonth(Machine.account);
+		return topMonthFilms;
 	}
-	public void getAccountBannedCategories(Account account) {
+	public ArrayList<Category> getAccountBannedCategories(Account account) {
 		ArrayList<Category> bannedCategories = (ArrayList<Category>) facadeBd.getBannedCategories(account);
-		String output = "";
-		int i = 0;
-		for (Category c : bannedCategories) {
-			output += c + ", ";
-			i++;
-			if (i == bannedCategories.size() - 1) {
-				output += c;
-			}
-		}
-		System.out.println(account.getUser().getFirstName() + "'s banned categories: " + output);
+		return bannedCategories;
 	}
 
-	public void getAccountRentalHistory(Account account) {
-		//TO DO we dont have a function for this in the dao
-	}
+	public Account getAccount(){ return Machine.account;}
 
-	public Account getAccount(){ return this.account;}
 	public void setAccount(Account account) {
-		this.account = account;
+		Machine.account = account;
 	}
 }
