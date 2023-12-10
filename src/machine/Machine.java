@@ -108,6 +108,9 @@ public class Machine {
 	public void modifyAccountInformation(Account account, String newFirstName, String newLastName, Date newDob, String oldPassword, String newPassword) {
 		this.account = facadeBd.modifyAccountInformation(account, newFirstName, newLastName, newDob, oldPassword, newPassword);
 	}
+	public boolean setWeeklyRentalLimit(Account account, int weeklyLimit) {
+		return facadeBd.setWeeklyRentalLimit(account, weeklyLimit);
+	}
 	public boolean subscribeToService() {
 		SubscriberAccount subAccount = (SubscriberAccount) facadeBd.subscribeToService(account);
 		if (subAccount != null) {
@@ -144,11 +147,8 @@ public class Machine {
 		return bannedCategories;
 	}
 
-	public void getCurrentReservationsByAccount() {
-		ArrayList<Reservation> reservations = facadeBd.getCurrentReservationsByAccount(this.account);
-		for (Reservation r : reservations){
-			System.out.println(r);
-		}
+	public ArrayList<Reservation> getCurrentReservationsByAccount() {
+		return facadeBd.getCurrentReservationsByAccount(this.account);
 	}
 
 	public boolean ReserveBlueRay(Account account, BlueRay blueRay) {
@@ -176,6 +176,9 @@ public class Machine {
 
 	public boolean unbanFilmCategories(Account account, Category category) {
 		return facadeBd.unbanFilmCategories(account, category);
+	}
+	public boolean addReservationToHistoric(BlueRay blueRay) {
+		return facadeBd.addReservationToHistoric(blueRay);
 	}
 	public Account getAccount(){ return this.account;}
 
