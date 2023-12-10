@@ -25,6 +25,7 @@ class Affichage_Film extends BasePage {
         this.film = film;
         this.account = account;
         this.controller = controller;
+        this.blueRay = null;
     }
 
     public Affichage_Film(JFrame frame, BlueRay blueRay, Account account,Controller controller) {
@@ -32,8 +33,20 @@ class Affichage_Film extends BasePage {
         this.blueRay = blueRay;
         this.account = account;
         this.controller = controller;
+        this.film = null;
     }
 
+    public void afficher()
+    {
+        if(film != null)
+        {
+            afficher_film(film, account, frame, controller);
+        }
+        else
+        {
+            afficher_film(blueRay.getFilm(), account, frame, controller);
+        }
+    }
     public JPanel afficher_film(Film film, Account account, JFrame frame, Controller controller) {
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setSize(800, 600);
@@ -46,9 +59,9 @@ class Affichage_Film extends BasePage {
 
         // Partie supérieure du JSplitPane
         JPanel topPanel = new JPanel(new BorderLayout());
-        //JLabel imageLabel = new JLabel(film.getImageIcon());
-        JLabel imageLabel = null;
-        //topPanel.add(imageLabel, BorderLayout.WEST);
+        ImageIcon imageIcon = new ImageIcon(film.getPath());
+        JLabel imageLabel = new JLabel(imageIcon);
+        topPanel.add(imageLabel, BorderLayout.WEST);
 
 
         //zones avec les données du film
@@ -126,45 +139,21 @@ class Affichage_Film extends BasePage {
         JPanel buttonPanel = new JPanel();
         ImageIcon iconBlueRay = new ImageIcon("src/ui/Images/cd.png");
         ImageIcon iconQrCode = new ImageIcon("src/ui/Images/qr-code.png");
-        JButton blueRay = new JButton(ScaleImage.scaleImageIcon(iconBlueRay,20,20));
         JButton qrCode = new JButton(ScaleImage.scaleImageIcon(iconQrCode,20,20));
 
         if(account == null)
         {
-            blueRay.setVisible(false);
             qrCode.setVisible(false);
         }
 
-        buttonPanel.add(blueRay);
         buttonPanel.add(qrCode);
         descriptionTextArea.add(buttonPanel);
-
-
-        /*JButton backButton = new JButton("Back");
-        backButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                controller.traite();
-                frame.dispose();
-            }
-        });
-
-        // Ajout du bouton "Back" au panneau principal
-        mainPanel.add(backButton, BorderLayout.NORTH);*/
 
         splitPane.setBottomComponent(descriptionScrollPane);
 
         mainPanel.add(splitPane, BorderLayout.CENTER);
         mainPanel.add(buttonPanel,BorderLayout.SOUTH);
 
-
-        blueRay.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                payement.afficherPaiement(account,frame,film,controller,affichage_film);
-
-            }
-        });
 
         qrCode.addActionListener(new ActionListener() {
             @Override
@@ -191,9 +180,9 @@ class Affichage_Film extends BasePage {
 
         // Partie supérieure du JSplitPane
         JPanel topPanel = new JPanel(new BorderLayout());
-        //JLabel imageLabel = new JLabel(film.getImageIcon());
-        JLabel imageLabel = null;
-        //topPanel.add(imageLabel, BorderLayout.WEST);
+        ImageIcon imageIcon = new ImageIcon(blueRay.getFilm().getPath());
+        JLabel imageLabel = new JLabel(imageIcon);
+        topPanel.add(imageLabel, BorderLayout.WEST);
 
 
         //zones avec les données du film
@@ -270,32 +259,15 @@ class Affichage_Film extends BasePage {
         //ajout des boutons pour choisir le format
         JPanel buttonPanel = new JPanel();
         ImageIcon iconBlueRay = new ImageIcon("src/ui/Images/cd.png");
-        ImageIcon iconQrCode = new ImageIcon("src/ui/Images/qr-code.png");
         JButton blueRaybutton = new JButton(ScaleImage.scaleImageIcon(iconBlueRay,20,20));
-        JButton qrCode = new JButton(ScaleImage.scaleImageIcon(iconQrCode,20,20));
 
         if(account == null)
         {
             blueRaybutton.setVisible(false);
-            qrCode.setVisible(false);
         }
 
         buttonPanel.add(blueRaybutton);
-        buttonPanel.add(qrCode);
         descriptionTextArea.add(buttonPanel);
-
-
-        /*JButton backButton = new JButton("Back");
-        backButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                controller.traite();
-                frame.dispose();
-            }
-        });
-
-        // Ajout du bouton "Back" au panneau principal
-        mainPanel.add(backButton, BorderLayout.NORTH);*/
 
         splitPane.setBottomComponent(descriptionScrollPane);
 
@@ -308,13 +280,6 @@ class Affichage_Film extends BasePage {
             public void actionPerformed(ActionEvent e) {
                 payement.afficherPaiement(account,frame,blueRay.getFilm(),controller,affichage_film);
 
-            }
-        });
-
-        qrCode.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                payement.afficherPaiement(account,frame,blueRay.getFilm(),controller,affichage_film);
             }
         });
 
