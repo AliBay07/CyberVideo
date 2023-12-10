@@ -1,5 +1,8 @@
 package ui;
 
+import beans.SubscriberAccount;
+import beans.SubscriberCard;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -10,10 +13,10 @@ import java.util.ArrayList;
 
 public class CreditSubscriberCard {
     private JRadioButton selectedRadioButton = null;
-    private SubscriptionCard selectedSubscriptionCard = null;
+    private SubscriberCard selectedSubscriptionCard = null;
 
     public JPanel displaySubscriberCards(JFrame jFrame, SubscriberAccount account) {
-        // Panel principal avec BoxLayout
+        /*// Panel principal avec BoxLayout
         JDialog dialog = new JDialog(jFrame, "Cartes d'Abonnement", true);
         dialog.setSize(500, 400);
         dialog.setLocationRelativeTo(null);
@@ -41,7 +44,7 @@ public class CreditSubscriberCard {
         // Radio bouton pour la carte d'abonnement
         JRadioButton subscriptionCardRadioButton = null;
 
-        ArrayList<SubscriptionCard> subscriptionCards = account.getSubscriptionCard();
+        ArrayList<SubscriberCard> subscriptionCards = account.getSubscriberCards();
         subscriptionCardPanel = new JPanel();
         subscriptionCardPanel.setLayout(new BoxLayout(subscriptionCardPanel, BoxLayout.Y_AXIS));
 
@@ -101,8 +104,8 @@ public class CreditSubscriberCard {
                     cardInfoDialog.setVisible(true);
                 }
             }
-        });
-
-        return subscriptionCardPanel;
+        });*/
+        return null;
+        //return subscriptionCardPanel;
     }
 }

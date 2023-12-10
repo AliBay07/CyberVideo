@@ -350,7 +350,7 @@ public class Payment {
                 public void actionPerformed(ActionEvent e) {
                     // Vérifiez d'abord si la case à cocher de la carte de crédit est sélectionnée
                     CreditCard selectedCreditCard = null;
-                    SubscriptionCard selectedSubscriptionCard;
+                    SubscriberCard selectedSubscriptionCard;
 
                     for (CreditCard creditCard : account.getCreditCards()) {
                         if (creditCard.getId() == (creditCard.getId())) {
