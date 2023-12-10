@@ -163,12 +163,12 @@ public class ReturnBlueRayPage extends BasePage {
 
     private boolean returnFilm(Film film) {
         //Un peu bizarre, return un film il faut parcourir tous les blueRay pour le retrouver
-        ArrayList<BlueRay> allBlueRay = controller.getFacadeIHM().getAvailableBlueRays();
-        for(BlueRay item : allBlueRay){
-            if(item.getFilm().getId()==film.getId()){
-                return controller.getFacadeIHM().returnBlueRay(item);
-            }
-        }
+//        ArrayList<BlueRay> allBlueRay = controller.getFacadeIHM().getAvailableBlueRays();
+//        for(BlueRay item : allBlueRay){
+//            if(item.getFilm().getId()==film.getId()){
+//                return controller.getFacadeIHM().returnBlueRay(item);
+//            }
+//        }
         return false;
     }
 
