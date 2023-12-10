@@ -153,6 +153,7 @@ class Affichage_Film extends BasePage {
             @Override
             public void actionPerformed(ActionEvent e) {
                 payement.afficherPaiement(account,frame,film,controller,affichage_film);
+
             }
         });
 
@@ -164,7 +165,7 @@ class Affichage_Film extends BasePage {
         });
 
         mainPanel.setVisible(true);
-
+        controller.traite(affichage_film,Keyword.RENT);
         return mainPanel;
     }
 

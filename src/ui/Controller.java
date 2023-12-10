@@ -169,6 +169,10 @@ public class Controller {
 //                    frame.remove(currentPage);
                     showMainPage();
                     break;
+                case SHOW_FILM_DETAILS_CONNECT:
+                    frame.remove(currentPage);
+                    showMainPage();
+                    break;
                 //Il faut remodifier le state quand on fait un back ! écrire tous les cas
                 default:
                     back();
@@ -198,6 +202,11 @@ public class Controller {
         if(action == Keyword.SHOWSIGNUPPAGE){
             showSignupPage();
             state = State.SIGNUP_NORMAL;
+        }
+        if (action == Keyword.RENT) {
+            //appeler metyhode afficher_film
+            //il faut louer le film => appel de fonction de la BD ?
+            //quel état mettre ?
         }
     }
 
