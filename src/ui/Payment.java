@@ -176,6 +176,8 @@ public class Payment {
                                         dialog.getContentPane().add(validateJPanel);
                                         dialog.revalidate();
 
+                                        //vérfifier que c'est bien ajouté à la bd
+                                        //=> fermer la dispose
                                         //fermer après 4 secondes
                                         Timer timer = new Timer(4000, new ActionListener() {
                                             @Override
