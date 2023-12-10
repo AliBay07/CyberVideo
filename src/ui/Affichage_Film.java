@@ -30,8 +30,6 @@ class Affichage_Film extends BasePage {
 
         // Partie supérieure du JSplitPane
         JPanel topPanel = new JPanel(new BorderLayout());
-        //imageIcon avec une description (utiliser pour afficher acteur etc) ????
-        //JLabel imageLabel = new JLabel(film.scaleImageIcon(film.getImageIcon(),film.getImageIcon().getIconWidth(),film.getImageIcon().getIconHeight()));
         JLabel imageLabel = new JLabel(film.getImageIcon());
         topPanel.add(imageLabel, BorderLayout.WEST);
 
@@ -113,6 +111,13 @@ class Affichage_Film extends BasePage {
         ImageIcon iconQrCode = new ImageIcon("src/ui/Images/qr-code.png");
         JButton blueRay = new JButton(ScaleImage.scaleImageIcon(iconBlueRay,20,20));
         JButton qrCode = new JButton(ScaleImage.scaleImageIcon(iconQrCode,20,20));
+
+        if(account == null)
+        {
+            blueRay.setVisible(false);
+            qrCode.setVisible(false);
+        }
+
         buttonPanel.add(blueRay);
         buttonPanel.add(qrCode);
         descriptionTextArea.add(buttonPanel);

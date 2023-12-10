@@ -7,13 +7,15 @@ import beans.*;
 import java.awt.*;
 
 public class FilmInfoSection extends JPanel {
+    private Controller controller;
     private Film film;
     private JButton showMore;
     private JButton rent;
     public static Dimension dimension = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
     public static int FRAME_WIDTH = (int) dimension.getWidth();
 
-    public FilmInfoSection(Film f){
+    public FilmInfoSection(Film f, Controller controller){
+        this.controller = controller;
         film = f;
         showMore = new JButton("En savoir plus");
         rent = new JButton("Louer");
@@ -28,7 +30,11 @@ public class FilmInfoSection extends JPanel {
         c.gridy = 0;
         c.weightx = 0.2;
         c.gridheight = 4;
-        this.add(new JLabel("Image",new ImageIcon(film.getPath()),JLabel.CENTER),c); //Trouver le moyen d'avoir l'image plutot que son lien
+        ImageIcon image = new ImageIcon(film.getPath());
+        if(image.getIconHeight() > this.getHeight())
+            this.add(new JLabel("Affiche du film",JLabel.CENTER),c);
+        else
+            this.add(new JLabel(new ImageIcon(film.getPath()),JLabel.CENTER),c); //Trouver le moyen d'avoir l'image plutot que son lien
 
         //Ajout des informations du film
         c.fill = GridBagConstraints.NONE;
@@ -82,6 +88,9 @@ public class FilmInfoSection extends JPanel {
         c.weightx = 0.3;
         c.gridheight = 2;
         this.add(rent, c);
+        if(controller.getCurrentAccount() == null){ 
+            rent.setVisible(false);
+        }
     }
 
     public JButton getRentButton(){

@@ -43,11 +43,11 @@ public class FacadeIHM {
     public boolean printQrCode(QrCode qrCode) {
         return false;
     }
-    public List<List<Object>> getTopFilmsOfTheWeek() {
+    public ArrayList<beans.Film> getTopFilmsOfTheWeek() {
         return null;
     }
 
-    public List<List<Object>> getTopFilmsOfTheMonth() {
+    public ArrayList<beans.Film> getTopFilmsOfTheMonth() {
         return null;
     }
 
@@ -87,7 +87,7 @@ public class FacadeIHM {
         return null;
     }
 
-    public ArrayList<Film> searchFilmByCriteria(Map<String,ArrayList<String>> filters) {
+    public ArrayList<beans.Film> searchFilmByCriteria(Map<String,ArrayList<String>> filters) {
         return null;
     }
 
@@ -95,7 +95,7 @@ public class FacadeIHM {
         return null;
     }
 
-    public ArrayList<Film> getAllFilms() {
+    public ArrayList<beans.Film> getAllFilms() {
         return null;
     }
 
@@ -123,7 +123,7 @@ public class FacadeIHM {
         return false;
     }
 
-    public ArrayList<BlueRay> getAvailableBlueRays() {
+    public ArrayList<beans.Film> getAvailableBlueRays() {
         return null;
     }
 
