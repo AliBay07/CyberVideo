@@ -31,7 +31,7 @@ public class AccountDao extends Dao<Account> {
 
 	public boolean createUserAccount(User user, String email, String password) {
 
-		String insertUserQuery = "INSERT INTO Users (first_name, last_name, dob) VALUES (?, ?, ?)";
+		String insertUserQuery = "INSERT INTO Users (first_name, last_name) VALUES (?, ?)";
 		String insertAccountQuery = "INSERT INTO Account (id_users, email, password, is_subscriber, nb_allowed_reservations) " +
 				"VALUES (?, ?, ?, 'N', ?)";
 
@@ -44,7 +44,6 @@ public class AccountDao extends Dao<Account> {
 			try (PreparedStatement userStatement = connection.prepareStatement(insertUserQuery, new String[]{"id"})) {
 				userStatement.setString(1, user.getFirstName());
 				userStatement.setString(2, user.getLastName());
-				userStatement.setDate(3, (Date) user.getDateOfBirth());
 
 				int rowsAffected = userStatement.executeUpdate();
 				if (rowsAffected > 0) {
@@ -125,7 +124,7 @@ public class AccountDao extends Dao<Account> {
 					String lastName = resultSet.getString("last_name");
 
 					Account account = null;
-
+					
 					if ("Y".equals(isSubscriber)) {
 						account = new SubscriberAccount();
 

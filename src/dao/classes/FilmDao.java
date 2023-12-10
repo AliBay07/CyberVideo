@@ -272,8 +272,8 @@ public class FilmDao extends Dao<Film> {
 					film.setCategories(categories);
 				}
 
-				filmData.add(film);
 				filmData.add(resultSet.getInt("number_reservations"));
+				filmData.add(film);
 
 				topFilms.add(filmData);
 			}
@@ -405,8 +405,8 @@ public class FilmDao extends Dao<Film> {
 					film.setCategories(categories);
 				}
 
-				filmData.add(film);
 				filmData.add(resultSet.getInt("number_reservations"));
+				filmData.add(film);
 
 				topFilms.add(filmData);
 			}

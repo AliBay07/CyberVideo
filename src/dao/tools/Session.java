@@ -15,6 +15,7 @@ public class Session {
     public void open() throws SQLException {
         if (connection==null) {
 			connection=DatabaseConnection.getConnection();
+			System.out.println("Connection with database opened successfully!");
             connection.setAutoCommit(false); // Désactivez l'autocommit pour gérer manuellement la transaction
         }
     }
@@ -33,6 +34,7 @@ public class Session {
         if (connection!=null) {
             connection.close(); // Désactivez l'autocommit pour gérer manuellement la transaction
             connection=null;
+            System.out.println("Connection with database closed successfully!");
         }
     }
 

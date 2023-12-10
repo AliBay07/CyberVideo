@@ -1,25 +1,46 @@
 package facade.ui;
 
-import beans.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import beans.Account;
+import beans.BlueRay;
+import beans.Category;
+import beans.Film;
+import beans.HistoricReservation;
+import beans.QrCode;
 //import machine.Machine;
+import beans.Reservation;
+import beans.SubscriberCard;
+import beans.User;
+import machine.Machine;
 
 public class FacadeIHM {
 
-    //private Machine machine;
+    private static Machine machine = Machine.getInstance(null);
+
+    public ArrayList<Film> getAllFilms() {
+        return machine.getAllFilms();
+    }
+
+    public Account userLogin(String email, String password) {
+    	return machine.userLogin(email, password);
+    }
 
     public boolean createUserAccount(User user, String email, String password) {
-        return false;
+        return machine.createUserAccount(user, email, password);
     }
 
-    public beans.Account userLogin(String email, String password) {
-        return null;
+    public ArrayList<Film> getTopFilmsOfTheWeek() {
+        return machine.getTopFilmsWeek();
     }
 
-    public beans.Account userLoginWithCard(String cardNumber, String password) {
+    public ArrayList<Film>  getTopFilmsOfTheMonth() {
+        return machine.getTopFilmsMonth();
+    }
+
+    public Account userLoginWithCard(String cardNumber, String password) {
         return null;
     }
 
@@ -42,19 +63,13 @@ public class FacadeIHM {
     public boolean printQrCode(QrCode qrCode) {
         return false;
     }
-    public ArrayList<beans.Film> getTopFilmsOfTheWeek() {
+
+
+    public Account subscribeToService() {
         return null;
     }
 
-    public ArrayList<beans.Film> getTopFilmsOfTheMonth() {
-        return null;
-    }
-
-    public beans.Account subscribeToService() {
-        return null;
-    }
-
-    public beans.Account unsubscribeToService() {
+    public Account unsubscribeToService() {
         return null;
     }
 
@@ -78,11 +93,11 @@ public class FacadeIHM {
         return null;
     }
 
-    public beans.Account modifyAccountInformation(Account account, String newFirstName, String newLastName, String NewPassword) {
+    public Account modifyAccountInformation(Account account, String newFirstName, String newLastName, String NewPassword) {
         return null;
     }
 
-    public ArrayList<beans.Film> searchFilmByCriteria(Map<String,ArrayList<String>> filters) {
+    public ArrayList<Film> searchFilmByCriteria(Map<String,ArrayList<String>> filters) {
         return null;
     }
 
@@ -90,15 +105,11 @@ public class FacadeIHM {
         return null;
     }
 
-    public ArrayList<beans.Film> getAllFilms() {
-        return null;
-    }
-
     public boolean reportLostBlueRayDisc(BlueRay blueray) {
         return false;
     }
 
-    public beans.Account modifyAccountInformation(String newFirstName, String newLastName, String NewPassword) {
+    public Account modifyAccountInformation(String newFirstName, String newLastName, String NewPassword) {
         return null;
     }
 
@@ -118,7 +129,7 @@ public class FacadeIHM {
         return false;
     }
 
-    public ArrayList<beans.Film> getAvailableBlueRays() {
+    public ArrayList<Film> getAvailableBlueRays() {
         return null;
     }
 

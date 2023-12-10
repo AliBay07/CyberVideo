@@ -165,28 +165,36 @@ public class Payment {
                                         gbc.gridy++;
                                         JButton validateButton = new JButton("Valider");
                                         validateJPanel.add(validateButton, gbc);
-                                        validateButton.addActionListener(new ActionListener() {
-                                            @Override
-                                            public void actionPerformed(ActionEvent e) {
-                                                dialog.dispose();
-                                            }
-                                        });
+                                        //vérifier que l'achat fonctionne
+                                        if(controller.getFacadeIHM().processPaymentByCreditCard(4))
+                                        {
+                                            validateButton.addActionListener(new ActionListener() {
+                                                @Override
+                                                public void actionPerformed(ActionEvent e) {
+                                                    dialog.dispose();
+                                                }
+                                            });
+
+                                            dialog.setTitle("Paiement effectué");
+                                            dialog.getContentPane().removeAll();
+                                            dialog.getContentPane().add(validateJPanel);
+                                            dialog.revalidate();
+
+                                            Timer timer = new Timer(4000, new ActionListener() {
+                                                @Override
+                                                public void actionPerformed(ActionEvent e) {
+                                                    dialog.dispose();
+                                                }
+                                            });
+                                            timer.setRepeats(false); // Le timer ne se répétera pas
+                                            timer.start();
+                                        }
+
                                         //vérfifier que c'est bien ajouté à la bd
                                         //=> fermer la dispose
                                         //fermer après 4 secondes
-                                        dialog.setTitle("Paiement effectué");
-                                        dialog.getContentPane().removeAll();
-                                        dialog.getContentPane().add(validateJPanel);
-                                        dialog.revalidate();
 
-                                        Timer timer = new Timer(4000, new ActionListener() {
-                                            @Override
-                                            public void actionPerformed(ActionEvent e) {
-                                                dialog.dispose();
-                                            }
-                                        });
-                                        timer.setRepeats(false); // Le timer ne se répétera pas
-                                        timer.start();
+
 
                                         //accepter paiement et renvoyer vers une page de validation
                                         //la page est surement dans affichage film et cette fonction return la carte
@@ -263,9 +271,6 @@ public class Payment {
                             }
                         }
                     }
-
-                    // Vous avez maintenant soit selectedCreditCard ou selectedSubscriptionCard avec la carte sélectionnée.
-                    // Vous pouvez faire ce que vous avez besoin de faire avec la carte ici.
                 }
             });
             gbc.gridy = 4;

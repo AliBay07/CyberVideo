@@ -13,7 +13,9 @@ import java.awt.event.ActionListener;
 class Affichage_Film extends BasePage {
     private Affichage_Film affichage_film = this;
     private Film film;
+    private BlueRay blueRay;
     private Account account;
+    private Controller controller;
     public Affichage_Film(JFrame frame) {
         super(frame);
     }
@@ -22,7 +24,14 @@ class Affichage_Film extends BasePage {
         super(frame);
         this.film = film;
         this.account = account;
-        afficher_film(this.film, this.account, frame, controller);
+        this.controller = controller;
+    }
+
+    public Affichage_Film(JFrame frame, BlueRay blueRay, Account account,Controller controller) {
+        super(frame);
+        this.blueRay = blueRay;
+        this.account = account;
+        this.controller = controller;
     }
 
     public JPanel afficher_film(Film film, Account account, JFrame frame, Controller controller) {
@@ -169,11 +178,149 @@ class Affichage_Film extends BasePage {
         return mainPanel;
     }
 
-    void getFilm(Film film) {
-        this.film = film;
+
+    public JPanel afficher_film(BlueRay blueRay, Account account, JFrame frame, Controller controller) {
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setSize(800, 600);
+        Payment payement = new Payment();
+
+        // Créer un JSplitPane pour diviser la fenêtre en deux parties de taille égale
+        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+        splitPane.setResizeWeight(0.5); // Les deux parties auront la même taille
+        splitPane.setEnabled(false); // Empêche l'utilisateur de changer la taille
+
+        // Partie supérieure du JSplitPane
+        JPanel topPanel = new JPanel(new BorderLayout());
+        //JLabel imageLabel = new JLabel(film.getImageIcon());
+        JLabel imageLabel = null;
+        //topPanel.add(imageLabel, BorderLayout.WEST);
+
+
+        //zones avec les données du film
+        JLabel jLabelTitle = new JLabel("Name : "+blueRay.getFilm().getName());
+        JLabel jLabelAuthor = new JLabel("Author :"+blueRay.getFilm().getAuthors().get(0));
+
+        // Liste d'acteurs
+        JPanel actorsPanel = new JPanel(new GridLayout(blueRay.getFilm().getActors().size(), 1));
+        for (Actor actor : blueRay.getFilm().getActors()) {
+            if(blueRay.getFilm().getActors().get(0) == actor)
+            {
+                JLabel jLabelActor = new JLabel("Actor: " + actor.getFirstName());
+                actorsPanel.add(jLabelActor);
+            }
+            else {
+                JLabel jLabelActor = new JLabel("           " + actor.getLastName());
+                actorsPanel.add(jLabelActor);
+            }
+        }
+        //JScrollPane pour contenir la liste des acteurs
+        JScrollPane actorsScrollPane = new JScrollPane(actorsPanel);
+
+        JLabel jLabelDuration = new JLabel("Duration : "+blueRay.getFilm().getDuration()+" mn");
+
+        //Liste Categories
+        JPanel categoryPanel = new JPanel(new GridLayout(blueRay.getFilm().getCategories().size(),1));
+        for(Category categorie : blueRay.getFilm().getCategories()) {
+            if(blueRay.getFilm().getCategories().get(0) == categorie)
+            {
+                JLabel jLabelCategory = new JLabel("Category : " + categorie.getCategoryName());
+                categoryPanel.add(jLabelCategory);
+            }
+            else {
+                JLabel jLabelCategory = new JLabel("                   " + categorie.getCategoryName());
+                categoryPanel.add(jLabelCategory);
+            }
+
+        }
+        //JScrollPane pour contenir la liste des Categories
+        JScrollPane categoryScrollPane = new JScrollPane(categoryPanel);
+
+        JPanel remainingSize = new JPanel(new GridLayout( 0,2));
+
+        //Bordures adaptées à chaque composant
+        categoryScrollPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        actorsScrollPane.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
+        jLabelTitle.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
+        jLabelAuthor.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 150));
+
+        //Ajout des composants au Panel
+        remainingSize.add(actorsScrollPane);
+        remainingSize.add(jLabelTitle);
+        remainingSize.add(jLabelAuthor);
+        remainingSize.add(actorsScrollPane);
+        remainingSize.add(jLabelDuration);
+        remainingSize.add(categoryScrollPane);
+
+        //Ajout du panel avec l'image et du panel avec les composants dans la partie du haut
+        JPanel topComponent = new JPanel(new BorderLayout());
+        topComponent.add(topPanel, BorderLayout.WEST);
+        topComponent.add(remainingSize, BorderLayout.EAST);
+        splitPane.setTopComponent(topComponent);
+
+
+        // Partie inférieure du JSplitPane
+        JTextArea descriptionTextArea = new JTextArea(blueRay.getFilm().getDescription());
+        descriptionTextArea.setWrapStyleWord(true);
+        descriptionTextArea.setLineWrap(true);
+        descriptionTextArea.setCaretPosition(0);
+        descriptionTextArea.setEditable(false);
+
+        JScrollPane descriptionScrollPane = new JScrollPane(descriptionTextArea);
+
+        //ajout des boutons pour choisir le format
+        JPanel buttonPanel = new JPanel();
+        ImageIcon iconBlueRay = new ImageIcon("src/ui/Images/cd.png");
+        ImageIcon iconQrCode = new ImageIcon("src/ui/Images/qr-code.png");
+        JButton blueRaybutton = new JButton(ScaleImage.scaleImageIcon(iconBlueRay,20,20));
+        JButton qrCode = new JButton(ScaleImage.scaleImageIcon(iconQrCode,20,20));
+
+        if(account == null)
+        {
+            blueRaybutton.setVisible(false);
+            qrCode.setVisible(false);
+        }
+
+        buttonPanel.add(blueRaybutton);
+        buttonPanel.add(qrCode);
+        descriptionTextArea.add(buttonPanel);
+
+
+        /*JButton backButton = new JButton("Back");
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.traite();
+                frame.dispose();
+            }
+        });
+
+        // Ajout du bouton "Back" au panneau principal
+        mainPanel.add(backButton, BorderLayout.NORTH);*/
+
+        splitPane.setBottomComponent(descriptionScrollPane);
+
+        mainPanel.add(splitPane, BorderLayout.CENTER);
+        mainPanel.add(buttonPanel,BorderLayout.SOUTH);
+
+
+        blueRaybutton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                payement.afficherPaiement(account,frame,blueRay.getFilm(),controller,affichage_film);
+
+            }
+        });
+
+        qrCode.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                payement.afficherPaiement(account,frame,blueRay.getFilm(),controller,affichage_film);
+            }
+        });
+
+        mainPanel.setVisible(true);
+        controller.traite(affichage_film,Keyword.RENT);
+        return mainPanel;
     }
 
-    void getAccount(Account account) {
-        this.account = account;
-    }
 }
