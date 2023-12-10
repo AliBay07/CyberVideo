@@ -46,9 +46,9 @@ public class SysAL2000 extends JFrame {
             public void run() {
             	Session session = new Session(false);
             	try {
-//					session.open();
+					session.open();
 					getInstance().controller.showMainPage();
-				} catch (Exception e) {
+				} catch (SQLException e) {
 					try {
 						session.close();
 					} catch (SQLException e1) {

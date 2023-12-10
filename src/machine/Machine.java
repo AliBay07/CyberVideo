@@ -15,9 +15,11 @@ public class Machine {
 	private static FacadeBd facadeBd = new FacadeBd();
 	private Account account;
 	private static Machine instance;
+	
 	private Machine(Account account) {
 		this.account = account;
 	}
+	
 	public static Machine getInstance(Account account) {
 		if (instance == null) {
 			instance = new Machine(account);
@@ -101,8 +103,9 @@ public class Machine {
 		return facadeBd.createUserAccount(user, email, password);
 	}
 
-	public void userLogin(String email, String pwd){
+	public Account userLogin(String email, String pwd){
 		this.account = facadeBd.userLogin(email, pwd);
+		return this.account;
 	}
 
 	public void modifyAccountInformation(Account account, String newFirstName, String newLastName, Date newDob, String oldPassword, String newPassword) {

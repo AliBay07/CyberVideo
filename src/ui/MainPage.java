@@ -1,6 +1,7 @@
 package ui;
 
 import java.awt.event.*;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -151,18 +152,41 @@ public class MainPage extends BasePage {
 
     private void initFilmsSectionsPane(){
         ArrayList<FilmSection> filmsSections = new ArrayList<FilmSection>(); 
-        //Il faut avoir les infos sur les films via la BD et l'itérateur de la machine
+        ArrayList<Film> allfilms = controller.getFacadeIHM().getAllFilms();
+        
+        ArrayList<Film> topFilmsMonth = new ArrayList<>();
+        List<List<Object>> topFilmsList = controller.getFacadeIHM().getTopFilmsOfTheMonth();
+
+        for (List<Object> filmInfo : topFilmsList) {
+            if (filmInfo.size() >= 2) {
+                Film film = (Film) filmInfo.get(1);
+                topFilmsMonth.add(film);
+            }
+        }
+
+        ArrayList<Film> topFilmsWeek = new ArrayList<>();
+        List<List<Object>> topFilmsWeekList = controller.getFacadeIHM().getTopFilmsOfTheWeek();
+
+        for (List<Object> filmInfo : topFilmsWeekList) {
+            if (filmInfo.size() >= 2) {
+                Film film = (Film) filmInfo.get(1);
+                topFilmsWeek.add(film);
+            }
+        }
+
+        
         if(controller.getCurrentAccount() == null){
-            filmsSections.add(new FilmSection(this.frame, controller, new ArrayList<Film>(), "Top 10 de la semaine", false));
-            filmsSections.add(new FilmSection(this.frame, controller, new ArrayList<Film>(),"Top 10 du mois", false));
+            filmsSections.add(new FilmSection(this.frame, controller, topFilmsWeek, "Top 10 de la semaine", false));
+            filmsSections.add(new FilmSection(this.frame, controller, topFilmsMonth,"Top 10 du mois", false));
             filmsSections.add(new FilmSection(this.frame, controller, new ArrayList<Film>(),"Blu-ray disponibles", true));
+            filmsSections.add(new FilmSection(this.frame, controller, allfilms,"Tous les films", true)); // maybe remove later
         }
         else{
-            filmsSections.add(new FilmSection(this.frame, controller, new ArrayList<Film>(), "Top 10 de la semaine", false));
-            filmsSections.add(new FilmSection(this.frame, controller, new ArrayList<Film>(),"Top 10 du mois", false));
+            filmsSections.add(new FilmSection(this.frame, controller, topFilmsWeek, "Top 10 de la semaine", false));
+            filmsSections.add(new FilmSection(this.frame, controller, topFilmsMonth,"Top 10 du mois", false));
             filmsSections.add(new FilmSection(this.frame, controller, new ArrayList<Film>(),"Blu-ray disponibles", true));
             filmsSections.add(new FilmSection(this.frame, controller, new ArrayList<Film>(),"Par catégorie", true));
-            filmsSections.add(new FilmSection(this.frame, controller, new ArrayList<Film>(),"Tous les films", true));
+            filmsSections.add(new FilmSection(this.frame, controller, allfilms,"Tous les films", true));
         }
         for(int i=2; i < filmsSections.size(); i++){
             filmsSections.get(i).getMoreFilmsButton().addActionListener(actionListener);
