@@ -1,24 +1,31 @@
 package ui;
 
+import beans.Account;
+import beans.Actor;
+import beans.Film;
 import facade.ui.*;
-
+import beans.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 class Affichage_Film extends BasePage {
-
+    private Affichage_Film affichage_film = this;
+    private Film film;
+    private Account account;
     public Affichage_Film(JFrame frame) {
         super(frame);
     }
 
-    public Affichage_Film(JFrame frame, Film film, Account account) {
+    public Affichage_Film(JFrame frame, Film film, Account account,Controller controller) {
         super(frame);
-        afficher_film(film, account, frame);
+        this.film = film;
+        this.account = account;
+        afficher_film(this.film, this.account, frame, controller);
     }
 
-    public JPanel afficher_film(Film film, Account account, JFrame frame) {
+    public JPanel afficher_film(Film film, Account account, JFrame frame, Controller controller) {
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setSize(800, 600);
         Payment payement = new Payment();
@@ -30,24 +37,25 @@ class Affichage_Film extends BasePage {
 
         // Partie supérieure du JSplitPane
         JPanel topPanel = new JPanel(new BorderLayout());
-        JLabel imageLabel = new JLabel(film.getImageIcon());
-        topPanel.add(imageLabel, BorderLayout.WEST);
+        //JLabel imageLabel = new JLabel(film.getImageIcon());
+        JLabel imageLabel = null;
+        //topPanel.add(imageLabel, BorderLayout.WEST);
 
 
         //zones avec les données du film
         JLabel jLabelTitle = new JLabel("Name : "+film.getName());
-        JLabel jLabelAuthor = new JLabel("Author :"+film.getAuthor().getName());
+        JLabel jLabelAuthor = new JLabel("Author :"+film.getAuthors().getFirst());
 
         // Liste d'acteurs
         JPanel actorsPanel = new JPanel(new GridLayout(film.getActors().size(), 1));
         for (Actor actor : film.getActors()) {
             if(film.getActors().get(0) == actor)
             {
-                JLabel jLabelActor = new JLabel("Actor: " + actor.getName());
+                JLabel jLabelActor = new JLabel("Actor: " + actor.getFirstName());
                 actorsPanel.add(jLabelActor);
             }
             else {
-                JLabel jLabelActor = new JLabel("           " + actor.getName());
+                JLabel jLabelActor = new JLabel("           " + actor.getLastName());
                 actorsPanel.add(jLabelActor);
             }
         }
@@ -58,14 +66,14 @@ class Affichage_Film extends BasePage {
 
         //Liste Categories
         JPanel categoryPanel = new JPanel(new GridLayout(film.getCategories().size(),1));
-        for(Categorie categorie : film.getCategories()) {
+        for(Category categorie : film.getCategories()) {
             if(film.getCategories().get(0) == categorie)
             {
-                JLabel jLabelCategory = new JLabel("Category : " + categorie.getName());
+                JLabel jLabelCategory = new JLabel("Category : " + categorie.getCategoryName());
                 categoryPanel.add(jLabelCategory);
             }
             else {
-                JLabel jLabelCategory = new JLabel("                   " + categorie.getName());
+                JLabel jLabelCategory = new JLabel("                   " + categorie.getCategoryName());
                 categoryPanel.add(jLabelCategory);
             }
 
@@ -123,6 +131,17 @@ class Affichage_Film extends BasePage {
         descriptionTextArea.add(buttonPanel);
 
 
+        /*JButton backButton = new JButton("Back");
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.traite();
+                frame.dispose();
+            }
+        });
+
+        // Ajout du bouton "Back" au panneau principal
+        mainPanel.add(backButton, BorderLayout.NORTH);*/
 
         splitPane.setBottomComponent(descriptionScrollPane);
 
@@ -133,19 +152,27 @@ class Affichage_Film extends BasePage {
         blueRay.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                payement.afficherPaiement(account,frame,film);
+                payement.afficherPaiement(account,frame,film,controller,affichage_film);
             }
         });
 
         qrCode.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                payement.afficherPaiement(account,frame,film);
+                payement.afficherPaiement(account,frame,film,controller,affichage_film);
             }
         });
 
         mainPanel.setVisible(true);
 
         return mainPanel;
+    }
+
+    void getFilm(Film film) {
+        this.film = film;
+    }
+
+    void getAccount(Account account) {
+        this.account = account;
     }
 }

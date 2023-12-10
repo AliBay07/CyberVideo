@@ -1,7 +1,12 @@
 package ui;
 
+import beans.Account;
+import beans.CreditCard;
+import beans.Film;
+import beans.SubscriberAccount;
+import beans.User;
 import facade.ui.*;
-
+import beans.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -13,7 +18,7 @@ import java.util.List;
 
 public class Payment {
     private JRadioButton selectedRadioButton = null;
-    public void afficherPaiement(Account account, JFrame jFrame, Film film) {
+    public void afficherPaiement(Account account, JFrame jFrame, Film film,Controller controller,BasePage afficherFilm) {
         if (account instanceof SubscriberAccount) {
             JDialog dialog = new JDialog(jFrame, "Paiement", true);
             dialog.setSize(500, 400);
@@ -39,7 +44,7 @@ public class Payment {
             // Radio bouton pour la carte de crédit
             JRadioButton creditCardRadioButton = null;
 
-            ArrayList<CreditCard> creditCard = account.getCreditCard();
+            List<CreditCard> creditCard = account.getCreditCards();
             JPanel creditCardPanel = new JPanel();
             creditCardPanel.setLayout(new BoxLayout(creditCardPanel, BoxLayout.Y_AXIS));
 
@@ -82,9 +87,9 @@ public class Payment {
             subscriberCardsPanel.setLayout(new BoxLayout(subscriberCardsPanel, BoxLayout.Y_AXIS));
 
             // Liste de cartes abonnées (ici, nous supposons que vous avez une liste d'objets SubscriptionCard)
-            ArrayList<SubscriptionCard> subscriptionCards = ((SubscriberAccount) account).getSubscriptionCard();
+            List<SubscriberCard> subscriptionCards = ((SubscriberAccount) account).getSubscriberCards();
             JRadioButton subsciptionRadioButton = null;
-            for (SubscriptionCard subscriptionCard : subscriptionCards) {
+            for (SubscriberCard subscriptionCard : subscriptionCards) {
                 JPanel cardItemPanel = new JPanel();
                 cardItemPanel.setLayout(new BoxLayout(cardItemPanel, BoxLayout.X_AXIS));
 
@@ -94,7 +99,7 @@ public class Payment {
                 creditCardGroup.add(subsciptionRadioButton);
 
                 // Zone pour l'ID et le solde de la carte abonnée
-                JLabel cardInfoLabel = new JLabel("ID: " + subscriptionCard.getId() + ", Solde: " + subscriptionCard.getBalance());
+                JLabel cardInfoLabel = new JLabel("ID: " + subscriptionCard.getId() + ", Solde: " + subscriptionCard.getAmount());
                 cardItemPanel.add(cardInfoLabel);
 
                 subscriberCardsPanel.add(cardItemPanel);
@@ -121,7 +126,7 @@ public class Payment {
                 public void actionPerformed(ActionEvent e) {
                     // Vérifiez d'abord si la case à cocher de la carte de crédit est sélectionnée
                     CreditCard selectedCreditCard;
-                    SubscriptionCard selectedSubscriptionCard;
+                    SubscriberCard selectedSubscriptionCard;
                     boolean boolcredit = false;
 
                         for (int i = 0; i < creditCardPanel.getComponentCount(); i++) {
@@ -154,7 +159,7 @@ public class Payment {
                                         validateJPanel.add(labelCarte, gbc);
 
                                         gbc.gridy++;
-                                        JLabel labelBank = new JLabel(selectedCreditCard.getBank());
+                                        JLabel labelBank = new JLabel(String.valueOf(selectedCreditCard.getId()));
                                         validateJPanel.add(labelBank, gbc);
 
                                         gbc.gridy++;
@@ -170,6 +175,8 @@ public class Payment {
                                         dialog.getContentPane().removeAll();
                                         dialog.getContentPane().add(validateJPanel);
                                         dialog.revalidate();
+
+                                        controller.traite(afficherFilm,Keyword.RENT);
                                         //accepter paiement et renvoyer vers une page de validation
                                         //la page est surement dans affichage film et cette fonction return la carte
                                     }
@@ -184,7 +191,7 @@ public class Payment {
                                     JRadioButton radioButton2 = (JRadioButton) cardItemPanel2.getComponent(0);
                                     if (radioButton2.isSelected()) {
                                         selectedSubscriptionCard = subscriptionCards.get(i);
-                                        if (selectedSubscriptionCard.getBalance() >= 4) {
+                                        if (selectedSubscriptionCard.getAmount() >= 4) {
                                             //creer un panel qui va avoir un gridbaglayout et qui va contenir les infos de la carte
                                             JPanel validateJPanel = new JPanel(new GridBagLayout());
                                             GridBagConstraints gbc = new GridBagConstraints();
@@ -209,9 +216,9 @@ public class Payment {
                                             validateJPanel.add(labelID, gbc);
 
                                             gbc.gridy++;
-                                            selectedSubscriptionCard.setCardBalance(selectedSubscriptionCard.getBalance() - 4);
-                                            System.out.println(selectedSubscriptionCard.getBalance());
-                                            JLabel labelSolde = new JLabel("Solde : " + selectedSubscriptionCard.getBalance());
+                                            selectedSubscriptionCard.setAmount(selectedSubscriptionCard.getAmount() - 4);
+                                            System.out.println(selectedSubscriptionCard.getAmount());
+                                            JLabel labelSolde = new JLabel("Solde : " + selectedSubscriptionCard.getAmount());
                                             validateJPanel.add(labelSolde, gbc);
 
                                             gbc.gridy++;
@@ -228,7 +235,7 @@ public class Payment {
                                             dialog.getContentPane().removeAll();
                                             dialog.getContentPane().add(validateJPanel);
                                             dialog.revalidate();
-
+                                            controller.traite(afficherFilm,Keyword.RENT);
                                         }
                                         //accepter paiement si solde >= 4e sinon erreur choisir autre carte puis renvoyer vers une page de validation
                                     }
@@ -278,7 +285,7 @@ public class Payment {
             creditCardPanel.add(creditCardRadioButton);
             creditCardGroup.add(creditCardRadioButton);
 
-            ArrayList<CreditCard> creditCard = account.getCreditCard();
+            List<CreditCard> creditCard = account.getCreditCards();
             creditCardPanel = new JPanel();
             creditCardPanel.setLayout(new BoxLayout(creditCardPanel, BoxLayout.Y_AXIS));
 
@@ -325,15 +332,15 @@ public class Payment {
                     CreditCard selectedCreditCard = null;
                     SubscriptionCard selectedSubscriptionCard;
 
-                    for (CreditCard creditCard : account.getCreditCard()) {
-                        if (creditCard.getId().equals(creditCard.getId())) {
+                    for (CreditCard creditCard : account.getCreditCards()) {
+                        if (creditCard.getId() == (creditCard.getId())) {
                             selectedCreditCard = creditCard;
                             break;  // Sortez de la boucle dès que la carte est trouvée
                         }
                     }
 
                     if (selectedCreditCard != null) {
-                        selectedCreditCard = account.getCreditCard().get(0);
+                        selectedCreditCard = account.getCreditCards().get(0);
 
                         JPanel validateJPanel = new JPanel(new GridBagLayout());
                         GridBagConstraints gbc = new GridBagConstraints();
@@ -354,7 +361,7 @@ public class Payment {
                         validateJPanel.add(labelCarte, gbc);
 
                         gbc.gridy++;
-                        JLabel labelBank = new JLabel(selectedCreditCard.getBank());
+                        JLabel labelBank = new JLabel(String.valueOf(selectedCreditCard.getId()));
                         validateJPanel.add(labelBank, gbc);
 
                         gbc.gridy++;
