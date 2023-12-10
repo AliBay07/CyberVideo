@@ -24,7 +24,8 @@ public abstract class BasePage extends JPanel {
     }
 
     protected void dispose() {
-        controller.exitPage(this);
+//        controller.exitPage(this);
+        controller.traite(this, Keyword.BACK);
     }
 
     public void showInfo(String title, String msg) {

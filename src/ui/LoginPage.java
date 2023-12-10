@@ -25,7 +25,6 @@ public class LoginPage extends BasePage {
                 login();
             }else
             if(e.getSource()==signupBtn){
-                dispose();
                 signup();
             }
         }
@@ -66,7 +65,7 @@ public class LoginPage extends BasePage {
 
     private void signup() {
         if(controller!=null){
-            controller.showSignupPage();
+            controller.traite(this, Keyword.SHOWSIGNUPPAGE);
         }
     }
 

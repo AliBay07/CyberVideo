@@ -29,7 +29,7 @@ public class Controller {
     public void traite(BasePage page, Keyword action){
         State old_state = state;
         if(action==Keyword.LOGIN) { //Faire les cas ou l'utilisateur se login à cause d'une demande d'abonnement ou de location
-            frame.remove(currentPage);
+//            frame.remove(currentPage);
             if(currentAccount instanceof NormalAccount)
                 state = State.LOGGED_NORMAL;
             else if(currentAccount instanceof SubscriberAccount)
@@ -131,27 +131,27 @@ public class Controller {
         if(action == Keyword.BACK){
             switch(state){
                 case SHOW_BLURAY_CONNECT:
-                    frame.remove(currentPage);
+//                    frame.remove(currentPage);
                     showMainPage();
                     break;
                 case SHOW_FILMS_CATEGORY:
-                    frame.remove(currentPage);
+//                    frame.remove(currentPage);
                     showMainPage();
                     break;
                 case SHOW_FILMS_CONNECT:
-                    frame.remove(currentPage);
+//                    frame.remove(currentPage);
                     showMainPage();
                     break;
                 case SHOW_RESEARCH_RESULTS_CONNECT:
-                    frame.remove(currentPage);
+//                    frame.remove(currentPage);
                     showMainPage();
                     break;
                 case SHOW_TOP10M_CONNECT:
-                    frame.remove(currentPage);
+//                    frame.remove(currentPage);
                     showMainPage();
                     break;
                 case SHOW_TOP10W_CONNECT:
-                    frame.remove(currentPage);
+//                    frame.remove(currentPage);
                     showMainPage();
                     break;
                 //Il faut remodifier le state quand on fait un back ! écrire tous les cas
@@ -180,11 +180,15 @@ public class Controller {
                     break;
             }
         }
+        if(action == Keyword.SHOWSIGNUPPAGE){
+            showSignupPage();
+            state = State.SIGNUP_NORMAL;
+        }
     }
 
-    public void exitPage(BasePage page) {
-        back();
-    }
+//    public void exitPage(BasePage page) {
+//        back();
+//    }
 
     public void showMainPage() {
         MainPage page = new MainPage(frame, this);
@@ -233,8 +237,9 @@ public class Controller {
     private void showPage(BasePage page) {
         if(currentPage!=null){
             currentPage.setVisible(false);
+            frame.remove(currentPage);   // mettre plutot le remove ici ?
         }
-        oldPage = currentPage;
+        //oldPage = currentPage;
         currentPage = page;
         currentPage.setVisible(true);
         frame.add(currentPage);
@@ -267,7 +272,9 @@ public class Controller {
             frame.setVisible(true);
         }
         else{
-            System.out.println("Je veux revenir en arrnullière !");
+            System.out.println("Je veux revenir en arrière !");
+            // new mainPage ??
+            showMainPage();
         }
     }
         /*BasePage lastPage = pagePile.pop();
