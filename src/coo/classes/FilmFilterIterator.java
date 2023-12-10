@@ -16,16 +16,50 @@ public class FilmFilterIterator implements Iterator<Film> {
 	private List<Category> categoryFilter;
 	private int currentIndex;
 
-	public FilmFilterIterator(List<Film> films, String nameFilter, List<Author> authorFilter,
-			List<Actor> actorFilter, List<Category> categoryFilter) {
-		this.films = films;
-		this.nameFilter = nameFilter;
-		this.authorFilter = authorFilter;
-		this.actorFilter = actorFilter;
-		this.categoryFilter = categoryFilter;
+	public FilmFilterIterator() {
 		this.currentIndex = 0;
 	}
 	
+	public List<Film> getFilms() {
+		return films;
+	}
+
+	public void setFilms(List<Film> films) {
+		this.films = films;
+	}
+
+	public String getNameFilter() {
+		return nameFilter;
+	}
+
+	public void setNameFilter(String nameFilter) {
+		this.nameFilter = nameFilter;
+	}
+
+	public List<Author> getAuthorFilter() {
+		return authorFilter;
+	}
+
+	public void setAuthorFilter(List<Author> authorFilter) {
+		this.authorFilter = authorFilter;
+	}
+
+	public List<Actor> getActorFilter() {
+		return actorFilter;
+	}
+
+	public void setActorFilter(List<Actor> actorFilter) {
+		this.actorFilter = actorFilter;
+	}
+
+	public List<Category> getCategoryFilter() {
+		return categoryFilter;
+	}
+
+	public void setCategoryFilter(List<Category> categoryFilter) {
+		this.categoryFilter = categoryFilter;
+	}
+
 	public void reset() {
 		this.currentIndex = 0;
 	}

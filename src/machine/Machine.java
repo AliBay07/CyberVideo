@@ -46,7 +46,7 @@ public class Machine {
 			//			machine.userLogin(email,pwd);
 			//			machine.unsubscribeFromService();
 			//			System.out.println(machine.account);
-			/*
+			
 			List<Film> allFilms = facadeBd.getAllFilms(machine.getAccount());
 
 			String nameFilter = "";
@@ -72,13 +72,19 @@ public class Machine {
 			actorFilter.add(actor);
 			List<Category> categoryFilter = new ArrayList<Category>();
 			categoryFilter.add(category);
-			FilmFilterIterator filmIterator = new FilmFilterIterator(allFilms, nameFilter, authorFilter, actorFilter, categoryFilter);
+			
+			FilmFilterIterator filmIterator = new FilmFilterIterator();
+			
+			filmIterator.setFilms(allFilms);
+			filmIterator.setNameFilter(nameFilter);
+			filmIterator.setAuthorFilter(authorFilter);
+			filmIterator.setActorFilter(actorFilter);
+			filmIterator.setCategoryFilter(categoryFilter);
 
 			while (filmIterator.hasNext()) {
 				Film filteredFilm = filmIterator.next();
 				System.out.println(filteredFilm.toString());
 			}
-			*/
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -145,12 +151,12 @@ public class Machine {
 		}
 	}
 
-	public String ReserveBlueRay(Account account, BlueRay blueRay) {
-		 return facadeBd.ReserveBlueRay(account, blueRay) ? "Success" : "Failed to rent: " + blueRay.getFilm().getName();
+	public boolean ReserveBlueRay(Account account, BlueRay blueRay) {
+		 return facadeBd.ReserveBlueRay(account, blueRay);
 	}
 
-	public String ReserveQrCode(Account account, Film film) {
-		return facadeBd.ReserveQrCode(account, film) ? "Success" : "Failed to rent: " + film.getName();
+	public boolean ReserveQrCode(Account account, Film film) {
+		return facadeBd.ReserveQrCode(account, film);
 	}
 	public boolean addMoneyToCard(SubscriberCard subscriberCard, double amount) {
 		return facadeBd.addMoneyToCard(subscriberCard, amount);
