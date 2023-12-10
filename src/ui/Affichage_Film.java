@@ -44,7 +44,7 @@ class Affichage_Film extends BasePage {
 
         //zones avec les données du film
         JLabel jLabelTitle = new JLabel("Name : "+film.getName());
-        JLabel jLabelAuthor = new JLabel("Author :"+film.getAuthors().getFirst());
+        JLabel jLabelAuthor = new JLabel("Author :"+film.getAuthors().get(0));
 
         // Liste d'acteurs
         JPanel actorsPanel = new JPanel(new GridLayout(film.getActors().size(), 1));

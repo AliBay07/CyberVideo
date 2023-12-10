@@ -153,16 +153,16 @@ public class MainPage extends BasePage {
         ArrayList<FilmSection> filmsSections = new ArrayList<FilmSection>(); 
         //Il faut avoir les infos sur les films via la BD et l'itérateur de la machine
         if(controller.getCurrentAccount() == null){
-            filmsSections.add(new FilmSection(new ArrayList<String>(), "Top 10 de la semaine", false));
-            filmsSections.add(new FilmSection(new ArrayList<String>(),"Top 10 du mois", false));
-            filmsSections.add(new FilmSection(new ArrayList<String>(),"Blu-ray disponibles", true));
+            filmsSections.add(new FilmSection(this.frame, controller, new ArrayList<Film>(), "Top 10 de la semaine", false));
+            filmsSections.add(new FilmSection(this.frame, controller, new ArrayList<Film>(),"Top 10 du mois", false));
+            filmsSections.add(new FilmSection(this.frame, controller, new ArrayList<Film>(),"Blu-ray disponibles", true));
         }
         else{
-            filmsSections.add(new FilmSection(new ArrayList<String>(), "Top 10 de la semaine", false));
-            filmsSections.add(new FilmSection(new ArrayList<String>(),"Top 10 du mois", false));
-            filmsSections.add(new FilmSection(new ArrayList<String>(),"Blu-ray disponibles", true));
-            filmsSections.add(new FilmSection(new ArrayList<String>(),"Par catégorie", true));
-            filmsSections.add(new FilmSection(new ArrayList<String>(),"Tous les films", true));
+            filmsSections.add(new FilmSection(this.frame, controller, new ArrayList<Film>(), "Top 10 de la semaine", false));
+            filmsSections.add(new FilmSection(this.frame, controller, new ArrayList<Film>(),"Top 10 du mois", false));
+            filmsSections.add(new FilmSection(this.frame, controller, new ArrayList<Film>(),"Blu-ray disponibles", true));
+            filmsSections.add(new FilmSection(this.frame, controller, new ArrayList<Film>(),"Par catégorie", true));
+            filmsSections.add(new FilmSection(this.frame, controller, new ArrayList<Film>(),"Tous les films", true));
         }
         for(int i=2; i < filmsSections.size(); i++){
             filmsSections.get(i).getMoreFilmsButton().addActionListener(actionListener);

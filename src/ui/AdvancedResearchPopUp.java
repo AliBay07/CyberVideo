@@ -155,7 +155,7 @@ public class AdvancedResearchPopUp extends JDialog {
         this.setAutorsChoicePanel();
         this.setActorsChoicePanel();
         this.setValidationButton();
-        this.setSize(Test.DIALOG_WIDTH, Test.DIALOG_HEIGHT);
+        this.setSize(SysAL2000.DIALOG_WIDTH, SysAL2000.DIALOG_HEIGHT);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
     }

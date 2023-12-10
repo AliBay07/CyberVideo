@@ -1,22 +1,25 @@
 package ui;
-
+import beans.*;
 import java.util.*;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class FilmSection extends JPanel {
-    private ArrayList<String> listFilms; //A remplacer par une arraylist de films certainement !
+public class FilmSection extends BasePage {
+    private ArrayList<Film> listFilms; //A remplacer par une arraylist de films certainement !
+    private Controller controller;
     private JLabel title;
     private JPanel filmsPane;
-    /*private JButton leftArrow = new JButton("<-");
-    private JButton rightArrow = new JButton("->");*/
     private JPanel filmsPaneInterior = new JPanel();
     private JScrollPane showFilmsPane;
     private JButton showMoreFilms;
+    private Film selectedFilm;
     public static Dimension dimension = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
     public static int FRAME_WIDTH = (int) dimension.getWidth();
 
-    public FilmSection(ArrayList<String> films, String titleName, boolean moreFilms){
+    public FilmSection(JFrame f, Controller c, ArrayList<Film> films, String titleName, boolean moreFilms){
+        super(f, c);
         listFilms = films;
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         title = new JLabel(titleName);
@@ -24,9 +27,20 @@ public class FilmSection extends JPanel {
         filmsPane = new JPanel(new BorderLayout());
         filmsPane.setAlignmentX(Component.CENTER_ALIGNMENT);
         filmsPane.setPreferredSize(new Dimension(FRAME_WIDTH, 200));
-        for (int i=0; i<10; i++){ //listFilms.size()
+        for (int i=0; i<listFilms.size(); i++){ //listFilms.size()
             //Il faut récupérer les infos depuis la BDD et mettre l'affiche du film avec son nom
             JButton film = new JButton("nomFilm "+(i+1));
+            film.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    for(int j=0; j<listFilms.size(); j++){
+                        if(listFilms.get(j).getName().equals(film.getText())){
+                            selectedFilm = listFilms.get(j);
+                            controller.traite(FilmSection.this, Keyword.SHOWFILMDETAILS);
+                        }
+                    }
+                }
+            });
             filmsPaneInterior.add(film);
         }
         showFilmsPane = new JScrollPane(filmsPaneInterior, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER,  
@@ -46,5 +60,9 @@ public class FilmSection extends JPanel {
 
     public JButton getMoreFilmsButton(){
         return showMoreFilms;
+    }
+
+    public Film getSelectedFilm(){
+        return selectedFilm;
     }
 }

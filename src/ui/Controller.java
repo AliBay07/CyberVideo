@@ -17,16 +17,10 @@ public class Controller {
     BasePage currentPage;
     Account currentAccount;
 
-    // State de Account (ou plus simple vérifier pas ==null; instance of NormalAccount; ...)
-    enum StateAccount {LOGOUTED, LOGINED_NORMAL, LOGINED_PREMIUM};
-    StateAccount stateAccount = StateAccount.LOGOUTED;
-
     // State des pages
-    enum State { IDLE/*Mainpage*/, SIGNIN_NORMAL, SIGNUP_NORMAL, SIGNIN_FOR_RENT, SIGNUP_FOR_RENT, SIGNIN_FOR_SUBSCRIBE,
-        SIGNUP_FOR_SUBSCRIBE, SIGNIN_FOR_RETURN_FILM, /*LOGGED_NORMAL, LOGGED_PREMIUM,*/ CHANGE_ACCOUNT_SETTING,
-        SHOW_TOP10W_NO_CONNECT, SHOW_TOP10M_NO_CONNECT, SHOW_FILMS_NO_CONNECT, SHOW_BLURAY_NO_CONNECT,
-        SHOW_RESEARCH_RESULTS_NO_CONNECT, SHOW_FILM_DETAILS_NO_CONNECT, SHOW_TOP10W_CONNECT, SHOW_TOP10M_CONNECT,
-        SHOW_FILMS_CONNECT, SHOW_BLURAY_CONNECT, SHOW_RESEARCH_RESULTS_CONNECT, SHOW_FILMS_CATEGORY,
+    enum State { IDLE, SIGNIN_NORMAL, SIGNUP_NORMAL, SIGNIN_FOR_RENT, SIGNUP_FOR_RENT, SIGNIN_FOR_SUBSCRIBE,
+        SIGNUP_FOR_SUBSCRIBE, SIGNIN_FOR_RETURN_FILM, LOGGED_NORMAL, LOGGED_PREMIUM, CHANGE_ACCOUNT_SETTING,
+        SHOW_TOP10W_CONNECT, SHOW_TOP10M_CONNECT, SHOW_FILMS_CONNECT, SHOW_BLURAY_CONNECT, SHOW_RESEARCH_RESULTS_CONNECT, SHOW_FILMS_CATEGORY,
         SHOW_FILM_DETAILS_CONNECT, RENT_FILM, SHOW_VALIDATION_RENT, SHOW_ERROR_RENT, SHOW_VALIDATION_SUBSCRIBE,
         SHOW_RETURN_PAGE, SHOW_VALIDATION_RETURN_PAGE, SHOW_ERROR_RETURN_PAGE};
     State state = State.IDLE;
@@ -42,21 +36,22 @@ public class Controller {
     }
 
     public void traite(BasePage page, Keyword action){
-        if(action==Keyword.LOGIN) { //Faire les cas ou l'utilisateur se login à cause d'une demande d'abonnement ou de location
+        if(action==Keyword.LOGIN) { 
 //            frame.remove(currentPage);
-            // mis a jour stateAccount
-            if(currentAccount instanceof NormalAccount)
-                stateAccount = StateAccount.LOGINED_NORMAL;
-            else if(currentAccount instanceof SubscriberAccount)
-                stateAccount = StateAccount.LOGINED_PREMIUM;
-            // continue l'action prévue
-            switch (state){
+            switch(state){
                 case SIGNIN_FOR_RETURN_FILM:
                     showReturnBlueRayPage();
+                    state = State.SHOW_RETURN_PAGE;
                     break;
+                default:
+                    if(currentAccount instanceof NormalAccount)
+                        state = State.LOGGED_NORMAL;
+                    else if(currentAccount instanceof SubscriberAccount)
+                        state = State.LOGGED_PREMIUM;
+                    showMainPage();
             }
-        }else
-        if(action==Keyword.SHOWLOGINPAGE) {
+        }
+        else if(action==Keyword.SHOWLOGINPAGE) {
             saveOldPage();
             switch (state) {
                 case IDLE:
@@ -83,29 +78,32 @@ public class Controller {
             showLoginPage();
         }else
         if(action==Keyword.SUBSCRIBE){
-            switch (stateAccount) {
-                case LOGOUTED:
+            switch (state) {
+                case IDLE:
                     showLoginPage();
                     state = State.SIGNIN_FOR_SUBSCRIBE;
                     break;
-                case LOGINED_NORMAL:
+                case LOGGED_NORMAL: 
                     //Voir s'il faut afficher une pop up pour informer l'utilisateur qu'il s'est bien abonné
                     facadeIHM.subscribeToService();
                     break;
-                case LOGINED_PREMIUM:
+                case LOGGED_PREMIUM:
                     //Show pop up ou page pour créditer sa carte abonnée
                 default:
                     break;
             }
         }else
         if(action==Keyword.SHOWRETURNBLURAYPAGE){
-            switch(stateAccount) {
-                case LOGOUTED:
+            switch(state) {
+                case IDLE:
                     showLoginPage();
                     state = State.SIGNIN_FOR_RETURN_FILM;
                     break;
-                case LOGINED_NORMAL:
-                case LOGINED_PREMIUM:
+                case LOGGED_NORMAL:
+                    showReturnBlueRayPage();
+                    state = State.SHOW_RETURN_PAGE;
+                    break;
+                case LOGGED_PREMIUM:
                     showReturnBlueRayPage();
                     state = State.SHOW_RETURN_PAGE;
                     break;
@@ -148,31 +146,42 @@ public class Controller {
                 case SHOW_BLURAY_CONNECT:
 //                    frame.remove(currentPage);
                     showMainPage();
+                    changeMainPageState();
                     break;
                 case SHOW_FILMS_CATEGORY:
 //                    frame.remove(currentPage);
                     showMainPage();
+                    changeMainPageState();
                     break;
                 case SHOW_FILMS_CONNECT:
 //                    frame.remove(currentPage);
                     showMainPage();
+                    changeMainPageState();
                     break;
                 case SHOW_RESEARCH_RESULTS_CONNECT:
 //                    frame.remove(currentPage);
                     showMainPage();
+                    changeMainPageState();
                     break;
                 case SHOW_TOP10M_CONNECT:
 //                    frame.remove(currentPage);
                     showMainPage();
+                    changeMainPageState();
                     break;
                 case SHOW_TOP10W_CONNECT:
 //                    frame.remove(currentPage);
                     showMainPage();
+                    changeMainPageState();
                     break;
                 case SHOW_FILM_DETAILS_CONNECT:
                     frame.remove(currentPage);
                     showMainPage();
+                    state = State.SHOW_RESEARCH_RESULTS_CONNECT;
                     break;
+                case SIGNUP_NORMAL:
+                    state = State.SIGNIN_NORMAL;
+                case SIGNIN_NORMAL:
+                    state = State.IDLE;
                 //Il faut remodifier le state quand on fait un back ! écrire tous les cas
                 default:
                     back();
@@ -215,6 +224,15 @@ public class Controller {
 //    public void exitPage(BasePage page) {
 //        back();
 //    }
+
+    private void changeMainPageState(){
+        if(currentAccount == null)
+            state = State.IDLE;
+        else if(currentAccount instanceof NormalAccount)
+            state = State.LOGGED_NORMAL;
+        else
+            state = State.LOGGED_PREMIUM;
+    }
 
     public void showMainPage() {
         System.out.println("show ... MainPage");
