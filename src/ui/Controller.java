@@ -15,10 +15,25 @@ public class Controller {
     FacadeIHM facadeIHM;
     JFrame frame;
     BasePage currentPage;
-    BasePage oldPage;
     Account currentAccount;
-    enum State { IDLE, SIGNIN_NORMAL, SIGNUP_NORMAL, SIGNIN_FOR_RENT, SIGNUP_FOR_RENT, SIGNIN_FOR_SUBSCRIBE, SIGNUP_FOR_SUBSCRIBE, SIGNIN_FOR_RETURN_FILM, LOGGED_NORMAL, LOGGED_PREMIUM, CHANGE_ACCOUNT_SETTING, SHOW_TOP10W_NO_CONNECT, SHOW_TOP10M_NO_CONNECT, SHOW_FILMS_NO_CONNECT, SHOW_BLURAY_NO_CONNECT, SHOW_RESEARCH_RESULTS_NO_CONNECT, SHOW_FILM_DETAILS_NO_CONNECT, SHOW_TOP10W_CONNECT, SHOW_TOP10M_CONNECT, SHOW_FILMS_CONNECT, SHOW_BLURAY_CONNECT, SHOW_RESEARCH_RESULTS_CONNECT, SHOW_FILMS_CATEGORY, SHOW_FILM_DETAILS_CONNECT, RENT_FILM, SHOW_VALIDATION_RENT, SHOW_ERROR_RENT, SHOW_VALIDATION_SUBSCRIBE, SHOW_RETURN_PAGE, SHOW_VALIDATION_RETURN_PAGE, SHOW_ERROR_RETURN_PAGE};
+
+    // State de Account (ou plus simple vérifier pas ==null; instance of NormalAccount; ...)
+    enum StateAccount {LOGOUTED, LOGINED_NORMAL, LOGINED_PREMIUM};
+    StateAccount stateAccount = StateAccount.LOGOUTED;
+
+    // State des pages
+    enum State { IDLE/*Mainpage*/, SIGNIN_NORMAL, SIGNUP_NORMAL, SIGNIN_FOR_RENT, SIGNUP_FOR_RENT, SIGNIN_FOR_SUBSCRIBE,
+        SIGNUP_FOR_SUBSCRIBE, SIGNIN_FOR_RETURN_FILM, /*LOGGED_NORMAL, LOGGED_PREMIUM,*/ CHANGE_ACCOUNT_SETTING,
+        SHOW_TOP10W_NO_CONNECT, SHOW_TOP10M_NO_CONNECT, SHOW_FILMS_NO_CONNECT, SHOW_BLURAY_NO_CONNECT,
+        SHOW_RESEARCH_RESULTS_NO_CONNECT, SHOW_FILM_DETAILS_NO_CONNECT, SHOW_TOP10W_CONNECT, SHOW_TOP10M_CONNECT,
+        SHOW_FILMS_CONNECT, SHOW_BLURAY_CONNECT, SHOW_RESEARCH_RESULTS_CONNECT, SHOW_FILMS_CATEGORY,
+        SHOW_FILM_DETAILS_CONNECT, RENT_FILM, SHOW_VALIDATION_RENT, SHOW_ERROR_RENT, SHOW_VALIDATION_SUBSCRIBE,
+        SHOW_RETURN_PAGE, SHOW_VALIDATION_RETURN_PAGE, SHOW_ERROR_RETURN_PAGE};
     State state = State.IDLE;
+
+    // page précédent pour Back
+    BasePage oldPage;
+    State oldState;
 
     public Controller(JFrame frame, FacadeIHM fihm) {
         this.frame = frame;
@@ -27,21 +42,22 @@ public class Controller {
     }
 
     public void traite(BasePage page, Keyword action){
-        State old_state = state;
         if(action==Keyword.LOGIN) { //Faire les cas ou l'utilisateur se login à cause d'une demande d'abonnement ou de location
 //            frame.remove(currentPage);
+            // mis a jour stateAccount
             if(currentAccount instanceof NormalAccount)
-                state = State.LOGGED_NORMAL;
+                stateAccount = StateAccount.LOGINED_NORMAL;
             else if(currentAccount instanceof SubscriberAccount)
-                state = State.LOGGED_PREMIUM;
+                stateAccount = StateAccount.LOGINED_PREMIUM;
             // continue l'action prévue
-            switch (old_state){
+            switch (state){
                 case SIGNIN_FOR_RETURN_FILM:
                     showReturnBlueRayPage();
                     break;
             }
         }else
         if(action==Keyword.SHOWLOGINPAGE) {
+            saveOldPage();
             switch (state) {
                 case IDLE:
                     state = State.SIGNIN_NORMAL;
@@ -64,33 +80,32 @@ public class Controller {
                 default:
                     break;
             }
-            oldPage=currentPage;
             showLoginPage();
         }else
         if(action==Keyword.SUBSCRIBE){
-            switch (state) {
-                case IDLE:
+            switch (stateAccount) {
+                case LOGOUTED:
                     showLoginPage();
                     state = State.SIGNIN_FOR_SUBSCRIBE;
                     break;
-                case LOGGED_NORMAL: 
+                case LOGINED_NORMAL:
                     //Voir s'il faut afficher une pop up pour informer l'utilisateur qu'il s'est bien abonné
                     facadeIHM.subscribeToService();
                     break;
-                case LOGGED_PREMIUM:
+                case LOGINED_PREMIUM:
                     //Show pop up ou page pour créditer sa carte abonnée
                 default:
                     break;
             }
         }else
         if(action==Keyword.SHOWRETURNBLURAYPAGE){
-            switch(state) {
-                case IDLE:
+            switch(stateAccount) {
+                case LOGOUTED:
                     showLoginPage();
                     state = State.SIGNIN_FOR_RETURN_FILM;
                     break;
-                case LOGGED_NORMAL:
-                case LOGGED_PREMIUM:
+                case LOGINED_NORMAL:
+                case LOGINED_PREMIUM:
                     showReturnBlueRayPage();
                     state = State.SHOW_RETURN_PAGE;
                     break;
@@ -191,6 +206,7 @@ public class Controller {
 //    }
 
     public void showMainPage() {
+        System.out.println("show ... MainPage");
         MainPage page = new MainPage(frame, this);
         page.setController(this);
         showPage(page);
@@ -230,7 +246,7 @@ public class Controller {
     public void showDetailedFilm(Film f){
         //Affichage_Film page = new Affichage_Film(frame, f, getCurrentAccount());
        // page.setController(this); //Certainement à modifier car il va falloir mettre le controller en paramètre
-        oldPage = currentPage;
+        saveOldPage();
         //showPage(page);
     }
 
@@ -239,7 +255,6 @@ public class Controller {
             currentPage.setVisible(false);
             frame.remove(currentPage);   // mettre plutot le remove ici ?
         }
-        //oldPage = currentPage;
         currentPage = page;
         currentPage.setVisible(true);
         frame.add(currentPage);
@@ -260,11 +275,19 @@ public class Controller {
         this.currentAccount = acc;
     }
 
+    // il faut l'appel avant changer l'état
+    private void saveOldPage() {
+        oldPage = currentPage;
+        oldState = state;
+    }
+
     // sortie le current page
     private void back() {
         if(currentPage!=null && oldPage!=null){
+            System.out.println("Back ... state: "+state+" -> "+oldState);
             currentPage.setVisible(false);
             currentPage = oldPage;
+            state = oldState;
             frame.remove(oldPage);
             oldPage = null;
             frame.add(currentPage);

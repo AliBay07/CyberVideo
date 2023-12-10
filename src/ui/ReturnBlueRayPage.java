@@ -61,7 +61,7 @@ public class ReturnBlueRayPage extends BasePage {
                 return rowIndex + 1;
             }
             if (columnIndex == 1) {
-                return list.get(rowIndex).getFilm().getName();
+                return list.get(rowIndex).getBlueray().getFilm().getName();
             }
             if (columnIndex == 2) {
                 return list.get(rowIndex).getStartReservationDate();
@@ -150,26 +150,19 @@ public class ReturnBlueRayPage extends BasePage {
         }else{
             // success
             Reservation r = ((MyTableModel)table.getModel()).removeRow(id-1);
-            if(returnFilm(r.getFilm())){
+            if(returnFilm(r.getBlueray())){
                 showInfo("Success", String.format("Movie <%d> %s returned",
-                        id, r.getFilm().getName()));
+                        id, r.getBlueray().getFilm().getName()));
                 controller.traite(this, Keyword.BLURAY_RETURNED);
             }else{
                 showError("Error", String.format("Movie <%d> %s can not return.\n contact xxx.",
-                        id, r.getFilm().getName()));
+                        id, r.getBlueray().getFilm().getName()));
             }
         }
     }
 
-    private boolean returnFilm(Film film) {
-        //Un peu bizarre, return un film il faut parcourir tous les blueRay pour le retrouver
-//        ArrayList<BlueRay> allBlueRay = controller.getFacadeIHM().getAvailableBlueRays();
-//        for(BlueRay item : allBlueRay){
-//            if(item.getFilm().getId()==film.getId()){
-//                return controller.getFacadeIHM().returnBlueRay(item);
-//            }
-//        }
-        return false;
+    private boolean returnFilm(BlueRay blueRay) {
+        return controller.getFacadeIHM().returnBlueRay(blueRay);
     }
 
     private JTable initTable() {
