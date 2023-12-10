@@ -184,6 +184,8 @@ public class Payment {
                                                 @Override
                                                 public void actionPerformed(ActionEvent e) {
                                                     dialog.dispose();
+                                                    controller.traite(null,Keyword.RENTED_BlueRay_FILM); //vérifier blueray
+                                                    //appeler traite pour dire aller mainPage
                                                 }
                                             });
                                             timer.setRepeats(false); // Le timer ne se répétera pas

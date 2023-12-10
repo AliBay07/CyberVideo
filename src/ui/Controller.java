@@ -178,16 +178,38 @@ public class Controller {
 					break;
 				case SHOW_FILM_DETAILS_CONNECT:
 					frame.remove(currentPage);
-					showMainPage();
-					state = State.SHOW_RESEARCH_RESULTS_CONNECT;
+					back();
+					if(currentPage instanceof MainPage)
+					{
+						if (currentAccount == null)
+						{
+							state = State.IDLE;
+						}
+						else if (currentAccount instanceof NormalAccount)
+						{
+							state = State.LOGGED_NORMAL;
+						}
+						else if (currentAccount instanceof SubscriberAccount)
+						{
+							state = State.LOGGED_PREMIUM;
+						}
+					}
+					else
+					{
+						state = State.SHOW_RESEARCH_RESULTS_CONNECT;
+						//showResearchResult global
+					}
 					break;
-				case SIGNUP_NORMAL:
-					state = State.SIGNIN_NORMAL;
 				case SIGNIN_NORMAL:
 					state = State.IDLE;
+					back();
+					break;
 					//Il faut remodifier le state quand on fait un back ! écrire tous les cas
+				case SIGNUP_NORMAL:
+					state = State.SIGNIN_NORMAL;
 				default:
 					back();
+
 				}
 			}
 			if(action == Keyword.SHOWFILMDETAILS){
@@ -207,6 +229,15 @@ public class Controller {
 				case SHOW_FILMS_CONNECT:
 					showDetailedFilm(((ResearchResults)currentPage).getSelectedFilm());
 					state = State.SHOW_FILM_DETAILS_CONNECT;
+				case IDLE:
+					//accéder au film sélectionné + enregistrer oldpage
+					state = State.SHOW_FILM_DETAILS_CONNECT;
+				case LOGGED_NORMAL:
+					//accéder au film sélectionné + enregistrer oldpage
+					state = State.SHOW_FILM_DETAILS_CONNECT;
+				 case LOGGED_PREMIUM:
+					 //accéder au film sélectionné + enregistrer oldpage
+					 state = State.SHOW_FILM_DETAILS_CONNECT;
 				default:
 					break;
 				}
@@ -215,10 +246,7 @@ public class Controller {
 				showSignupPage();
 				state = State.SIGNUP_NORMAL;
 			}
-			if (action == Keyword.RENT) {
-				showFilm();
-				state = State.RENT_FILM;
-			}
+
 			if (action == Keyword.RENTED_BlueRay_FILM) {
 				showMainPage();
 				BlueRay blueRay = this.getCurrentBlueRay();
@@ -293,10 +321,15 @@ public class Controller {
 		}
 
 		public void showDetailedFilm(Film f){
-			//Affichage_Film page = new Affichage_Film(frame, f, getCurrentAccount());
-			// page.setController(this); //Certainement à modifier car il va falloir mettre le controller en paramètre
+			Affichage_Film page = new Affichage_Film(frame,f,this );
+			showPage(page.afficher());
 			saveOldPage();
-			//showPage(page);
+		}
+
+		public void showDetailedBlueRay(BlueRay blueRay){
+			Affichage_Film page = new Affichage_Film(frame,blueRay,this );
+			showPage(page.afficher());
+			saveOldPage();
 		}
 
 		private void showPage(BasePage page) {
@@ -358,12 +391,6 @@ public class Controller {
             System.out.println("Back to :["+curPage.getClass()+"]... pile_size:"+pagePile.size());
             curPage.setVisible(true);
         }*/
-
-    public void showFilm() {
-        BasePage page = new Affichage_Film(frame);
-        page.setController(this);
-        showPage(page);
-    }
 
     public void setCurrentFilm(Film film) {
         this.currentFilm = film;

@@ -15,41 +15,42 @@ class Affichage_Film extends BasePage {
     private Film film;
     private BlueRay blueRay;
     private Account account;
-    private Controller controller;
+    private BackNavigationBar backNavigationBar = new BackNavigationBar("Détails du film");
+
     public Affichage_Film(JFrame frame) {
         super(frame);
     }
 
-    public Affichage_Film(JFrame frame, Film film, Account account,Controller controller) {
-        super(frame);
+    public Affichage_Film(JFrame frame, Film film,Controller controller) {
+        super(frame,controller);
         this.film = film;
-        this.account = account;
-        this.controller = controller;
+        this.account = controller.currentAccount;
         this.blueRay = null;
     }
 
-    public Affichage_Film(JFrame frame, BlueRay blueRay, Account account,Controller controller) {
-        super(frame);
+    public Affichage_Film(JFrame frame, BlueRay blueRay, Controller controller) {
+        super(frame,controller);
         this.blueRay = blueRay;
-        this.account = account;
-        this.controller = controller;
+        this.account = controller.currentAccount;
         this.film = null;
     }
 
-    public void afficher()
+    public BasePage afficher()
     {
         if(film != null)
         {
-            afficher_film(film, account, frame, controller);
+            afficher_film(film, frame, controller);
+            return this;
         }
         else
         {
-            afficher_film(blueRay.getFilm(), account, frame, controller);
+            afficher_film(blueRay.getFilm(), frame, controller);
+            return this;
         }
     }
-    public JPanel afficher_film(Film film, Account account, JFrame frame, Controller controller) {
-        JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.setSize(800, 600);
+    public BasePage afficher_film(Film film, JFrame frame, Controller controller) {
+        this.setLayout(new BorderLayout());
+        this.setSize(800, 600);
         Payment payement = new Payment();
 
         // Créer un JSplitPane pour diviser la fenêtre en deux parties de taille égale
@@ -151,8 +152,8 @@ class Affichage_Film extends BasePage {
 
         splitPane.setBottomComponent(descriptionScrollPane);
 
-        mainPanel.add(splitPane, BorderLayout.CENTER);
-        mainPanel.add(buttonPanel,BorderLayout.SOUTH);
+        this.add(splitPane, BorderLayout.CENTER);
+        this.add(buttonPanel,BorderLayout.SOUTH);
 
 
         qrCode.addActionListener(new ActionListener() {
@@ -162,15 +163,21 @@ class Affichage_Film extends BasePage {
             }
         });
 
-        mainPanel.setVisible(true);
-        controller.traite(affichage_film,Keyword.RENT);
-        return mainPanel;
+        backNavigationBar.getLeftBtn().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.traite(null,Keyword.BACK);
+            }
+        });
+
+        this.setVisible(true);
+        return this;
     }
 
 
-    public JPanel afficher_film(BlueRay blueRay, Account account, JFrame frame, Controller controller) {
-        JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.setSize(800, 600);
+    public BasePage afficher_film(BlueRay blueRay, Account account, JFrame frame, Controller controller) {
+        this.setLayout(new BorderLayout());
+        this.setSize(800, 600);
         Payment payement = new Payment();
 
         // Créer un JSplitPane pour diviser la fenêtre en deux parties de taille égale
@@ -271,8 +278,8 @@ class Affichage_Film extends BasePage {
 
         splitPane.setBottomComponent(descriptionScrollPane);
 
-        mainPanel.add(splitPane, BorderLayout.CENTER);
-        mainPanel.add(buttonPanel,BorderLayout.SOUTH);
+        this.add(splitPane, BorderLayout.CENTER);
+        this.add(buttonPanel,BorderLayout.SOUTH);
 
 
         blueRaybutton.addActionListener(new ActionListener() {
@@ -283,9 +290,15 @@ class Affichage_Film extends BasePage {
             }
         });
 
-        mainPanel.setVisible(true);
-        controller.traite(affichage_film,Keyword.RENT);
-        return mainPanel;
+        backNavigationBar.getLeftBtn().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.traite(null,Keyword.BACK);
+            }
+        });
+
+        this.setVisible(true);
+        return this;
     }
 
 }

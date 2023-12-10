@@ -77,6 +77,10 @@ public class FacadeIHM {
         return false;
     }
 
+    public boolean addCreditCardToAccount(Account account) {
+        return false;
+    }
+
     public boolean requestUnavailableMovies(String filmName) {
         return false;
     }
