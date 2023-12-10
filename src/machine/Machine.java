@@ -1,16 +1,11 @@
 package machine;
 
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import beans.Account;
-import beans.Actor;
-import beans.Author;
-import beans.Category;
-import beans.Film;
-import beans.SubscriberAccount;
-import beans.User;
+import beans.*;
 import coo.classes.FilmFilterIterator;
 import dao.tools.Session;
 import facade.bd.FacadeBd;
@@ -18,33 +13,41 @@ import facade.bd.FacadeBd;
 public class Machine {
 
 	private static FacadeBd facadeBd = new FacadeBd();
-	private static Account account;
-	public Machine(Account account) {
-		Machine.account = account;
+	private Account account;
+	private static Machine instance;
+	private Machine(Account account) {
+		this.account = account;
+	}
+	public static Machine getInstance(Account account) {
+		if (instance == null) {
+			instance = new Machine(account);
+		}
+		return instance;
 	}
 	public static void main(String[] args) {
 		SubscriberAccount firstAccount = new SubscriberAccount();
 		Session session = new Session(false);
 		//Account myAccount = new beans.NormalAccount();
 		Machine machine = new Machine(firstAccount);
-
 		try {
 			session.open();
-			//			machine.getAllFilms();
-			//			machine.getTopFilmsWeek();
-			//			machine.getTopFilmsMonth();
+			String email = "johndoe@example.com";
+			String pwd = "password123";
+			machine.userLogin(email,pwd);
+			System.out.println(machine.getAccount().getEmail());
+			//machine.getTopFilmsWeek();
+			//machine.getTopFilmsMonth();
 			//			User user = new User();
 			//			user.setFirstName("Nizar");
 			//			user.setLastName("adfh");
 			//			user.setDateOfBirth(new Date(2000,11,1));
-			//			String email = "nizar@gmail.com";
-			//			String pwd = "password;jfd";
+			//
 			////			machine.createUserAccount(user,"nizar@gmail.com","password;jfd");
 			//			machine.userLogin(email,pwd);
 			//			machine.unsubscribeFromService();
 			//			System.out.println(machine.account);
-
-			List<Film> allFilms = facadeBd.getAllFilms(account);
+			/*
+			List<Film> allFilms = facadeBd.getAllFilms(machine.getAccount());
 
 			String nameFilter = "";
 
@@ -75,6 +78,7 @@ public class Machine {
 				Film filteredFilm = filmIterator.next();
 				System.out.println(filteredFilm.toString());
 			}
+			*/
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -87,43 +91,46 @@ public class Machine {
 
 		}
 	}
-
 	public boolean createUserAccount(User user, String email, String password) {
 		return facadeBd.createUserAccount(user, email, password);
 	}
 
 	public void userLogin(String email, String pwd){
-		Machine.account = facadeBd.userLogin(email, pwd);
+		this.account = facadeBd.userLogin(email, pwd);
+	}
+
+	public void modifyAccountInformation(Account account, String newFirstName, String newLastName, Date newDob, String oldPassword, String newPassword) {
+		this.account = facadeBd.modifyAccountInformation(account, newFirstName, newLastName, newDob, oldPassword, newPassword);
 	}
 	public boolean subscribeToService() {
 		SubscriberAccount subAccount = (SubscriberAccount) facadeBd.subscribeToService(account);
 		if (subAccount != null) {
-			Machine.account = subAccount;
+			this.account = subAccount;
 			return true;
 		}
 		return false;
 	}
 
 	public boolean unsubscribeFromService() {
-		Account retrievedAccount = facadeBd.unsubscribeFromService(Machine.account);
+		Account retrievedAccount = facadeBd.unsubscribeFromService(this.account);
 		if (retrievedAccount != null) {
-			Machine.account = retrievedAccount;
+			this.account = retrievedAccount;
 			return true;
 		}
 		return false;
 	}
 
 	public ArrayList<Film> getAllFilms() {
-		ArrayList<Film> films = (ArrayList<Film>) facadeBd.getAllFilms(Machine.account);
+		ArrayList<Film> films = (ArrayList<Film>) facadeBd.getAllFilms(this.account);
 		return films;
 	}
 
 	public List<List<Object>> getTopFilmsWeek(){
-		List<List<Object>> topWeekFilms =  facadeBd.getTopFilmsWeek(Machine.account);
+		List<List<Object>> topWeekFilms =  facadeBd.getTopFilmsWeek(this.account);
 		return topWeekFilms;
 	}
 	public List<List<Object>> getTopFilmsMonth(){
-		List<List<Object>> topMonthFilms =  facadeBd.getTopFilmsMonth(Machine.account);
+		List<List<Object>> topMonthFilms =  facadeBd.getTopFilmsMonth(this.account);
 		return topMonthFilms;
 	}
 	public ArrayList<Category> getAccountBannedCategories(Account account) {
@@ -131,9 +138,42 @@ public class Machine {
 		return bannedCategories;
 	}
 
-	public Account getAccount(){ return Machine.account;}
+	public void getCurrentReservationsByAccount() {
+		ArrayList<Reservation> reservations = facadeBd.getCurrentReservationsByAccount(this.account);
+		for (Reservation r : reservations){
+			System.out.println(r);
+		}
+	}
+
+	public String ReserveBlueRay(Account account, BlueRay blueRay) {
+		 return facadeBd.ReserveBlueRay(account, blueRay) ? "Success" : "Failed to rent: " + blueRay.getFilm().getName();
+	}
+
+	public String ReserveQrCode(Account account, Film film) {
+		return facadeBd.ReserveQrCode(account, film) ? "Success" : "Failed to rent: " + film.getName();
+	}
+	public boolean addMoneyToCard(SubscriberCard subscriberCard, double amount) {
+		return facadeBd.addMoneyToCard(subscriberCard, amount);
+	}
+
+	public boolean processPaymentBySubscriberCard(SubscriberCard subscriberCard, double amount) {
+		return facadeBd.processPaymentBySubscriberCard(subscriberCard, amount);
+	}
+
+	public boolean requestUnavailableFilm(Account account, String filmName) {
+		return facadeBd.requestUnavailableFilm(account, filmName);
+	}
+
+	public boolean banFilmCategories(Account account, List<Category> categories) {
+		return facadeBd.banFilmCategories(account, categories);
+	}
+
+	public boolean unbanFilmCategories(Account account, Category category) {
+		return facadeBd.unbanFilmCategories(account, category);
+	}
+	public Account getAccount(){ return this.account;}
 
 	public void setAccount(Account account) {
-		Machine.account = account;
+		this.account = account;
 	}
 }
