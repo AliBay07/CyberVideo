@@ -149,6 +149,10 @@ public class Controller {
 					showMainPage();
 					changeMainPageState();
 					break;
+				case CHANGE_ACCOUNT_SETTING:
+					showMainPage();
+					changeMainPageState();
+					break;
 				case SHOW_FILM_DETAILS:
 					frame.remove(currentPage);
 					back();
@@ -251,8 +255,7 @@ public class Controller {
 				default:
 					break;
 			}
-		}
-
+		}else
 		if(action == Keyword.RENTED_QrCode_FILM)
 		{
 			switch (state) {
@@ -271,12 +274,18 @@ public class Controller {
 				default:
 					break;
 			}
-		}
-
+		}else
 		if(action == Keyword.SIGNUP){
 			// il faut encore distinguer SINGUP_FOR_RENT et SINGUP_FOR_SUSCRIBE ?
 			state = State.SIGNUP_NORMAL;
 			showMainPage();
+		}else
+		if(action == Keyword.SHOWACCOUNTINFOPAGE){
+			showAccountInfoPage();
+			state = State.CHANGE_ACCOUNT_SETTING;
+		}else
+		if(action == Keyword.CHANGE_ACCOUNT_INFO){
+			//@TODO après la modification des infos d'account
 		}
 	}
 
@@ -360,6 +369,12 @@ public class Controller {
 			Affichage_Film page = new Affichage_Film(frame,blueRay,this );
 			showPage(page.afficher());
 			saveOldPage();
+		}
+
+		public void showAccountInfoPage(){
+			AccountInfoPage page = new AccountInfoPage(frame);
+			page.setController(this);
+			showPage(page);
 		}
 
 		private void showPage(BasePage page) {
