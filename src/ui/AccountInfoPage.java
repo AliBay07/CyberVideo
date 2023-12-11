@@ -33,8 +33,8 @@ public class AccountInfoPage extends BasePage implements ActionListener {
     private JTextField tfState;
     private String password;
 
-    public AccountInfoPage(JFrame frame){
-        super(frame);
+    public AccountInfoPage(JFrame frame, Controller controller){
+        super(frame, controller);
         this.setLayout(new BorderLayout());
         initViews();
     }
@@ -102,11 +102,31 @@ public class AccountInfoPage extends BasePage implements ActionListener {
         gbc.anchor = GridBagConstraints.CENTER;
         contentPanel.add(abonnetBtn, gbc);
 
+        // init data
+        Account acc = controller.getCurrentAccount();
+        if(acc!=null) {
+            tfId.setText(String.valueOf(acc.getIdUser()));
+            User user = acc.getUser();
+            if(user!=null){
+                tfFirstName.setText(user.getFirstName());
+                tfLastName.setText(user.getLastName());
+            }
+            tfEmail.setText(acc.getEmail());
+            if(acc instanceof SubscriberAccount){
+                tfState.setText("Abonné");
+                abonnetBtn.setText("Désabonner");
+            }else{
+                tfState.setText("Non-abonné");
+                abonnetBtn.setText("Abonner");
+            }
+        }
+
         // actions
         emailBtn.setActionCommand(ACT_EDIT_EMAIL);
         emailBtn.addActionListener(this);
         pwdBtn.setActionCommand(ACT_EDIT_PASSWORD);
         pwdBtn.addActionListener(this);
+        abonnetBtn.addActionListener(this);
     }
 
     private NavigationBar initNavigationBar() {
@@ -205,13 +225,13 @@ public class AccountInfoPage extends BasePage implements ActionListener {
         return formatter;
     }
 
-    public static void main(String[] args) {
-        JFrame frame = new JFrame();
-        frame.add(new AccountInfoPage(frame));
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1280, 960);
-        frame.setVisible(true);
-    }
+//    public static void main(String[] args) {
+//        JFrame frame = new JFrame();
+//        frame.add(new AccountInfoPage(frame));
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.setSize(1280, 960);
+//        frame.setVisible(true);
+//    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -339,7 +359,8 @@ public class AccountInfoPage extends BasePage implements ActionListener {
     }
 
     private void changeFirstname(String newFirstname) {
-        Account acc = controller.getFacadeIHM().modifyAccountInformation(newFirstname, tfLastName.getName(), password);
+        Account acc = controller.getFacadeIHM().modifyAccountInformation(newFirstname, tfLastName.getName(),
+                controller.getCurrentAccount().getPassword(), password);
         if(acc!=null){
             controller.setAccount(acc);
             controller.traite(this, Keyword.CHANGE_ACCOUNT_INFO);
@@ -349,7 +370,8 @@ public class AccountInfoPage extends BasePage implements ActionListener {
     }
 
     private void changeLastname(String newLastname) {
-        Account acc = controller.getFacadeIHM().modifyAccountInformation(tfFirstName.getName(), newLastname, password);
+        Account acc = controller.getFacadeIHM().modifyAccountInformation(tfFirstName.getName(), newLastname,
+                controller.getCurrentAccount().getPassword(), password);
         if(acc!=null){
             controller.setAccount(acc);
             controller.traite(this, Keyword.CHANGE_ACCOUNT_INFO);
@@ -368,7 +390,8 @@ public class AccountInfoPage extends BasePage implements ActionListener {
 
     private void changePassword(String newPassword) {
         password = newPassword;
-        Account acc = controller.getFacadeIHM().modifyAccountInformation(tfFirstName.getName(), tfLastName.getName(), newPassword);
+        Account acc = controller.getFacadeIHM().modifyAccountInformation(tfFirstName.getName(), tfLastName.getName(),
+                controller.getCurrentAccount().getPassword(), newPassword);
         if(acc!=null){
             controller.setAccount(acc);
             controller.traite(this, Keyword.CHANGE_ACCOUNT_INFO);
@@ -378,8 +401,10 @@ public class AccountInfoPage extends BasePage implements ActionListener {
     }
 
     private boolean isOldPasswordCorrect(String oldPassword) {
-        //@TODO à compléter
-        return true;
+        if(oldPassword!=null && oldPassword.equals(controller.getCurrentAccount().getPassword())){
+            return true;
+        }
+        return false;
     }
 
 }

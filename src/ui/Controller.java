@@ -285,6 +285,9 @@ public class Controller {
 		else
 		if(action == Keyword.LOGOUT){
 			logout();
+		}else
+		if(action == Keyword.UNSUBSCRIBE){
+			//@TODO après unsubscribe dans le menu
 		}
 	}
 
@@ -375,8 +378,7 @@ public class Controller {
 		}
 
 		public void showAccountInfoPage(){
-			AccountInfoPage page = new AccountInfoPage(frame);
-			page.setController(this);
+			AccountInfoPage page = new AccountInfoPage(frame, this);
 			showPage(page);
 		}
 

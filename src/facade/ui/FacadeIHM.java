@@ -121,8 +121,8 @@ public class FacadeIHM {
 		return machine.reportLostBlueRayDisc(blueray);
 	}
 
-	public Account modifyAccountInformation(String newFirstName, String newLastName, String NewPassword) {
-		return machine.modifyAccountInformation(newFirstName, newLastName, NewPassword, NewPassword);
+	public Account modifyAccountInformation(String newFirstName, String newLastName, String oldPassword, String newPassword) {
+		return machine.modifyAccountInformation(newFirstName, newLastName, oldPassword, newPassword);
 	}
 
 	public boolean processPaymentByCreditCard(CreditCard creditCard, double amount) {

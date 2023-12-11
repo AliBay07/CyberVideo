@@ -166,7 +166,6 @@ public class MainPage extends BasePage {
         ActionListener actionListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //@TODO les actions de menu (comme ci-dessus)
                 // action de menu
                 String cmd = e.getActionCommand();
                 if(cmd.equals(tabFonctions[0])){ // Modifier mes données personnelles
@@ -174,12 +173,12 @@ public class MainPage extends BasePage {
                 }else
                 if(cmd.equals(tabFonctions[1])){ // "Modifier mes cartes bancaires"
                     //@TODO
+                    showInfo(tabFonctions[1], "Fonction en route ...");  // pas encore fait
                 }else
-                if(cmd.equals(tabFonctions[3])){ // S'abonner
-                    //@TODO
-                    controller.traite(MainPage.this, Keyword.SUBSCRIBE);
+                if(cmd.equals(tabFonctions[2])){ // S'abonner
+                    abonner();
                 }else
-                if(cmd.equals(tabFonctions[4])){ // Se deconnecter
+                if(cmd.equals(tabFonctions[3])){ // Se deconnecter
                     controller.traite(MainPage.this, Keyword.LOGOUT);
                 }
             }
@@ -193,7 +192,6 @@ public class MainPage extends BasePage {
         ActionListener actionListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //@TODO les actions de menu (comme ci-dessus)
                 // action de menu
                 String cmd = e.getActionCommand();
                 if(cmd.equals(tabFonctions[0])){ // Voir mon historique de location
@@ -201,12 +199,15 @@ public class MainPage extends BasePage {
                 }else
                 if(cmd.equals(tabFonctions[1])){ // Modifier mes préférences de location
                     //@TODO
+                    showInfo(tabFonctions[1], "Fonction en route ...");  // pas encore fait
                 }else
                 if(cmd.equals(tabFonctions[2])){ // Filtrer les catégories
                     //@TODO
+                    showInfo(tabFonctions[2], "Fonction en route ...");  // pas encore fait
                 }else
                 if(cmd.equals(tabFonctions[3])){ // Demander l'ajout d'un nouveau film
                     //@TODO
+                    showInfo(tabFonctions[3], "Fonction en route ...");  // pas encore fait
                 }
             }
         };
@@ -227,12 +228,13 @@ public class MainPage extends BasePage {
                 }else
                 if(cmd.equals(tabFonctions[1])){ // "Modifier mes cartes bancaires"
                     //@TODO
+                    showInfo(tabFonctions[1], "Fonction en route ...");  // pas encore fait
                 }else
                 if(cmd.equals(tabFonctions[2])){ // Commander une carte abonné
-                    //@TODO
+                    demandeSubscribeCarte();
                 }else
                 if(cmd.equals(tabFonctions[3])){ // Arreter mon abonnement
-                    //@TODO
+                    desabonner();
                 }else
                 if(cmd.equals(tabFonctions[4])){ // Arreter mon abonnement
                     controller.traite(MainPage.this, Keyword.LOGOUT);
@@ -240,6 +242,32 @@ public class MainPage extends BasePage {
             }
         };
         return createMenuDialog("Menu droit", tabFonctions, actionListener, SysAL2000.DIALOG_WIDTH/3, SysAL2000.DIALOG_HEIGHT/3);
+    }
+
+    private void demandeSubscribeCarte() {
+        boolean isOk = controller.getFacadeIHM().addSubscriberCardToAccount();
+        showTips("Demande Subscribe Carte", isOk);
+        //@TODO ... manque encore un keyword
+    }
+
+    private void abonner() {
+        boolean isOk = controller.getFacadeIHM().subscribeToService();
+        showTips("Abonner", isOk);
+        controller.traite(MainPage.this, Keyword.SUBSCRIBE);
+    }
+
+    private void desabonner(){
+        boolean isOk = controller.getFacadeIHM().unsubscribeToService();
+        showTips("Desabonner", isOk);
+        controller.traite(this, Keyword.UNSUBSCRIBE);
+    }
+
+    private void showTips(String action, boolean isOk) {
+        if(isOk){
+            showInfo("Success", action+" success.");
+        }else{
+            showError("Failed", "Veuillez essayer à nouveau.");
+        }
     }
 
     private JDialog createMenuDialog(String title, String[] tabFonctions, ActionListener actionListener, int w, int h){
