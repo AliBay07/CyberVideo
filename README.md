@@ -1,4 +1,4 @@
-#CyberVideo Project
+# CyberVideo Project
 
 Participants:
 AZZOUZI Nizar
@@ -8,7 +8,7 @@ GUEGAN Nicolas
 LI Jiawei
 PELLEGRIN Noémie
 
-##Project Structure:
+## Project Structure:
 
 .gitignore: Fichier pour la gestion des exclusions dans Git.
 README.md: Document principal de présentation et d'explication du projet.
@@ -33,7 +33,7 @@ machine: Contient Machine.java, un composant central du projet.
 ui (User Interface): Classes et éléments pour l'interface utilisateur.
 Images: Ressources graphiques pour l'UI.
 
-##Running the Program:
+## Running the Program:
 
 Pour compiler et exécuter le programme, suivez ces étapes :
 
