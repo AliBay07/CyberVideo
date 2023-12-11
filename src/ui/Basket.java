@@ -52,7 +52,7 @@ public class Basket extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 Container parent = ((Component) e.getSource()).getParent();
                 JLabel num = (JLabel) (parent.getComponent(0));
-                filmsList.remove(Integer.getInteger(num.getText()));
+                filmsList.remove(Integer.getInteger(num.getText())-1);
                 Container pParent = parent.getParent();
                 pParent.remove(parent);
                 Basket.this.repaint();
@@ -78,6 +78,10 @@ public class Basket extends JDialog {
     private void setValidationButton() {
         validation = new JButton("Louer");
         this.add(validation);
+    }
+
+    public ArrayList<String> getFilmsList(){
+        return filmsList;
     }
 
     public void showBasket() {

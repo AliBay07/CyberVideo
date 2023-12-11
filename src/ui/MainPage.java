@@ -50,12 +50,7 @@ public class MainPage extends BasePage {
         super(frame);
         this.setLayout(new BorderLayout());
         this.setController(c);
-
-        //Création de films aléatoires
         filmsBasket = new ArrayList<String>();
-        filmsBasket.add("Titanic");
-        filmsBasket.add("Transformers");
-
         initView();
     }
 

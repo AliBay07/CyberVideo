@@ -17,9 +17,9 @@ public class NormalNavbar extends JPanel {
         this.setPreferredSize(new Dimension(FRAME_WIDTH,40)); //Mettre une constante pour avoir la taille de la fenetre ?
         this.setLayout(new GridLayout(1, 4));
         //this.setLayout(new FlowLayout(FlowLayout.CENTER, 60, 0));
-        leftMenu = new JButton("trois barres");
+        leftMenu = new JButton("Menu", new ImageIcon("src/ui/Images/menu.png"));
         currentLocations = new JLabel(nbReservations + " locations en cours",JLabel.CENTER); //Avoir le nombre de location avec la BD
-        basket = new JButton("Panier");
+        basket = new JButton("Panier", new ImageIcon("src/ui/Images/panier.png"));
         rightMenu = new JButton(account.getUser().getFirstName()); //Faire une version nomUtilisateur avec une constante d'environnement pour vérifier si un utilisateur est connecté
         this.add(leftMenu);
         this.add(currentLocations);

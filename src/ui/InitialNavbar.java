@@ -13,7 +13,7 @@ public class InitialNavbar extends JPanel {
     public InitialNavbar(){
         this.setLayout(new BorderLayout());
         this.setPreferredSize(new Dimension(FRAME_WIDTH,40)); //Mettre une constante pour avoir la taille de la fenetre ?
-        leftMenu = new JButton("trois barres");
+        leftMenu = new JButton("Menu", new ImageIcon("src/ui/Images/menu.png"));
         mainPageName = new JLabel("Cybervideo");
         mainPageName.setHorizontalAlignment(SwingConstants.CENTER);
         signIn = new JButton("Connexion"); //Faire une version nomUtilisateur avec une constante d'environnement pour vérifier si un utilisateur est connecté

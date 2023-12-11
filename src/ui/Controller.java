@@ -19,6 +19,7 @@ public class Controller {
 	Film currentFilm;
 	BlueRay currentBlueRay;
 	QrCode currentQrCode;
+	String researchedFilm;
 
 	// State des pages
 	enum State { IDLE, SIGNIN_NORMAL, SIGNUP_NORMAL, SIGNIN_FOR_RENT, SIGNUP_FOR_RENT, SIGNIN_FOR_SUBSCRIBE,
@@ -35,6 +36,7 @@ public class Controller {
 		this.frame = frame;
 		facadeIHM = fihm;
 		currentAccount = null;
+		researchedFilm = "";
 	}
 
 	public void traite(BasePage page, Keyword action){
@@ -128,6 +130,14 @@ public class Controller {
 			ArrayList<Film> results = facadeIHM.getAllFilms();
 			state = State.SHOW_FILMS_RESULTS;
 			showResearchPage(Section.ALL, results, null);
+		}else
+		if(action == Keyword.SHOWTEXTRESEARCH){
+			Film film = facadeIHM.getFilmInformation(researchedFilm);
+			ArrayList<Film> films = new ArrayList<Film>();
+			if(film != null)
+				films.add(film);
+			state = State.SHOW_FILMS_RESULTS;
+			showResearchPage(Section.ADVANCED, films, null);
 		}else
 		if(action == Keyword.BACK){
 			switch(state){
@@ -342,6 +352,17 @@ public class Controller {
 			showPage(page);
 			return;
 		}
+		if(s == Section.ADVANCED){
+			//TODO
+			if(researchedFilm.equals(""))
+				page = new ResearchResults(frame, this, s, null, films);
+			else
+				page = new ResearchResults(frame, this, s, "Recherche avancée", films);
+			page.showResearchResults();
+			showPage(page);
+			return;
+			//Rechercher les films par critères
+		}
 		page = new ResearchResults(frame, this, s, null, films);
 		page.showResearchResults();
 		showPage(page);
@@ -486,4 +507,8 @@ public class Controller {
         dialog.setVisible(true);
         return dialog;
     }
+
+	public void setResearchedFilm(String text){
+		researchedFilm = text;
+	}
 }

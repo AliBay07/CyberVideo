@@ -62,8 +62,14 @@ public class FilmsSectionsPane extends JPanel {
         });
         JPanel researchByText = new JPanel(new FlowLayout(FlowLayout.LEADING, 10, 30));
         JTextField researchBar = new JTextField("Rechercher un film", 30);
-        ImageIcon researchIcon = new ImageIcon("");
+        ImageIcon researchIcon = new ImageIcon("src/ui/Images/loupe.png");
         JButton launchResearch = new JButton("loupe",researchIcon);
+        launchResearch.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                controller.setResearchedFilm(researchBar.getText());
+                controller.traite(null, Keyword.SHOWTEXTRESEARCH);
+            }
+        });
         researchByText.add(researchBar);
         researchByText.add(launchResearch);
         researchElements.add(advancedResearch);
