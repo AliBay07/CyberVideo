@@ -100,41 +100,47 @@ public class ReturnBlueRayPage extends BasePage {
         topInfoText.setBorder(new EmptyBorder(15, 0, 0, 0));
 
         JTable table = initTable();
-        JScrollPane scrollPane = new JScrollPane(table);
-        scrollPane.setBorder(new EmptyBorder(30, 0, 30, 0));
-        table.setFillsViewportHeight(true);
+        if(table!=null){
+            JScrollPane scrollPane = new JScrollPane(table);
+            scrollPane.setBorder(new EmptyBorder(30, 0, 30, 0));
+            table.setFillsViewportHeight(true);
 
-        JLabel bottomInfoTxt = new JLabel("Please only put one movie at a time :", SwingConstants.LEFT);
-        JButton btnStart = new JButton("Start");
-        JPanel controlPane = new JPanel();
-        controlPane.add(btnStart, CENTER_ALIGNMENT);
-        JPanel bottomPane = new JPanel(new BorderLayout());
-        bottomPane.add(bottomInfoTxt, BorderLayout.NORTH);
-        bottomPane.add(controlPane, BorderLayout.SOUTH);
+            JLabel bottomInfoTxt = new JLabel("Please only put one movie at a time :", SwingConstants.LEFT);
+            JButton btnStart = new JButton("Start");
+            JPanel controlPane = new JPanel();
+            controlPane.add(btnStart, CENTER_ALIGNMENT);
+            JPanel bottomPane = new JPanel(new BorderLayout());
+            bottomPane.add(bottomInfoTxt, BorderLayout.NORTH);
+            bottomPane.add(controlPane, BorderLayout.SOUTH);
 
-        contentPanel.add(topInfoText, BorderLayout.NORTH);
-        contentPanel.add(scrollPane, BorderLayout.CENTER);
-        contentPanel.add(bottomPane, BorderLayout.SOUTH);
+            contentPanel.add(topInfoText, BorderLayout.NORTH);
+            contentPanel.add(scrollPane, BorderLayout.CENTER);
+            contentPanel.add(bottomPane, BorderLayout.SOUTH);
+
+            // action
+            btnStart.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    startRent();
+                }
+            });
+        }else{
+            contentPanel.add(new JLabel("     <Rental History vide.>"), BorderLayout.CENTER);
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    showWarning("Warning", "Not movie can rent.");
+                    controller.traite(ReturnBlueRayPage.this, Keyword.BACK);
+                }
+            });
+        }
 
         this.setLayout(new BorderLayout());
         this.add(navbar, BorderLayout.NORTH);
         this.add(contentPanel, BorderLayout.CENTER);
-
-        // action
-        btnStart.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                startRent();
-            }
-        });
     }
 
     private void startRent() {
-//        if(list==null || list.isEmpty()){
-//            showWarning("Warning", "Not movie can rent.");
-//            return;
-//        }
-
         int size = 3; //list.size();
         Object[] possibilities = new Object[size+2];
         for(int i=0; i<possibilities.length; i++){  // les deux derniers juste pour tester un cas error
@@ -167,6 +173,9 @@ public class ReturnBlueRayPage extends BasePage {
 
     private JTable initTable() {
         ArrayList<Reservation> list = loadData();
+        if(list.isEmpty()){
+            return null;
+        }
         MyTableModel model = new MyTableModel(list);
         table = new JTable(model);
         // column size

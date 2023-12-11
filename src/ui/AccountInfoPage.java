@@ -22,14 +22,14 @@ public class AccountInfoPage extends BasePage implements ActionListener {
     private static final String ACT_EDIT_LAST_NAME = "edit_last_name";
     private static final String ACT_EDIT_EMAIL = "edit_email";
     private static final String ACT_EDIT_PASSWORD = "edit_password";
-    private static final String ACT_EDIT_BIRTHDAY = "edit_birthday";
+//    private static final String ACT_EDIT_BIRTHDAY = "edit_birthday";
     private static final String ACT_TOGGLE_ABONNE = "toggle_abonne";
 
     private JTextField tfId;
     private JTextField tfFirstName;
     private JTextField tfLastName;
     private JTextField tfEmail;
-    private JTextField tfBirthday;
+//    private JTextField tfBirthday;
     private JTextField tfState;
     private String password;
 
@@ -60,8 +60,8 @@ public class AccountInfoPage extends BasePage implements ActionListener {
                 "", true, ACT_EDIT_FIRST_NAME, this,0, gridY++);
         tfLastName = addFormattedEditTextView(contentPanel, "Last name", "", DEF_TF_SIZE/2,
                 "", true, ACT_EDIT_LAST_NAME, this,0, gridY++);
-        tfBirthday = addFormattedEditTextView(contentPanel, "Birthday", "", DEF_TF_SIZE/2,
-                "####-##-##", true, ACT_EDIT_BIRTHDAY, this,0, gridY++);
+//        tfBirthday = addFormattedEditTextView(contentPanel, "Birthday", "", DEF_TF_SIZE/2,
+//                "####-##-##", true, ACT_EDIT_BIRTHDAY, this,0, gridY++);
 
         // separator
         addSeparator(contentPanel, 0, gridY++);
@@ -222,9 +222,9 @@ public class AccountInfoPage extends BasePage implements ActionListener {
         if(cmd.equals(ACT_EDIT_LAST_NAME)){
             showLastNameEditDialog();
         }else
-        if(cmd.equals(ACT_EDIT_BIRTHDAY)){
-            showBirthdayEditDialog();
-        }else
+//        if(cmd.equals(ACT_EDIT_BIRTHDAY)){
+//            showBirthdayEditDialog();
+//        }else
         if(cmd.equals(ACT_EDIT_EMAIL)){
             showEmailEditDialog();
         }else
@@ -273,25 +273,25 @@ public class AccountInfoPage extends BasePage implements ActionListener {
         dialogLastname.show();
     }
 
-    private void showBirthdayEditDialog() {
-        BirthdayEditDialog dialogBirthday = new BirthdayEditDialog(frame, "Change Birthday",
-                "", tfBirthday.getText(), "SAVE", "CANCEL");
-        dialogBirthday.setButtonClickListener(new BirthdayEditDialog.ButtonClickListener() {
-            @Override
-            public void leftBtnClicked(BirthdayEditDialog dialog) {
-                String newBirthday = dialog.getDate();
-                tfBirthday.setText(newBirthday);
-                dialog.close();
-                changeBirthday(newBirthday);
-            }
-
-            @Override
-            public void rightBtnClicked(BirthdayEditDialog dialog) {
-                dialog.close();
-            }
-        });
-        dialogBirthday.show();
-    }
+//    private void showBirthdayEditDialog() {
+//        BirthdayEditDialog dialogBirthday = new BirthdayEditDialog(frame, "Change Birthday",
+//                "", tfBirthday.getText(), "SAVE", "CANCEL");
+//        dialogBirthday.setButtonClickListener(new BirthdayEditDialog.ButtonClickListener() {
+//            @Override
+//            public void leftBtnClicked(BirthdayEditDialog dialog) {
+//                String newBirthday = dialog.getDate();
+//                tfBirthday.setText(newBirthday);
+//                dialog.close();
+//                changeBirthday(newBirthday);
+//            }
+//
+//            @Override
+//            public void rightBtnClicked(BirthdayEditDialog dialog) {
+//                dialog.close();
+//            }
+//        });
+//        dialogBirthday.show();
+//    }
 
     private void showEmailEditDialog() {
         TextEditDialog dialogEmail = new TextEditDialog(frame, "Change Email",

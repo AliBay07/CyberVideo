@@ -114,7 +114,7 @@ public class RentalHistoryPage extends BasePage {
             table.setFillsViewportHeight(true);
             contentPanel.add(scrollPane, BorderLayout.CENTER);
         }else{
-            contentPanel.add(new JLabel("Rental History vide."), BorderLayout.CENTER);
+            contentPanel.add(new JLabel("    <Rental History vide.>"), BorderLayout.CENTER);
         }
 
         this.setLayout(new BorderLayout());
