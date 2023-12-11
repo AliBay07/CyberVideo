@@ -306,4 +306,9 @@ public class MainPage extends BasePage {
         return menuDialog;
     }
 
+    public void updateUI_Account(){
+        initNavbar();
+        initBottomBar();
+    }
+
 }

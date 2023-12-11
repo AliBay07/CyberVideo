@@ -36,14 +36,14 @@ public class ResearchResults extends BasePage {
             }
             for(int i=0; i<filmsSections.size(); i++){
                 if(e.getSource()==filmsSections.get(i).getShowMoreButton()){
-                	
                 	if (filmsResults == null) {
                 		controller.setCurrentBlueRay(bluraysResults.get(i));
+                        selectedBlueray = bluraysResults.get(i);
                 	} else {
                 		controller.setCurrentFilm(filmsResults.get(i));
+                        selectedFilm = filmsResults.get(i);
                 	}
                     controller.traite(ResearchResults.this, Keyword.SHOWFILMDETAILS);
-                    selectedFilm = filmsResults.get(i);
                 }
                 else if(!(controller.getCurrentAccount()==null) && e.getSource()==filmsSections.get(i).getRentButton()) {
                     if(bluraysResults == null)
@@ -56,7 +56,6 @@ public class ResearchResults extends BasePage {
                     	controller.traite(ResearchResults.this, Keyword.RENTED_BlueRay_FILM);
                         selectedBlueray = bluraysResults.get(i);
                     }
-                    
                 } 
             }
         }
