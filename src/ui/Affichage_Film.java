@@ -63,10 +63,11 @@ class Affichage_Film extends BasePage {
         // Partie supérieure du JSplitPane
         JPanel topPanel = new JPanel(new BorderLayout());
         ImageIcon imageIcon = new ImageIcon(film.getPath());
+        int width = 400;
+    	int height = 500;
+    	imageIcon = new ImageIcon(imageIcon.getImage().getScaledInstance(width, height, java.awt.Image.SCALE_SMOOTH));      
         JLabel imageLabel = new JLabel(imageIcon);
         topPanel.add(imageLabel, BorderLayout.WEST);
-
-
         //zones avec les données du film
         JLabel jLabelTitle = new JLabel("Name : "+film.getName());
         JLabel jLabelAuthor = new JLabel("Author :"+film.getAuthors().get(0));

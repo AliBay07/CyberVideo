@@ -31,11 +31,11 @@ public class FilmInfoSection extends JPanel {
         c.weightx = 0.2;
         c.gridheight = 4;
         ImageIcon image = new ImageIcon(film.getPath());
-        if(image.getIconHeight() > this.getHeight())
-            this.add(new JLabel("Affiche du film",JLabel.CENTER),c);
-        else
-            this.add(new JLabel(new ImageIcon(film.getPath()),JLabel.CENTER),c); //Trouver le moyen d'avoir l'image plutot que son lien
-
+        int width = 150;
+    	int height = 150;
+    	image = new ImageIcon(image.getImage().getScaledInstance(width, height, java.awt.Image.SCALE_SMOOTH));
+        this.add(new JLabel(image));
+        
         //Ajout des informations du film
         c.fill = GridBagConstraints.NONE;
         c.gridx = 1;

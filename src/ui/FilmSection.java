@@ -31,7 +31,11 @@ public class FilmSection extends BasePage {
         filmsPane.setPreferredSize(new Dimension(FRAME_WIDTH, 200));
         for (int i=0; i<listBluray.size(); i++){ //listFilms.size()
             //Il faut récupérer les infos depuis la BDD et mettre l'affiche du film avec son nom
-            JButton film = new JButton(listBluray.get(i).getFilm().getName());
+        	ImageIcon originalIcon = new ImageIcon(listBluray.get(i).getFilm().getPath());
+        	int width = 100;
+        	int height = 100;
+        	ImageIcon icon = new ImageIcon(originalIcon.getImage().getScaledInstance(width, height, java.awt.Image.SCALE_SMOOTH));
+            JButton film = new JButton(listBluray.get(i).getFilm().getName(), icon);
             film.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -71,7 +75,11 @@ public class FilmSection extends BasePage {
         filmsPane.setPreferredSize(new Dimension(FRAME_WIDTH, 200));
         for (int i=0; i<listFilms.size(); i++){ //listFilms.size()
             //Il faut récupérer les infos depuis la BDD et mettre l'affiche du film avec son nom
-            JButton film = new JButton(listFilms.get(i).getName());
+        	ImageIcon originalIcon = new ImageIcon(listFilms.get(i).getPath());
+        	int width = 100;
+        	int height = 100;
+        	ImageIcon icon = new ImageIcon(originalIcon.getImage().getScaledInstance(width, height, java.awt.Image.SCALE_SMOOTH));
+            JButton film = new JButton(listFilms.get(i).getName(), icon);
             film.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {

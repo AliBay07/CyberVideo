@@ -63,7 +63,10 @@ public class FilmsSectionsPane extends JPanel {
         JPanel researchByText = new JPanel(new FlowLayout(FlowLayout.LEADING, 10, 30));
         JTextField researchBar = new JTextField("Rechercher un film", 30);
         ImageIcon researchIcon = new ImageIcon("src/ui/Images/loupe.png");
-        JButton launchResearch = new JButton("loupe",researchIcon);
+    	int width = 50;
+    	int height = 50;
+    	researchIcon = new ImageIcon(researchIcon.getImage().getScaledInstance(width, height, java.awt.Image.SCALE_SMOOTH));
+        JButton launchResearch = new JButton(researchIcon);
         launchResearch.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
                 controller.setResearchedFilm(researchBar.getText());
