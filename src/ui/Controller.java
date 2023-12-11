@@ -213,25 +213,44 @@ public class Controller {
 			state = State.SIGNUP_NORMAL;
 		}else
 		if (action == Keyword.RENTED_BlueRay_FILM) {
-			showMainPage();
-			BlueRay blueRay = this.getCurrentBlueRay();
-			facadeIHM.rentBlueRay(blueRay);
-
-			if(currentAccount instanceof NormalAccount)
-				state = State.LOGGED_NORMAL;
-			else if(currentAccount instanceof SubscriberAccount)
-				state = State.LOGGED_PREMIUM;
+			switch (state) {
+				case SHOW_BLURAY_RESULTS:
+					showDetailedBlueRay(((ResearchResults)currentPage).getSelectedBluRay());
+					state = State.SHOW_FILM_DETAILS;
+					break;
+				case SHOW_FILM_DETAILS:
+					showMainPage();
+					facadeIHM.rentBlueRay(this.getCurrentBlueRay());
+					if(currentAccount instanceof NormalAccount)
+						state = State.LOGGED_NORMAL;
+					else if(currentAccount instanceof SubscriberAccount)
+						state = State.LOGGED_PREMIUM;
+					break;
+				default:
+					break;
+			}
 		}
 
 		if(action == Keyword.RENTED_QrCode_FILM)
 		{
-			showMainPage();
-			facadeIHM.printQrCode(this.getCurrentQrCode());
-			if(currentAccount instanceof NormalAccount)
-				state = State.LOGGED_NORMAL;
-			else if(currentAccount instanceof SubscriberAccount)
-				state = State.LOGGED_PREMIUM;
+			switch (state) {
+				case SHOW_FILMS_RESULTS:
+					showDetailedFilm(((ResearchResults)currentPage).getSelectedFilm());
+					state = State.SHOW_FILM_DETAILS;
+					break;
+				case SHOW_FILM_DETAILS:
+					showMainPage();
+					facadeIHM.printQrCode(this.getCurrentQrCode());
+					if(currentAccount instanceof NormalAccount)
+						state = State.LOGGED_NORMAL;
+					else if(currentAccount instanceof SubscriberAccount)
+						state = State.LOGGED_PREMIUM;
+					break;
+				default:
+					break;
+			}
 		}
+
 		if(action == Keyword.SIGNUP){
 			// il faut encore distinguer SINGUP_FOR_RENT et SINGUP_FOR_SUSCRIBE ?
 			state = State.SIGNUP_NORMAL;
