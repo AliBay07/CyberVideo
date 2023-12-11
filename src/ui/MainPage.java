@@ -273,7 +273,7 @@ public class MainPage extends BasePage {
 
     private JDialog createMenuDialog(String title, String[] tabFonctions, ActionListener actionListener, int w, int h){
         JDialog menuDialog = new JDialog(frame, title, true);
-        menuDialog.setSize(/*SysAL2000.DIALOG_WIDTH/3*/w,/*SysAL2000.DIALOG_HEIGHT/3*/h);
+        menuDialog.setSize(SysAL2000.DIALOG_WIDTH/2,SysAL2000.DIALOG_HEIGHT/2);
         menuDialog.setLayout(new BorderLayout());
         //
         ActionListener closeListener = new ActionListener() {

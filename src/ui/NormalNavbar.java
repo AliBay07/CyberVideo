@@ -17,10 +17,25 @@ public class NormalNavbar extends JPanel {
         this.setPreferredSize(new Dimension(FRAME_WIDTH,40)); //Mettre une constante pour avoir la taille de la fenetre ?
         this.setLayout(new GridLayout(1, 4));
         //this.setLayout(new FlowLayout(FlowLayout.CENTER, 60, 0));
-        leftMenu = new JButton("Menu", new ImageIcon("src/ui/Images/menu.png"));
-        currentLocations = new JLabel(nbReservations + " locations en cours",JLabel.CENTER); //Avoir le nombre de location avec la BD
-        basket = new JButton("Panier", new ImageIcon("src/ui/Images/panier.png"));
-        rightMenu = new JButton(account.getUser().getFirstName()); //Faire une version nomUtilisateur avec une constante d'environnement pour vérifier si un utilisateur est connecté
+        // Redimensionnement de l'icône pour le bouton leftMenu
+        ImageIcon menuIcon = new ImageIcon("src/ui/Images/menu.png");
+        int iconWidth = 30; // Largeur souhaitée
+        int iconHeight = 30; // Hauteur souhaitée
+        Image scaledMenuImage = menuIcon.getImage().getScaledInstance(iconWidth, iconHeight, java.awt.Image.SCALE_SMOOTH);
+        menuIcon = new ImageIcon(scaledMenuImage);
+        leftMenu = new JButton("Menu", menuIcon);
+
+        currentLocations = new JLabel(nbReservations + " locations en cours", JLabel.CENTER); // Obtenir le nombre de locations de la BD
+
+        // Redimensionnement de l'icône pour le bouton basket
+        ImageIcon basketIcon = new ImageIcon("src/ui/Images/panier.png");
+        Image scaledBasketImage = basketIcon.getImage().getScaledInstance(iconWidth, iconHeight, java.awt.Image.SCALE_SMOOTH);
+        basketIcon = new ImageIcon(scaledBasketImage);
+        basket = new JButton("Panier", basketIcon);
+
+        rightMenu = new JButton(account.getUser().getFirstName()); // Utiliser une constante d'environnement pour vérifier si un utilisateur est connecté
+
+        // Ajout des composants au panel
         this.add(leftMenu);
         this.add(currentLocations);
         this.add(basket);
