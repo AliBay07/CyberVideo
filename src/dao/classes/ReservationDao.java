@@ -31,21 +31,21 @@ public class ReservationDao extends Dao<Reservation>{
 
 		if (account != null) {
 			String query = "SELECT b.available, r.id AS reservation_id, r.id_blueray, r.reservation_start_date, " +
-					"f.id AS film_id, f.name, f.duration, f.description " +
-					"(SELECT LISTAGG(DISTINCT a.first_name || ' ' || a.last_name, ', ') WITHIN GROUP (ORDER BY a.id) " +
-					" FROM FilmActor fa INNER JOIN Actor a ON fa.id_actor = a.id " +
-					" WHERE fa.id_film = f.id) AS actors, " +
-					"(SELECT LISTAGG(DISTINCT au.first_name || ' ' || au.last_name, ', ') WITHIN GROUP (ORDER BY au.id) " +
-					" FROM FilmAuthor fau INNER JOIN Author au ON fau.id_author = au.id " +
-					" WHERE fau.id_film = f.id) AS authors, " +
-					"(SELECT LISTAGG(c.id || ':' || c.category_name, ', ') WITHIN GROUP (ORDER BY c.id) " +
-					" FROM FilmCategory fc " +
-					" INNER JOIN Category c ON fc.id_category = c.id " +
-					" WHERE fc.id_film = f.id) AS categories " +
-					"FROM CurrentReservations r " +
-					"INNER JOIN BlueRay b ON r.id_blueray = b.id " +
-					"INNER JOIN Film f ON b.id_film = f.id " +
-					"WHERE r.id_account = ?";
+				    "f.id AS film_id, f.name, f.duration, f.description, " +
+				    "(SELECT LISTAGG(DISTINCT a.first_name || ' ' || a.last_name, ', ') WITHIN GROUP (ORDER BY a.id) " +
+				    " FROM FilmActor fa INNER JOIN Actor a ON fa.id_actor = a.id " +
+				    " WHERE fa.id_film = f.id) AS actors, " +
+				    "(SELECT LISTAGG(DISTINCT au.first_name || ' ' || au.last_name, ', ') WITHIN GROUP (ORDER BY au.id) " +
+				    " FROM FilmAuthor fau INNER JOIN Author au ON fau.id_author = au.id " +
+				    " WHERE fau.id_film = f.id) AS authors, " +
+				    "(SELECT LISTAGG(c.id || ':' || c.category_name, ', ') WITHIN GROUP (ORDER BY c.id) " +
+				    " FROM FilmCategory fc " +
+				    " INNER JOIN Category c ON fc.id_category = c.id " +
+				    " WHERE fc.id_film = f.id) AS categories " +
+				    "FROM CurrentReservations r " +
+				    "INNER JOIN BlueRay b ON r.id_blueray = b.id " +
+				    "INNER JOIN Film f ON b.id_film = f.id " +
+				    "WHERE r.id_account = ?";
 
 			try (PreparedStatement statement = connection.prepareStatement(query)) {
 				statement.setLong(1, account.getId());
@@ -330,20 +330,20 @@ public class ReservationDao extends Dao<Reservation>{
 
 		if (account != null) {
 			String sql = "SELECT rh.*, b.*, f.*, " +
-					"(SELECT LISTAGG(DISTINCT a.first_name || ' ' || a.last_name, ', ') WITHIN GROUP (ORDER BY a.id) " +
-					" FROM FilmActor fa INNER JOIN Actor a ON fa.id_actor = a.id " +
-					" WHERE fa.id_film = f.id) AS actors, " +
-					"(SELECT LISTAGG(DISTINCT au.first_name || ' ' || au.last_name, ', ') WITHIN GROUP (ORDER BY au.id) " +
-					" FROM FilmAuthor fau INNER JOIN Author au ON fau.id_author = au.id " +
-					" WHERE fau.id_film = f.id) AS authors, " +
-					"(SELECT LISTAGG(c.id || ':' || c.category_name, ', ') WITHIN GROUP (ORDER BY c.id) " +
-					" FROM FilmCategory fc " +
-					" INNER JOIN Category c ON fc.id_category = c.id " +
-					" WHERE fc.id_film = f.id) AS categories " +
-					"FROM ReservationHistory rh " +
-					"JOIN BlueRay b ON rh.id_blueray = b.id " +
-					"JOIN Film f ON b.id_film = f.id " +
-					"WHERE rh.id_account = ?";
+				    "(SELECT LISTAGG(DISTINCT a.first_name || ' ' || a.last_name, ', ') WITHIN GROUP (ORDER BY a.id) " +
+				    " FROM FilmActor fa INNER JOIN Actor a ON fa.id_actor = a.id " +
+				    " WHERE fa.id_film = f.id) AS actors, " +
+				    "(SELECT LISTAGG(DISTINCT au.first_name || ' ' || au.last_name, ', ') WITHIN GROUP (ORDER BY au.id) " +
+				    " FROM FilmAuthor fau INNER JOIN Author au ON fau.id_author = au.id " +
+				    " WHERE fau.id_film = f.id) AS authors, " +
+				    "(SELECT LISTAGG(c.id || ':' || c.category_name, ', ') WITHIN GROUP (ORDER BY c.id) " +
+				    " FROM FilmCategory fc " +
+				    " INNER JOIN Category c ON fc.id_category = c.id " +
+				    " WHERE fc.id_film = f.id) AS categories " +
+				    "FROM ReservationHistory rh " +
+				    "JOIN BlueRay b ON rh.id_blueray = b.id " +
+				    "JOIN Film f ON b.id_film = f.id " +
+				    "WHERE rh.id_account = ?";
 
 			try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 				preparedStatement.setLong(1, account.getId());
