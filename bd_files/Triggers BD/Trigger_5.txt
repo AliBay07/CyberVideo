@@ -14,7 +14,8 @@ BEGIN
   FROM Account
   WHERE id = :NEW.id_account;
 
-  IF v_is_subscriber = 'Y' THEN
+  -- Check if the account is a subscriber and id_subscriber_card is not null
+  IF v_is_subscriber = 'Y' AND :NEW.id_subscriber_card IS NOT NULL THEN
     -- Récupérer l'ID de la carte d'abonné et son montant
     SELECT id, amount INTO v_subscriber_card_id, v_amount
     FROM SubscriberCard
