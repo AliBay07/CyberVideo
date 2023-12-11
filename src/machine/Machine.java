@@ -108,6 +108,11 @@ public class Machine {
 		return this.account;
 	}
 	
+	public Account userLoginWithCard(String cardNumber, String password) {
+		this.account = facadeBd.userLoginWithCard(cardNumber, password);
+		return this.account;
+    }
+	
 	public void userLogOut() {
 		this.account = null;
 	}
@@ -194,9 +199,17 @@ public class Machine {
 	public boolean processPaymentBySubscriberCard(SubscriberCard subscriberCard, double amount) {
 		return facadeBd.processPaymentBySubscriberCard(subscriberCard, amount);
 	}
+	
+	public boolean processPaymentByCreditCard(CreditCard creditCard, double amount) {
+		return facadeBd.processPaymentByCreditCard(creditCard, amount);
+	}
+	
+	public boolean reportLostBlueRayDisc(BlueRay blueRay) {
+        return facadeBd.reportLostBlueRayDisc(this.account, blueRay);
+    }
 
-	public boolean requestUnavailableFilm(Account account, String filmName) {
-		return facadeBd.requestUnavailableFilm(account, filmName);
+	public boolean requestUnavailableFilm(String filmName) {
+		return facadeBd.requestUnavailableFilm(this.account, filmName);
 	}
 
 	public boolean banFilmCategories(List<Category> categories) {
@@ -211,9 +224,25 @@ public class Machine {
 		return facadeBd.addReservationToHistoric(blueRay);
 	}
 	
+	public ArrayList<HistoricReservation> getHistoricReservations() {
+    	return facadeBd.getHistoricReservations(this.account);
+    }
+	
 	public ArrayList<BlueRay> getAllAvailableBlueRays() {
 		return facadeBd.getAllAvailableBlueRays();
 	}
+	
+    public boolean addCreditCardToAccount() {
+    	return facadeBd.addCreditCardToAccount(this.account);
+    }
+    
+    public boolean addSubscriberCardToAccount() {
+    	return facadeBd.addSubscriberCardToAccount(this.account);
+    }
+    
+    public Film getFilmInformation(String filmName) {
+        return facadeBd.getFilmInformation(this.account, filmName);
+    }
 	
 	public Account getAccount(){ return this.account;}
 

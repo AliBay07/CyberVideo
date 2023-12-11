@@ -29,11 +29,11 @@ public class MainPage extends BasePage {
                 controller.traite(MainPage.this, Keyword.SHOWBLURAY);
             }
             if(controller.getCurrentAccount() != null){
-                if(e.getSource()==filmsSectionsPane.getFilmSections().get(3).getMoreFilmsButton()){
+                if(e.getSource()==filmsSectionsPane.getFilmSections().get(4).getMoreFilmsButton()){
                     controller.traite(MainPage.this, Keyword.SHOWCATEGORIES); 
                     //Il faut changer ça car on veut avoir le nom de la catégorie selectionnée !
                 }
-                else if(e.getSource()==filmsSectionsPane.getFilmSections().get(4).getMoreFilmsButton()){
+                else if(e.getSource()==filmsSectionsPane.getFilmSections().get(3).getMoreFilmsButton()){
                     controller.traite(MainPage.this, Keyword.SHOWALLFILMS);
                 }
             }
@@ -135,14 +135,14 @@ public class MainPage extends BasePage {
             ((InitialNavbar)navbar).getSignInButton().addActionListener(actionListener);
         }
         else if(controller.getCurrentAccount() instanceof NormalAccount){
-            navbar = new NormalNavbar(1);//controller.getCurrentAccount(). Il faut une méthode pour obtenir le nb de locations en cours
+            navbar = new NormalNavbar(controller.getCurrentAccount());//controller.getCurrentAccount(). Il faut une méthode pour obtenir le nb de locations en cours
             String[] tabFonctions1 = {"Modifier mes données personnelles", "Modifier mes cartes bancaires", "S'abonner", "Se deconnecter"};
             ((NormalNavbar) navbar).getRightMenu().addActionListener(setRightMenu(tabFonctions1));
             ((NormalNavbar) navbar).getBasket().addActionListener(setBasketListener());
             
         }
         else{
-            navbar = new SubscriberNavbar(1, 15);//Obtenir ou calculer le nbLocations en cours et le montant sur la carte abonné
+            navbar = new SubscriberNavbar(controller.getCurrentAccount());//Obtenir ou calculer le nbLocations en cours et le montant sur la carte abonné
             ((SubscriberNavbar) navbar).getLeftMenu().addActionListener(setLeftMenu());
             String[] tabFonctions2 = {"Modifier mes données personnelles", "Modifier mes cartes bancaires", "Commander une carte abonné", "Arreter mon abonnement", "Se deconnecter"};
             ((SubscriberNavbar) navbar).getRightMenu().addActionListener(setRightMenu(tabFonctions2));
@@ -169,8 +169,8 @@ public class MainPage extends BasePage {
             filmsSections.add(new FilmSection(this.frame, controller, topFilmsWeek, "Top 10 de la semaine", false));
             filmsSections.add(new FilmSection(this.frame, controller, topFilmsMonth,"Top 10 du mois", false));
             filmsSections.add(new FilmSection(this.frame, controller, dispoBluray,"Blu-ray disponibles"));
-            filmsSections.add(new FilmSection(this.frame, controller, new ArrayList<Film>(),"Par catégorie", true));
             filmsSections.add(new FilmSection(this.frame, controller, allfilms,"Tous les films", true));
+            filmsSections.add(new FilmSection(this.frame, controller, new ArrayList<Film>(),"Par catégorie", true));
         }
         for(int i=2; i < filmsSections.size(); i++){
             filmsSections.get(i).getMoreFilmsButton().addActionListener(actionListener);
