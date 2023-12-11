@@ -245,9 +245,9 @@ public class AccountInfoPage extends BasePage implements ActionListener {
 //        if(cmd.equals(ACT_EDIT_BIRTHDAY)){
 //            showBirthdayEditDialog();
 //        }else
-        if(cmd.equals(ACT_EDIT_EMAIL)){
-            showEmailEditDialog();
-        }else
+//        if(cmd.equals(ACT_EDIT_EMAIL)){
+//            showEmailEditDialog();
+//        }else
         if(cmd.equals(ACT_EDIT_PASSWORD)){
             showPasswordEditDialog();
         }
@@ -313,25 +313,25 @@ public class AccountInfoPage extends BasePage implements ActionListener {
 //        dialogBirthday.show();
 //    }
 
-    private void showEmailEditDialog() {
-        TextEditDialog dialogEmail = new TextEditDialog(frame, "Change Email",
-                "Input your new email address.", tfEmail.getText(), "SAVE", "CANCEL");
-        dialogEmail.setButtonClickListener(new TextEditDialog.ButtonClickListener() {
-            @Override
-            public void leftBtnClicked(TextEditDialog dialog) {
-                String newMail = dialog.getTextInput();
-                tfEmail.setText(newMail);
-                dialog.close();
-                changeEmail(newMail);
-            }
-
-            @Override
-            public void rightBtnClicked(TextEditDialog dialog) {
-                dialog.close();
-            }
-        });
-        dialogEmail.show();
-    }
+//    private void showEmailEditDialog() {
+//        TextEditDialog dialogEmail = new TextEditDialog(frame, "Change Email",
+//                "Input your new email address.", tfEmail.getText(), "SAVE", "CANCEL");
+//        dialogEmail.setButtonClickListener(new TextEditDialog.ButtonClickListener() {
+//            @Override
+//            public void leftBtnClicked(TextEditDialog dialog) {
+//                String newMail = dialog.getTextInput();
+//                tfEmail.setText(newMail);
+//                dialog.close();
+//                changeEmail(newMail);
+//            }
+//
+//            @Override
+//            public void rightBtnClicked(TextEditDialog dialog) {
+//                dialog.close();
+//            }
+//        });
+//        dialogEmail.show();
+//    }
 
     private void showPasswordEditDialog() {
         PasswordEditDialog dialogPassword = new PasswordEditDialog(frame, "Change Email",
@@ -363,7 +363,6 @@ public class AccountInfoPage extends BasePage implements ActionListener {
                 controller.getCurrentAccount().getPassword(), password);
         if(acc!=null){
             controller.setAccount(acc);
-            controller.traite(this, Keyword.CHANGE_ACCOUNT_INFO);
         }else{
             showError("Change Firstname failed", "Veuillez vérifier votre entrée.");
         }
@@ -374,7 +373,6 @@ public class AccountInfoPage extends BasePage implements ActionListener {
                 controller.getCurrentAccount().getPassword(), password);
         if(acc!=null){
             controller.setAccount(acc);
-            controller.traite(this, Keyword.CHANGE_ACCOUNT_INFO);
         }else{
             showError("Change Lastname failed", "Veuillez vérifier votre entrée.");
         }
@@ -384,9 +382,9 @@ public class AccountInfoPage extends BasePage implements ActionListener {
         // manque une fonction correspondant ?
     }
 
-    private void changeEmail(String newMail) {
-        // manque une fonction correspondant ?
-    }
+//    private void changeEmail(String newMail) {
+//        // manque une fonction correspondant ?
+//    }
 
     private void changePassword(String newPassword) {
         password = newPassword;
@@ -394,7 +392,6 @@ public class AccountInfoPage extends BasePage implements ActionListener {
                 controller.getCurrentAccount().getPassword(), newPassword);
         if(acc!=null){
             controller.setAccount(acc);
-            controller.traite(this, Keyword.CHANGE_ACCOUNT_INFO);
         }else{
             showError("Change password failed", "Veuillez vérifier votre entrée.");
         }

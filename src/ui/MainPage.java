@@ -307,8 +307,14 @@ public class MainPage extends BasePage {
     }
 
     public void updateUI_Account(){
+        this.remove(navbar);
+        this.remove(bottomBar);
+        //
         initNavbar();
         initBottomBar();
+        this.add(navbar, BorderLayout.NORTH);
+        this.add(bottomBar, BorderLayout.SOUTH);
+        this.updateUI();
     }
 
 }
