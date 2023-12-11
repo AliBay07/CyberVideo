@@ -23,20 +23,20 @@ public class BlueRayDao extends Dao<BlueRay> {
 	public ArrayList<BlueRay> getAllAvailableBlueRays() {
 		ArrayList<BlueRay> blueRays = new ArrayList<>();
 
-		String query = "SELECT b.id AS blueRayId, f.id AS filmId, f.name, f.duration, f.description, b.available, f.image_path " +
-				"(SELECT LISTAGG(DISTINCT a.first_name || ' ' || a.last_name, ', ') WITHIN GROUP (ORDER BY a.id) " +
-				" FROM FilmActor fa INNER JOIN Actor a ON fa.id_actor = a.id " +
-				" WHERE fa.id_film = f.id) AS actors, " +
-				"(SELECT LISTAGG(DISTINCT au.first_name || ' ' || au.last_name, ', ') WITHIN GROUP (ORDER BY au.id) " +
-				" FROM FilmAuthor fau INNER JOIN Author au ON fau.id_author = au.id " +
-				" WHERE fau.id_film = f.id) AS authors, " +
-				"(SELECT LISTAGG(c.id || ':' || c.category_name, ', ') WITHIN GROUP (ORDER BY c.id) " +
-				" FROM FilmCategory fc " +
-				" INNER JOIN Category c ON fc.id_category = c.id " +
-				" WHERE fc.id_film = f.id) AS categories " +
-				"FROM BlueRay b " +
-				"INNER JOIN Film f ON b.id_film = f.id" +
-				"WHERE b.available = 1;";
+		String query = "SELECT b.id AS blueRayId, f.id AS filmId, f.name, f.duration, f.description, b.available, f.image_path, " +
+			    "(SELECT LISTAGG(DISTINCT a.first_name || ' ' || a.last_name, ', ') WITHIN GROUP (ORDER BY a.id) " +
+			    " FROM FilmActor fa INNER JOIN Actor a ON fa.id_actor = a.id " +
+			    " WHERE fa.id_film = f.id) AS actors, " +
+			    "(SELECT LISTAGG(DISTINCT au.first_name || ' ' || au.last_name, ', ') WITHIN GROUP (ORDER BY au.id) " +
+			    " FROM FilmAuthor fau INNER JOIN Author au ON fau.id_author = au.id " +
+			    " WHERE fau.id_film = f.id) AS authors, " +
+			    "(SELECT LISTAGG(c.id || ':' || c.category_name, ', ') WITHIN GROUP (ORDER BY c.id) " +
+			    " FROM FilmCategory fc " +
+			    " INNER JOIN Category c ON fc.id_category = c.id " +
+			    " WHERE fc.id_film = f.id) AS categories " +
+			    "FROM BlueRay b " +
+			    "INNER JOIN Film f ON b.id_film = f.id " +
+			    "WHERE b.available = 1";
 
 		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			ResultSet resultSet = statement.executeQuery();
