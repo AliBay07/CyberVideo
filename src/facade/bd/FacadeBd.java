@@ -23,7 +23,6 @@ import dao.tools.DaoFactory;
 
 public class FacadeBd {
 
-    private static DaoFactory daoFactory;
     private FilmDao filmDao;
     private AccountDao accountDao;
     private BlueRayDao blueRayDao;
@@ -110,7 +109,7 @@ public class FacadeBd {
         return accountDao.modifyAccountInformation(account, newFirstName, newLastName, oldPassword, newPassword);
     }
 
-    public boolean processPaymentByCreditCard(CreditCard creditCard) {
+    public boolean processPaymentByCreditCard(CreditCard creditCard, double amount) {
         return accountDao.processPaymentByCreditCard(creditCard);
     }
     
@@ -152,7 +151,7 @@ public class FacadeBd {
         return reservationDao.removeCurrentReservation(blueRay);
     }
     
-    public List<HistoricReservation> getHistoricReservations(Account account) {
+    public ArrayList<HistoricReservation> getHistoricReservations(Account account) {
     	return reservationDao.getHistoricReservations(account);
     }
 }

@@ -325,8 +325,8 @@ public class ReservationDao extends Dao<Reservation>{
 		return false;
 	}
 
-	public List<HistoricReservation> getHistoricReservations(Account account) {
-		List<HistoricReservation> historicReservations = new ArrayList<>();
+	public ArrayList<HistoricReservation> getHistoricReservations(Account account) {
+		ArrayList<HistoricReservation> historicReservations = new ArrayList<>();
 
 		if (account != null) {
 			String sql = "SELECT rh.*, b.*, f.*, " +
