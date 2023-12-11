@@ -135,14 +135,14 @@ public class MainPage extends BasePage {
             ((InitialNavbar)navbar).getSignInButton().addActionListener(actionListener);
         }
         else if(controller.getCurrentAccount() instanceof NormalAccount){
-            navbar = new NormalNavbar(1);//controller.getCurrentAccount(). Il faut une méthode pour obtenir le nb de locations en cours
+            navbar = new NormalNavbar(controller.getCurrentAccount());//controller.getCurrentAccount(). Il faut une méthode pour obtenir le nb de locations en cours
             String[] tabFonctions1 = {"Modifier mes données personnelles", "Modifier mes cartes bancaires", "S'abonner", "Se deconnecter"};
             ((NormalNavbar) navbar).getRightMenu().addActionListener(setRightMenu(tabFonctions1));
             ((NormalNavbar) navbar).getBasket().addActionListener(setBasketListener());
             
         }
         else{
-            navbar = new SubscriberNavbar(1, 15);//Obtenir ou calculer le nbLocations en cours et le montant sur la carte abonné
+            navbar = new SubscriberNavbar(controller.getCurrentAccount());//Obtenir ou calculer le nbLocations en cours et le montant sur la carte abonné
             ((SubscriberNavbar) navbar).getLeftMenu().addActionListener(setLeftMenu());
             String[] tabFonctions2 = {"Modifier mes données personnelles", "Modifier mes cartes bancaires", "Commander une carte abonné", "Arreter mon abonnement", "Se deconnecter"};
             ((SubscriberNavbar) navbar).getRightMenu().addActionListener(setRightMenu(tabFonctions2));
