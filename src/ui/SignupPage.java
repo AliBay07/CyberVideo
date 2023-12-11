@@ -65,11 +65,13 @@ public class SignupPage extends BasePage implements ActionListener {
 //            user.setDateOfBirth(basicInfoPane.get);
         boolean isOk = controller.getFacadeIHM().createUserAccount(user, email, pwd);
         if(isOk) {
+            showInfo("Success", "Create account success, please login.");
             controller.traite(this, Keyword.SIGNUP);
+            return true;
         } else {
             showError("Signup failed", "Veuillez vérifier vos informations données.");
         }
-        return isOk;
+        return false;
     }
 
     public void addCard() {
@@ -106,25 +108,27 @@ public class SignupPage extends BasePage implements ActionListener {
         String cmd = e.getActionCommand();
         if(cmd.equals(SignupBasicInfoPane.ACT_CONFIRM)){
             // valider
-            if(validBasicInfo()){
-                showCardInfoPanel();
-            }
-        }else
-        if(cmd.equals(SignupCardInfoPane.ACT_ADD_CARD)){
-            // ajouter carte
-            addCard();
-        }else
-        if(cmd.equals(SignupCardInfoPane.ACT_CANCEL)){
-            // plus tard
-            dispose();
-        }else
-        if(cmd.equals(SignupCardInfoPane.ACT_SUBSCRIBE)){
-            // demande une carte abonnee
-            //@TODO à compléter
-            if(controller!=null){
-                // manque une fonction to addCard ?
-            }
+//            if(validBasicInfo()){
+//                showCardInfoPanel();
+//            }
+            validBasicInfo();
         }
+//        else
+//        if(cmd.equals(SignupCardInfoPane.ACT_ADD_CARD)){
+//            // ajouter carte
+//            addCard();
+//        }else
+//        if(cmd.equals(SignupCardInfoPane.ACT_CANCEL)){
+//            // plus tard
+//            dispose();
+//        }else
+//        if(cmd.equals(SignupCardInfoPane.ACT_SUBSCRIBE)){
+//            // demande une carte abonnee
+//            //@TODO à compléter
+//            if(controller!=null){
+//                // manque une fonction to addCard ?
+//            }
+//        }
     }
 
     public static void main(String[] args) {
