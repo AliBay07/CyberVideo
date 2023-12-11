@@ -12,6 +12,7 @@ public class ResearchResults extends BasePage {
     //private HashMap<String, ArrayList<String>> criteria;
     private String criteria;
     private ArrayList<Film> filmsResults;
+    private ArrayList<BlueRay> bluraysResults;
     private NavigationBar navbar;
     private JPanel mainPage;
     private JPanel listResults;
@@ -19,6 +20,7 @@ public class ResearchResults extends BasePage {
     private ArrayList<FilmInfoSection> filmsSections;
     private JScrollPane filmsScrollPane;
     private Film selectedFilm;
+    private BlueRay selectedBlueray;
     public static Dimension dimension = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
     public static int FRAME_WIDTH = (int) dimension.getWidth();
     public static int FRAME_HEIGHT = (int) dimension.getHeight();
@@ -38,7 +40,7 @@ public class ResearchResults extends BasePage {
                     selectedFilm = filmsResults.get(i);
                 }
                 else if(!(controller.getCurrentAccount()==null) && e.getSource()==filmsSections.get(i).getRentButton()) {
-                    controller.traite(ResearchResults.this, Keyword.RENT);
+                    controller.traite(ResearchResults.this, Keyword.RENTED_QrCode_FILM);
                     selectedFilm = filmsResults.get(i);
                 } 
             }
@@ -69,6 +71,28 @@ public class ResearchResults extends BasePage {
         this.setLayout(new BorderLayout());
 		this.setPreferredSize(f.getSize());
 		this.setLocation(0,0);
+    }
+
+    public ResearchResults(JFrame f, Controller c, Section s, ArrayList<BlueRay> blueRays, String criteria){
+        super(f,c);
+        //Création des listes ayant le contenu des critères/films
+        //ATTENTION NICO A DEJA ECRIT LE CODE NORMALEMENT !!!
+        choice = s;
+        this.criteria = criteria;
+        bluraysResults = blueRays;
+        //Vérifier qu'il y a des films dans la liste !!
+        filmsSections = new ArrayList<FilmInfoSection>();
+        for(int i=0; i< blueRays.size(); i++){
+            filmsSections.add(new FilmInfoSection(blueRays.get(i).getFilm(),controller));
+            if(controller.getCurrentAccount() != null)
+                filmsSections.get(i).getRentButton().addActionListener(actionListener);
+            filmsSections.get(i).getShowMoreButton().addActionListener(actionListener);
+        }
+        selectedFilm = null;
+        //Création des éléments visuels de l'interface
+        this.setLayout(new BorderLayout());
+        this.setPreferredSize(f.getSize());
+        this.setLocation(0,0);
     }
 
     private void initResultsPanel(){
@@ -145,6 +169,10 @@ public class ResearchResults extends BasePage {
 
     public Film getSelectedFilm(){
         return selectedFilm;
+    }
+
+    public BlueRay getSelectedBluRay(){
+        return selectedBlueray;
     }
 
     public void showResearchResults(){

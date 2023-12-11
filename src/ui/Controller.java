@@ -23,25 +23,24 @@ public class Controller {
 	// State des pages
 	enum State { IDLE, SIGNIN_NORMAL, SIGNUP_NORMAL, SIGNIN_FOR_RENT, SIGNUP_FOR_RENT, SIGNIN_FOR_SUBSCRIBE,
 		SIGNUP_FOR_SUBSCRIBE, SIGNIN_FOR_RETURN_FILM, LOGGED_NORMAL, LOGGED_PREMIUM, CHANGE_ACCOUNT_SETTING,
-		SHOW_TOP10W_CONNECT, SHOW_TOP10M_CONNECT, SHOW_FILMS_CONNECT, SHOW_BLURAY_CONNECT, SHOW_RESEARCH_RESULTS_CONNECT, SHOW_FILMS_CATEGORY,
-		SHOW_FILM_DETAILS_CONNECT, RENT_FILM, SHOW_VALIDATION_RENT, SHOW_ERROR_RENT, SHOW_VALIDATION_SUBSCRIBE,
-		SHOW_RETURN_PAGE, SHOW_VALIDATION_RETURN_PAGE, SHOW_ERROR_RETURN_PAGE};
-		State state = State.IDLE;
+		SHOW_FILMS_RESULTS, SHOW_BLURAY_RESULTS, SHOW_FILM_DETAILS, RENT_FILM,
+		SHOW_RETURN_PAGE, SHOW_ERROR_RETURN_PAGE};
+	State state = State.IDLE;
 
-		// page précédent pour Back
-		BasePage oldPage;
-		State oldState;
+	// page précédent pour Back
+	BasePage oldPage;
+	State oldState;
 
-		public Controller(JFrame frame, FacadeIHM fihm) {
-			this.frame = frame;
-			facadeIHM = fihm;
-			currentAccount = null;
-		}
+	public Controller(JFrame frame, FacadeIHM fihm) {
+		this.frame = frame;
+		facadeIHM = fihm;
+		currentAccount = null;
+	}
 
-		public void traite(BasePage page, Keyword action){
-			if(action==Keyword.LOGIN) {
-				//            frame.remove(currentPage);
-				switch(state){
+	public void traite(BasePage page, Keyword action){
+		if(action==Keyword.LOGIN) {
+			//            frame.remove(currentPage);
+			switch(state){
 				case SIGNIN_FOR_RETURN_FILM:
 					showReturnBlueRayPage();
 					state = State.SHOW_RETURN_PAGE;
@@ -52,131 +51,105 @@ public class Controller {
 					else if(currentAccount instanceof SubscriberAccount)
 						state = State.LOGGED_PREMIUM;
 					showMainPage();
-				}
 			}
-			else if(action==Keyword.SHOWLOGINPAGE) {
-				saveOldPage();
-				switch (state) {
+		}
+		else if(action==Keyword.SHOWLOGINPAGE) {
+			saveOldPage();
+			switch (state) {
 				case IDLE:
 					state = State.SIGNIN_NORMAL;
 					break;
-				case SHOW_RESEARCH_RESULTS_CONNECT:
+				case SHOW_FILMS_RESULTS:
 					state = State.SIGNIN_FOR_RENT;
 					break;
-				case SHOW_BLURAY_CONNECT:
-					state = State.SIGNIN_FOR_RENT;
-					break;
-				case SHOW_TOP10M_CONNECT:
-					state = State.SIGNIN_FOR_RENT;
-					break;
-				case SHOW_TOP10W_CONNECT:
-					state = State.SIGNIN_FOR_RENT;
-					break;
-				case SHOW_FILMS_CONNECT:
+				case SHOW_BLURAY_RESULTS:
 					state = State.SIGNIN_FOR_RENT;
 					break;
 				default:
 					break;
-				}
-				showLoginPage();
-			}else
-				if(action==Keyword.SUBSCRIBE){
-					switch (state) {
-					case IDLE:
-						showLoginPage();
-						state = State.SIGNIN_FOR_SUBSCRIBE;
-						break;
-					case LOGGED_NORMAL:
-						//Voir s'il faut afficher une pop up pour informer l'utilisateur qu'il s'est bien abonné
-						facadeIHM.subscribeToService();
-						break;
-					case LOGGED_PREMIUM:
-						//Show pop up ou page pour créditer sa carte abonnée
-					default:
-						break;
-					}
-				}else
-					if(action==Keyword.SHOWRETURNBLURAYPAGE){
-						switch(state) {
-						case IDLE:
-							showLoginPage();
-							state = State.SIGNIN_FOR_RETURN_FILM;
-							break;
-						case LOGGED_NORMAL:
-							showReturnBlueRayPage();
-							state = State.SHOW_RETURN_PAGE;
-							break;
-						case LOGGED_PREMIUM:
-							showReturnBlueRayPage();
-							state = State.SHOW_RETURN_PAGE;
-							break;
-						default:
-							break;
-						}
-					}else
-						if(action == Keyword.SHOWADVANCEDRESEARCH){
-							ArrayList<Film> results = facadeIHM.searchFilmByCriteria(((MainPage)currentPage).getChosenCriterias());
-							state = State.SHOW_RESEARCH_RESULTS_CONNECT;
-							showResearchPage(Section.ADVANCED, results); //Vérifier le state !
-						}
-						else if(action == Keyword.SHOWTOP10W){
-							ArrayList<Film> results = facadeIHM.getTopFilmsOfTheWeek();
-							state = State.SHOW_TOP10W_CONNECT;
-							showResearchPage(Section.TOP10W, results);
-						}
-						else if(action == Keyword.SHOWTOP10M){
-							ArrayList<Film> results = facadeIHM.getTopFilmsOfTheMonth();
-							state = State.SHOW_TOP10M_CONNECT;
-							showResearchPage(Section.TOP10M, results);
-						}
-						else if(action == Keyword.SHOWBLURAY){
-							ArrayList<Film> results = facadeIHM.getAvailableBlueRays();
-							state = State.SHOW_BLURAY_CONNECT;
-							showResearchPage(Section.BLURAY, results);
-						}
-						else if(action == Keyword.SHOWALLFILMS){
-							ArrayList<Film> results = facadeIHM.getAllFilms();
-							state = State.SHOW_FILMS_CONNECT;
-							showResearchPage(Section.ALL, results);
-						}
-						else if(action == Keyword.SHOWCATEGORIES){
-							ArrayList<Film> results = facadeIHM.searchFilmByCriteria(((MainPage)currentPage).getChosenCriterias());
-							state = State.SHOW_FILMS_CATEGORY;
-							showResearchPage(Section.CATEGORY, results);
-						}
-			if(action == Keyword.BACK){
-				switch(state){
-				case SHOW_BLURAY_CONNECT:
+			}
+			showLoginPage();
+		}else
+		if(action==Keyword.SUBSCRIBE){
+			switch (state) {
+				case IDLE:
+					showLoginPage();
+					state = State.SIGNIN_FOR_SUBSCRIBE;
+					break;
+				case LOGGED_NORMAL:
+					//Voir s'il faut afficher une pop up pour informer l'utilisateur qu'il s'est bien abonné
+					facadeIHM.subscribeToService();
+					break;
+				case LOGGED_PREMIUM:
+					//Show pop up ou page pour créditer sa carte abonnée
+				default:
+					break;
+			}
+		}else
+		if(action==Keyword.SHOWRETURNBLURAYPAGE){
+			switch(state) {
+				case IDLE:
+					showLoginPage();
+					state = State.SIGNIN_FOR_RETURN_FILM;
+					break;
+				case LOGGED_NORMAL:
+					showReturnBlueRayPage();
+					state = State.SHOW_RETURN_PAGE;
+					break;
+				case LOGGED_PREMIUM:
+					showReturnBlueRayPage();
+					state = State.SHOW_RETURN_PAGE;
+					break;
+				default:
+					break;
+			}
+		}else
+		if(action == Keyword.SHOWADVANCEDRESEARCH){
+			ArrayList<Film> results = facadeIHM.searchFilmByCriteria(((MainPage)currentPage).getChosenCriterias());
+			state = State.SHOW_FILMS_RESULTS;
+			showResearchPage(Section.ADVANCED, results, null); //Vérifier le state !
+		}
+		else if(action == Keyword.SHOWTOP10W){
+			ArrayList<Film> results = facadeIHM.getTopFilmsOfTheWeek();
+			state = State.SHOW_FILMS_RESULTS;
+			showResearchPage(Section.TOP10W, results, null);
+		}
+		else if(action == Keyword.SHOWTOP10M){
+			ArrayList<Film> results = facadeIHM.getTopFilmsOfTheMonth();
+			state = State.SHOW_FILMS_RESULTS;
+			showResearchPage(Section.TOP10M, results, null);
+		}
+		else if(action == Keyword.SHOWBLURAY){
+			ArrayList<BlueRay> results = facadeIHM.getAvailableBlueRays();
+			state = State.SHOW_BLURAY_RESULTS;
+			showResearchPage(Section.BLURAY, null, results);
+		}
+		else if(action == Keyword.SHOWALLFILMS){
+			ArrayList<Film> results = facadeIHM.getAllFilms();
+			state = State.SHOW_FILMS_RESULTS;
+			showResearchPage(Section.ALL, results, null);
+		}
+		else if(action == Keyword.SHOWCATEGORIES){
+			ArrayList<Film> results = facadeIHM.searchFilmByCriteria(((MainPage)currentPage).getChosenCriterias());
+			state = State.SHOW_FILMS_RESULTS;
+			showResearchPage(Section.CATEGORY, results, null);
+		}else
+		if(action == Keyword.BACK){
+			switch(state){
+				case SHOW_BLURAY_RESULTS:
 					//                    frame.remove(currentPage);
 					showMainPage();
 					changeMainPageState();
 					break;
-				case SHOW_FILMS_CATEGORY:
-					//                    frame.remove(currentPage);
+				case SHOW_FILMS_RESULTS:
 					showMainPage();
 					changeMainPageState();
 					break;
-				case SHOW_FILMS_CONNECT:
-					//                    frame.remove(currentPage);
+				case SHOW_RETURN_PAGE:
 					showMainPage();
 					changeMainPageState();
 					break;
-				case SHOW_RESEARCH_RESULTS_CONNECT:
-					//                    frame.remove(currentPage);
-					showMainPage();
-					changeMainPageState();
-					break;
-				case SHOW_TOP10M_CONNECT:
-					//                    frame.remove(currentPage);
-					showMainPage();
-					changeMainPageState();
-					break;
-				case SHOW_TOP10W_CONNECT:
-					//                    frame.remove(currentPage);
-					showMainPage();
-					changeMainPageState();
-					break;
-				case SHOW_FILM_DETAILS_CONNECT:
+				case SHOW_FILM_DETAILS:
 					frame.remove(currentPage);
 					back();
 					if(currentPage instanceof MainPage)
@@ -195,112 +168,128 @@ public class Controller {
 						}
 					}
 					else
-					{
-						state = State.SHOW_RESEARCH_RESULTS_CONNECT;
+					if(currentPage.getController().getCurrentFilm()==null){
+						state = State.SHOW_FILMS_RESULTS;
 						//showResearchResult global
+					}else{
+						state = State.SHOW_BLURAY_RESULTS;
 					}
 					break;
 				case SIGNIN_NORMAL:
 					state = State.IDLE;
 					back();
 					break;
-					//Il faut remodifier le state quand on fait un back ! écrire tous les cas
+				//Il faut remodifier le state quand on fait un back ! écrire tous les cas
 				case SIGNUP_NORMAL:
 					state = State.SIGNIN_NORMAL;
 				default:
 					back();
 
-				}
 			}
-			if(action == Keyword.SHOWFILMDETAILS){
-				switch(state){ //A tester
-				case SHOW_RESEARCH_RESULTS_CONNECT:
+		}else
+		if(action == Keyword.SHOWFILMDETAILS){
+			switch(state){ //A tester
+				case SHOW_FILMS_RESULTS:
 					showDetailedFilm(((ResearchResults)currentPage).getSelectedFilm());
-					state = State.SHOW_FILM_DETAILS_CONNECT;
-				case SHOW_BLURAY_CONNECT:
-					showDetailedFilm(((ResearchResults)currentPage).getSelectedFilm());
-					state = State.SHOW_FILM_DETAILS_CONNECT;
-				case SHOW_TOP10M_CONNECT:
-					showDetailedFilm(((ResearchResults)currentPage).getSelectedFilm());
-					state = State.SHOW_FILM_DETAILS_CONNECT;
-				case SHOW_TOP10W_CONNECT:
-					showDetailedFilm(((ResearchResults)currentPage).getSelectedFilm());
-					state = State.SHOW_FILM_DETAILS_CONNECT;
-				case SHOW_FILMS_CONNECT:
-					showDetailedFilm(((ResearchResults)currentPage).getSelectedFilm());
-					state = State.SHOW_FILM_DETAILS_CONNECT;
+					state = State.SHOW_FILM_DETAILS;
+				case SHOW_BLURAY_RESULTS:
+					showDetailedBlueRay(((ResearchResults)currentPage).getSelectedBluRay());
+					state = State.SHOW_FILM_DETAILS;
 				case IDLE:
 					//accéder au film sélectionné + enregistrer oldpage
-					state = State.SHOW_FILM_DETAILS_CONNECT;
+					state = State.SHOW_FILM_DETAILS;
 				case LOGGED_NORMAL:
 					//accéder au film sélectionné + enregistrer oldpage
-					state = State.SHOW_FILM_DETAILS_CONNECT;
-				 case LOGGED_PREMIUM:
-					 //accéder au film sélectionné + enregistrer oldpage
-					 state = State.SHOW_FILM_DETAILS_CONNECT;
+					state = State.SHOW_FILM_DETAILS;
+				case LOGGED_PREMIUM:
+					//accéder au film sélectionné + enregistrer oldpage
+					state = State.SHOW_FILM_DETAILS;
 				default:
 					break;
-				}
 			}
-			if(action == Keyword.SHOWSIGNUPPAGE){
-				showSignupPage();
-				state = State.SIGNUP_NORMAL;
-			}
+		}else
+		if(action == Keyword.SHOWSIGNUPPAGE){
+			showSignupPage();
+			state = State.SIGNUP_NORMAL;
+		}else
+		if (action == Keyword.RENTED_BlueRay_FILM) {
+			showMainPage();
+			BlueRay blueRay = this.getCurrentBlueRay();
+			facadeIHM.rentBlueRay(blueRay);
 
-			if (action == Keyword.RENTED_BlueRay_FILM) {
-				showMainPage();
-				BlueRay blueRay = this.getCurrentBlueRay();
-				facadeIHM.rentBlueRay(blueRay);
-
-				if(currentAccount instanceof NormalAccount)
-					state = State.LOGGED_NORMAL;
-				else if(currentAccount instanceof SubscriberAccount)
-					state = State.LOGGED_PREMIUM;
-			}
-
-			if(action == Keyword.RENTED_QrCode_FILM)
-			{
-				showMainPage();
-				facadeIHM.printQrCode(this.getCurrentQrCode());
-				if(currentAccount instanceof NormalAccount)
-					state = State.LOGGED_NORMAL;
-				else if(currentAccount instanceof SubscriberAccount)
-					state = State.LOGGED_PREMIUM;
-			}
-		}
-
-		//    public void exitPage(BasePage page) {
-		//        back();
-		//    }
-
-		private void changeMainPageState(){
-			if(currentAccount == null)
-				state = State.IDLE;
-			else if(currentAccount instanceof NormalAccount)
+			if(currentAccount instanceof NormalAccount)
 				state = State.LOGGED_NORMAL;
-			else
+			else if(currentAccount instanceof SubscriberAccount)
 				state = State.LOGGED_PREMIUM;
 		}
 
-		public void showMainPage() {
-			System.out.println("show ... MainPage");
-			MainPage page = new MainPage(frame, this);
-			page.setController(this);
-			showPage(page);
+		if(action == Keyword.RENTED_QrCode_FILM)
+		{
+			showMainPage();
+			facadeIHM.printQrCode(this.getCurrentQrCode());
+			if(currentAccount instanceof NormalAccount)
+				state = State.LOGGED_NORMAL;
+			else if(currentAccount instanceof SubscriberAccount)
+				state = State.LOGGED_PREMIUM;
 		}
+		if(action == Keyword.SIGNUP){
+			// il faut encore distinguer SINGUP_FOR_RENT et SINGUP_FOR_SUSCRIBE ?
+			state = State.SIGNUP_NORMAL;
+			showMainPage();
+		}
+	}
+
+	//    public void exitPage(BasePage page) {
+	//        back();
+	//    }
+
+	private void changeMainPageState(){
+		if(currentAccount == null)
+			state = State.IDLE;
+		else if(currentAccount instanceof NormalAccount)
+			state = State.LOGGED_NORMAL;
+		else
+			state = State.LOGGED_PREMIUM;
+	}
+
+	public void showMainPage() {
+		System.out.println("show ... MainPage");
+		MainPage page = new MainPage(frame, this);
+		page.setController(this);
+		showPage(page);
+	}
 
 
-		public void showLoginPage() {
-			LoginPage page = new LoginPage(frame);
-			page.setController(this);
-			showPage(page);
-		}
+	public void showLoginPage() {
+		LoginPage page = new LoginPage(frame);
+		page.setController(this);
+		showPage(page);
+	}
 
-		public void showSignupPage() {
-			SignupPage page = new SignupPage(frame);
-			page.setController(this);
+	public void showSignupPage() {
+		SignupPage page = new SignupPage(frame);
+		page.setController(this);
+		showPage(page);
+	}
+
+	public void showResearchPage(Section s, ArrayList<Film> films, ArrayList<BlueRay> blueRays){
+		ResearchResults page;
+		if(s == Section.CATEGORY){
+			page = new ResearchResults(frame, this, s, ((MainPage) currentPage).getChosenCriterias().get("categorie").get(0), films);
+			page.showResearchResults();
 			showPage(page);
+			return;
 		}
+		if(s == Section.BLURAY){
+			page = new ResearchResults(frame, this, s, blueRays, null);
+			page.showResearchResults();
+			showPage(page);
+			return;
+		}
+		page = new ResearchResults(frame, this, s, null, films);
+		page.showResearchResults();
+		showPage(page);
+	}
 
 		public void showResearchPage(Section s, ArrayList<Film> films){
 			ResearchResults page;

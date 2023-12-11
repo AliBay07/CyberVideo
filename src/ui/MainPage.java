@@ -156,11 +156,13 @@ public class MainPage extends BasePage {
         
         ArrayList<Film> topFilmsMonth = controller.getFacadeIHM().getTopFilmsOfTheMonth();
         ArrayList<Film> topFilmsWeek = controller.getFacadeIHM().getTopFilmsOfTheWeek();
+        ArrayList<BlueRay> dispoBluray = controller.getFacadeIHM().getAvailableBlueRays();
+        System.out.println("num bluray:"+dispoBluray.size());
         
         if(controller.getCurrentAccount() == null){
             filmsSections.add(new FilmSection(this.frame, controller, topFilmsWeek, "Top 10 de la semaine", false));
             filmsSections.add(new FilmSection(this.frame, controller, topFilmsMonth,"Top 10 du mois", false));
-            filmsSections.add(new FilmSection(this.frame, controller, new ArrayList<Film>(),"Blu-ray disponibles", true));
+            filmsSections.add(new FilmSection(this.frame, controller, dispoBluray,"Blu-ray disponibles"));
             filmsSections.add(new FilmSection(this.frame, controller, allfilms,"Tous les films", true)); // maybe remove later
         }
         else{

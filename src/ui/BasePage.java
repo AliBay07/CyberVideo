@@ -23,6 +23,10 @@ public abstract class BasePage extends JPanel {
         this.controller = controller;
     }
 
+    public Controller getController(){
+        return controller;
+    }
+
     protected void dispose() {
 //        controller.exitPage(this);
         controller.traite(this, Keyword.BACK);

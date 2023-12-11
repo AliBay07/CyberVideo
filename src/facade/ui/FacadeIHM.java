@@ -39,7 +39,7 @@ public class FacadeIHM {
     public ArrayList<Film>  getTopFilmsOfTheMonth() {
         return machine.getTopFilmsMonth();
     }
-    
+
     public ArrayList<BlueRay> getAvailableBlueRays() {
         return machine.getAllAvailableBlueRays();
     }
