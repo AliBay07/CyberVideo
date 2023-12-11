@@ -284,13 +284,17 @@ public class Controller {
 		}
 		else
 		if(action == Keyword.LOGOUT){
-			if(currentAccount!=null){
-				facadeIHM.userLogOut();
-				currentAccount = null;
-				state = State.IDLE;
-				showMainPage();
-				JOptionPane.showMessageDialog(frame, "Logout success!", "Logout", JOptionPane.PLAIN_MESSAGE);
-			}
+			logout();
+		}
+	}
+
+	private void logout() {
+		if(currentAccount!=null){
+			facadeIHM.userLogOut();
+			currentAccount = null;
+			state = State.IDLE;
+			showMainPage();
+			JOptionPane.showMessageDialog(frame, "Logout success!", "Logout", JOptionPane.PLAIN_MESSAGE);
 		}
 	}
 
