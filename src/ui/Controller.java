@@ -241,7 +241,7 @@ public class Controller {
 					break;
 				case SHOW_FILM_DETAILS:
 					showMainPage();
-					facadeIHM.rentBlueRay(getCurrentBlueRay());
+					//facadeIHM.rentBlueRay(getCurrentBlueRay());
 					if(currentAccount instanceof NormalAccount)
 						state = State.LOGGED_NORMAL;
 					else if(currentAccount instanceof SubscriberAccount)
@@ -260,7 +260,7 @@ public class Controller {
 					break;
 				case SHOW_FILM_DETAILS:
 					showMainPage();
-					facadeIHM.printQrCode(this.getCurrentQrCode());
+					//facadeIHM.printQrCode(this.getCurrentQrCode());
 					if(currentAccount instanceof NormalAccount)
 						state = State.LOGGED_NORMAL;
 					else if(currentAccount instanceof SubscriberAccount)
