@@ -162,7 +162,7 @@ public class AccountDao extends Dao<Account> {
 					user.setLastName(lastName);
 					account.setUser(user);
 
-					if (creditCards != null) {
+					if (!(creditCards.replaceAll(":", "").equals(""))) {
 						List<CreditCard> creditCardList = Arrays.stream(creditCards.split(", "))
 								.map(cardData -> {
 									String[] cardInfo = cardData.split(":");
