@@ -107,13 +107,19 @@ public class Machine {
 		this.account = facadeBd.userLogin(email, pwd);
 		return this.account;
 	}
+	
+	public void userLogOut() {
+		this.account = null;
+	}
 
-	public void modifyAccountInformation(Account account, String newFirstName, String newLastName, Date newDob, String oldPassword, String newPassword) {
-		this.account = facadeBd.modifyAccountInformation(account, newFirstName, newLastName, newDob, oldPassword, newPassword);
+	public Account modifyAccountInformation(String newFirstName, String newLastName, String oldPassword, String newPassword) {
+		return this.account = facadeBd.modifyAccountInformation(this.account, newFirstName, newLastName, oldPassword, newPassword);
 	}
-	public boolean setWeeklyRentalLimit(Account account, int weeklyLimit) {
-		return facadeBd.setWeeklyRentalLimit(account, weeklyLimit);
+	
+	public boolean setWeeklyRentalLimit(int weeklyLimit) {
+		return facadeBd.setWeeklyRentalLimit(this.account, weeklyLimit);
 	}
+	
 	public boolean subscribeToService() {
 		SubscriberAccount subAccount = (SubscriberAccount) facadeBd.subscribeToService(account);
 		if (subAccount != null) {
@@ -161,21 +167,24 @@ public class Machine {
         }
 		return results;
 	}
-	public ArrayList<Category> getAccountBannedCategories(Account account) {
-		ArrayList<Category> bannedCategories = (ArrayList<Category>) facadeBd.getBannedCategories(account);
-		return bannedCategories;
+	public ArrayList<Category> getAccountBannedCategories() {
+		return facadeBd.getBannedCategories(this.account);
 	}
 
 	public ArrayList<Reservation> getCurrentReservationsByAccount() {
 		return facadeBd.getCurrentReservationsByAccount(this.account);
 	}
 
-	public boolean ReserveBlueRay(Account account, BlueRay blueRay) {
-		 return facadeBd.ReserveBlueRay(account, blueRay);
+	public boolean ReserveBlueRay(BlueRay blueRay) {
+		 return facadeBd.ReserveBlueRay(this.account, blueRay);
+	}
+	
+	public boolean removeCurrentReservation(BlueRay blueRay) {
+		return facadeBd.removeCurrentReservation(blueRay);
 	}
 
-	public boolean ReserveQrCode(Account account, Film film) {
-		return facadeBd.ReserveQrCode(account, film);
+	public boolean ReserveQrCode(Film film) {
+		return facadeBd.ReserveQrCode(this.account, film);
 	}
 	
 	public boolean addMoneyToCard(SubscriberCard subscriberCard, double amount) {
@@ -190,12 +199,12 @@ public class Machine {
 		return facadeBd.requestUnavailableFilm(account, filmName);
 	}
 
-	public boolean banFilmCategories(Account account, List<Category> categories) {
-		return facadeBd.banFilmCategories(account, categories);
+	public boolean banFilmCategories(List<Category> categories) {
+		return facadeBd.banFilmCategories(this.account, categories);
 	}
 
-	public boolean unbanFilmCategories(Account account, Category category) {
-		return facadeBd.unbanFilmCategories(account, category);
+	public boolean unbanFilmCategories(Category category) {
+		return facadeBd.unbanFilmCategories(this.account, category);
 	}
 	
 	public boolean addReservationToHistoric(BlueRay blueRay) {

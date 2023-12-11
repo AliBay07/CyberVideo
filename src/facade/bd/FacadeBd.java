@@ -98,7 +98,7 @@ public class FacadeBd {
         return accountDao.unbanFilmCategories(account, category);
     }
 
-    public List<Category> getBannedCategories(Account account) {
+    public ArrayList<Category> getBannedCategories(Account account) {
         return accountDao.getBannedCategories(account);
     }
 
@@ -106,8 +106,8 @@ public class FacadeBd {
         return accountDao.setWeeklyRentalLimit(account, weeklyLimit);
     }
 
-    public Account modifyAccountInformation(Account account, String newFirstName, String newLastName, Date newDob, String oldPassword, String newPassword) {
-        return accountDao.modifyAccountInformation(account, newFirstName, newLastName, newDob, oldPassword, newPassword);
+    public Account modifyAccountInformation(Account account, String newFirstName, String newLastName, String oldPassword, String newPassword) {
+        return accountDao.modifyAccountInformation(account, newFirstName, newLastName, oldPassword, newPassword);
     }
 
     public boolean processPaymentByCreditCard(CreditCard creditCard) {

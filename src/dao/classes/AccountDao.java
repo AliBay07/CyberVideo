@@ -567,7 +567,7 @@ public class AccountDao extends Dao<Account> {
 		return false;
 	}
 
-	public List<Category> getBannedCategories(Account account) {
+	public ArrayList<Category> getBannedCategories(Account account) {
 		List<Category> bannedCategories = new ArrayList<>();
 
 		if (account != null) {
@@ -653,7 +653,7 @@ public class AccountDao extends Dao<Account> {
 		return false;
 	}
 
-	public Account modifyAccountInformation(Account account, String newFirstName, String newLastName, Date newDob, String oldPassword, String newPassword) {
+	public Account modifyAccountInformation(Account account, String newFirstName, String newLastName, String oldPassword, String newPassword) {
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 		if (account != null) {
@@ -688,11 +688,6 @@ public class AccountDao extends Dao<Account> {
 					parameters.add(newLastName.trim());
 				}
 
-				if (newDob != null) {
-					updateQuery.append("dob = ?, ");
-					parameters.add(newDob);
-				}
-
 				if (updateQuery.toString().endsWith(", ")) {
 					updateQuery.setLength(updateQuery.length() - 2);
 				}
@@ -722,7 +717,6 @@ public class AccountDao extends Dao<Account> {
 									User updatedUser = new User();
 									updatedUser.setFirstName(newFirstName);
 									updatedUser.setLastName(newLastName);
-									updatedUser.setDateOfBirth(newDob);
 
 									account.setUser(updatedUser);
 
@@ -735,7 +729,6 @@ public class AccountDao extends Dao<Account> {
 							User updatedUser = new User();
 							updatedUser.setFirstName(newFirstName);
 							updatedUser.setLastName(newLastName);
-							updatedUser.setDateOfBirth(newDob);
 
 							account.setUser(updatedUser);
 
