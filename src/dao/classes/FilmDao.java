@@ -126,7 +126,6 @@ public class FilmDao extends Dao<Film> {
 				}
 
 				String categoryNames = resultSet.getString("categories");
-//				System.out.println(categoryNames);
 				if (categoryNames != null) {
 					if (!(categoryNames.replace(":", "").equals(""))) {
 						String[] categoryNameArray = categoryNames.split(",");

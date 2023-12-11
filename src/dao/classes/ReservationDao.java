@@ -10,7 +10,10 @@ import java.util.List;
 import java.util.UUID;
 
 import beans.Account;
+import beans.Actor;
+import beans.Author;
 import beans.BlueRay;
+import beans.Category;
 import beans.CurrentReservation;
 import beans.Film;
 import beans.HistoricReservation;
@@ -22,289 +25,408 @@ public class ReservationDao extends Dao<Reservation>{
 		super(connection);
 	}
 
-    public ArrayList<Reservation> getCurrentReservationsByAccount(Account account) {
-    	
-        ArrayList<Reservation> reservations = new ArrayList<>();
+	public ArrayList<Reservation> getCurrentReservationsByAccount(Account account) {
 
-        if (account != null) {
-            String query = "SELECT b.available, r.id AS reservation_id, r.id_blueray, r.reservation_start_date, " +
-                           "f.id AS film_id, f.name, f.duration, f.description " +
-                           "FROM CurrentReservations r " +
-                           "INNER JOIN BlueRay b ON r.id_blueray = b.id " +
-                           "INNER JOIN Film f ON b.id_film = f.id " +
-                           "WHERE r.id_account = ?";
+		ArrayList<Reservation> reservations = new ArrayList<>();
 
-            try (PreparedStatement statement = connection.prepareStatement(query)) {
-                statement.setLong(1, account.getId());
-                ResultSet resultSet = statement.executeQuery();
+		if (account != null) {
+			String query = "SELECT b.available, r.id AS reservation_id, r.id_blueray, r.reservation_start_date, " +
+					"f.id AS film_id, f.name, f.duration, f.description " +
+					"(SELECT LISTAGG(DISTINCT a.first_name || ' ' || a.last_name, ', ') WITHIN GROUP (ORDER BY a.id) " +
+					" FROM FilmActor fa INNER JOIN Actor a ON fa.id_actor = a.id " +
+					" WHERE fa.id_film = f.id) AS actors, " +
+					"(SELECT LISTAGG(DISTINCT au.first_name || ' ' || au.last_name, ', ') WITHIN GROUP (ORDER BY au.id) " +
+					" FROM FilmAuthor fau INNER JOIN Author au ON fau.id_author = au.id " +
+					" WHERE fau.id_film = f.id) AS authors, " +
+					"(SELECT LISTAGG(c.id || ':' || c.category_name, ', ') WITHIN GROUP (ORDER BY c.id) " +
+					" FROM FilmCategory fc " +
+					" INNER JOIN Category c ON fc.id_category = c.id " +
+					" WHERE fc.id_film = f.id) AS categories " +
+					"FROM CurrentReservations r " +
+					"INNER JOIN BlueRay b ON r.id_blueray = b.id " +
+					"INNER JOIN Film f ON b.id_film = f.id " +
+					"WHERE r.id_account = ?";
 
-                while (resultSet.next()) {
-                	CurrentReservation reservation = new CurrentReservation();
-                    reservation.setAccount(account);
+			try (PreparedStatement statement = connection.prepareStatement(query)) {
+				statement.setLong(1, account.getId());
+				ResultSet resultSet = statement.executeQuery();
 
-                    Film film = new Film();
-                    film.setId(resultSet.getLong("film_id"));
-                    film.setName(resultSet.getString("name"));
-                    film.setDuration(resultSet.getInt("duration"));
-                    film.setDescription(resultSet.getString("description"));
-                    film.setPath(resultSet.getString("image_path"));
-                    
-                    BlueRay blueray = new BlueRay();
-                    blueray.setId(resultSet.getLong("id_blueray"));
-                    blueray.setFilm(film);
-                    blueray.setAvailable(resultSet.getLong("available"));
+				while (resultSet.next()) {
+					CurrentReservation reservation = new CurrentReservation();
+					reservation.setAccount(account);
 
-                    reservation.setBlueray(blueray);
-                    reservation.setStartReservationDate(resultSet.getDate("reservation_start_date"));
+					Film film = new Film();
+					film.setId(resultSet.getLong("film_id"));
+					film.setName(resultSet.getString("name"));
+					film.setDuration(resultSet.getInt("duration"));
+					film.setDescription(resultSet.getString("description"));
+					film.setPath(resultSet.getString("image_path"));
 
-                    reservations.add(reservation);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+					String actorNames = resultSet.getString("actors");
+					if (actorNames != null) {
+						String[] actorNameArray = actorNames.split(",");
+						List<Actor> actors = new ArrayList<>();
+						for (String actorName : actorNameArray) {
+							Actor actor = new Actor();
+							String[] nameParts = actorName.trim().split(" ");
+							if (nameParts.length == 2) {
+								actor.setFirstName(nameParts[0]);
+								actor.setLastName(nameParts[1]);
+								actors.add(actor);
+							}
+						}
+						film.setActors(actors);
+					}
 
-        return reservations;
-    }
-    
-    public boolean ReserveBlueRay(Account account, BlueRay blueRay) {
-    	
-        if (account != null && blueRay != null) {
-            try {
+					String authorNames = resultSet.getString("authors");
+					if (authorNames != null) {
+						String[] authorNameArray = authorNames.split(",");
+						List<Author> authors = new ArrayList<>();
+						for (String authorName : authorNameArray) {
+							Author author = new Author();
+							String[] nameParts = authorName.trim().split(" ");
+							if (nameParts.length == 2) {
+								author.setFirstName(nameParts[0]);
+								author.setLastName(nameParts[1]);
+								authors.add(author);
+							}
+						}
+						film.setAuthors(authors);
+					}
 
-            	String selectAccountQuery = "SELECT is_subscriber FROM Account WHERE id = ?";
-                try (PreparedStatement selectAccountStatement = connection.prepareStatement(selectAccountQuery)) {
-                    selectAccountStatement.setLong(1, account.getId());
-                    ResultSet accountResult = selectAccountStatement.executeQuery();
+					String categoryNames = resultSet.getString("categories");
+					if (categoryNames != null) {
+						if (!(categoryNames.replace(":", "").equals(""))) {
+							String[] categoryNameArray = categoryNames.split(",");
+							List<Category> categories = new ArrayList<>();
+							for (String categoryName : categoryNameArray) {
+								Category category = new Category();
+								String[] categoryNameIdArray = categoryName.split(":");
+								category.setId(Long.parseLong(categoryNameIdArray[0].trim()));
+								category.setCategoryName(categoryNameIdArray[1].trim());
+								categories.add(category);
+							}
+							film.setCategories(categories);
+						}
+					}
 
-                    if (accountResult.next()) {
-                        String isSubscriber = accountResult.getString("is_subscriber");
+					BlueRay blueray = new BlueRay();
+					blueray.setId(resultSet.getLong("id_blueray"));
+					blueray.setFilm(film);
+					blueray.setAvailable(resultSet.getLong("available"));
 
-                        if (isSubscriber.equals("N")) {
-                            String checkReservationQuery = "SELECT COUNT(*) AS numReservations " +
-                                    "FROM CurrentReservations " +
-                                    "WHERE id_account = ?";
-                            try (PreparedStatement checkReservationStatement = connection.prepareStatement(checkReservationQuery)) {
-                                checkReservationStatement.setLong(1, account.getId());
-                                ResultSet numReservationsResult = checkReservationStatement.executeQuery();
+					reservation.setBlueray(blueray);
+					reservation.setStartReservationDate(resultSet.getDate("reservation_start_date"));
 
-                                if (numReservationsResult.next()) {
-                                    int numReservations = numReservationsResult.getInt("numReservations");
+					reservations.add(reservation);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 
-                                    if (numReservations > 0) {
-                                    	connection.rollback();
-                                        return false;
-                                    }
-                                }
-                            }
-                        } else if (isSubscriber.equals("Y")) {
-                            String checkReservationQuery = "SELECT COUNT(*) AS numReservations " +
-                                    "FROM CurrentReservations " +
-                                    "WHERE id_account = ?";
-                            try (PreparedStatement checkReservationStatement = connection.prepareStatement(checkReservationQuery)) {
-                                checkReservationStatement.setLong(1, account.getId());
-                                ResultSet numReservationsResult = checkReservationStatement.executeQuery();
+		return reservations;
+	}
 
-                                if (numReservationsResult.next()) {
-                                    int numReservations = numReservationsResult.getInt("numReservations");
+	public boolean ReserveBlueRay(Account account, BlueRay blueRay) {
 
-                                    if (numReservations >= 3) {
-                                    	connection.rollback();
-                                        return false;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+		if (account != null && blueRay != null) {
+			try {
 
-                String insertReservationQuery = "INSERT INTO CurrentReservations (id_account, id_blueray, reservation_start_date) " +
-                        "VALUES (?, ?, CURRENT_DATE)";
+				String selectAccountQuery = "SELECT is_subscriber FROM Account WHERE id = ?";
+				try (PreparedStatement selectAccountStatement = connection.prepareStatement(selectAccountQuery)) {
+					selectAccountStatement.setLong(1, account.getId());
+					ResultSet accountResult = selectAccountStatement.executeQuery();
 
-                try (PreparedStatement insertReservationStatement = connection.prepareStatement(insertReservationQuery)) {
-                    insertReservationStatement.setLong(1, account.getId());
-                    insertReservationStatement.setLong(2, blueRay.getId());
+					if (accountResult.next()) {
+						String isSubscriber = accountResult.getString("is_subscriber");
 
-                    int updatedRows = insertReservationStatement.executeUpdate();
+						if (isSubscriber.equals("N")) {
+							String checkReservationQuery = "SELECT COUNT(*) AS numReservations " +
+									"FROM CurrentReservations " +
+									"WHERE id_account = ?";
+							try (PreparedStatement checkReservationStatement = connection.prepareStatement(checkReservationQuery)) {
+								checkReservationStatement.setLong(1, account.getId());
+								ResultSet numReservationsResult = checkReservationStatement.executeQuery();
 
-                    if (updatedRows <= 0) {
-                    	connection.rollback();
-                        return false;
-                    }
-                }
-                
-                String updateQuery = "UPDATE BlueRay SET available = 0 WHERE id = ?";
-                
-                try (PreparedStatement updateStatement = connection.prepareStatement(updateQuery)) {
-                	updateStatement.setLong(1, blueRay.getId());
-                	
-                	int updatedRows = updateStatement.executeUpdate();
-                	
-                	if (updatedRows > 0) {
-                        connection.commit();
-                        return true;
-                    }
-                    connection.rollback();
-                }
-                
-            } catch (SQLException e) {
-                try {
-                    connection.rollback();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                }
-                e.printStackTrace();
-            }
-        }
-        return false;
-    }
-    
-    public boolean ReserveQrCode(Account account, Film film) {
-        if (account != null && film != null) {
-            try {
-            	
-            	String baseLink = "https://example.com/qr-codes/";
-                String randomToken = UUID.randomUUID().toString().replace("-", "").substring(0, 12);
-                String randomLink = baseLink + randomToken;
+								if (numReservationsResult.next()) {
+									int numReservations = numReservationsResult.getInt("numReservations");
 
-                String insertQrCodeQuery = "INSERT INTO QRCodeHistory (id_account, id_film, reservation_start_date, expiration_date, link) " +
-                        "VALUES (?, ?, CURRENT_DATE, CURRENT_DATE + INTERVAL '12' HOUR, ?)";
+									if (numReservations > 0) {
+										connection.rollback();
+										return false;
+									}
+								}
+							}
+						} else if (isSubscriber.equals("Y")) {
+							String checkReservationQuery = "SELECT COUNT(*) AS numReservations " +
+									"FROM CurrentReservations " +
+									"WHERE id_account = ?";
+							try (PreparedStatement checkReservationStatement = connection.prepareStatement(checkReservationQuery)) {
+								checkReservationStatement.setLong(1, account.getId());
+								ResultSet numReservationsResult = checkReservationStatement.executeQuery();
 
-                try (PreparedStatement insertQrCodeStatement = connection.prepareStatement(insertQrCodeQuery)) {
-                    insertQrCodeStatement.setLong(1, account.getId());
-                    insertQrCodeStatement.setLong(2, film.getId());
-                    insertQrCodeStatement.setString(3, randomLink);
+								if (numReservationsResult.next()) {
+									int numReservations = numReservationsResult.getInt("numReservations");
 
-                    int updatedRows = insertQrCodeStatement.executeUpdate();
+									if (numReservations >= 3) {
+										connection.rollback();
+										return false;
+									}
+								}
+							}
+						}
+					}
+				}
 
-                    if (updatedRows > 0) {
-                        connection.commit();
-                        return true;
-                    }
-                    connection.rollback();
-                }
-            } catch (SQLException e) {
-                try {
-                    connection.rollback();
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                }
-                e.printStackTrace();
-            }
-        }
-        return false;
-    }
-    
-    public boolean addReservationToHistoric(BlueRay blueRay) {
-    	
-        try {
-            String selectQuery = "SELECT id_account, id_blueray, reservation_start_date FROM CurrentReservations WHERE id_blueray = ?";
-            try (PreparedStatement selectStatement = connection.prepareStatement(selectQuery)) {
-                selectStatement.setLong(1, blueRay.getId());
-                try (ResultSet resultSet = selectStatement.executeQuery()) {
-                    if (resultSet.next()) {
-                        long accountId = resultSet.getLong("id_account");
-                        long blueRayId = resultSet.getLong("id_blueray");
-                        Date reservationStartDate = resultSet.getDate("reservation_start_date");
+				String insertReservationQuery = "INSERT INTO CurrentReservations (id_account, id_blueray, reservation_start_date) " +
+						"VALUES (?, ?, CURRENT_DATE)";
 
-                        String insertQuery = "INSERT INTO ReservationHistory (id_account, id_blueray, reservation_start_date, reservation_end_date) " +
-                                "VALUES (?, ?, ?, CURRENT_DATE)";
-                        try (PreparedStatement insertStatement = connection.prepareStatement(insertQuery)) {
-                            insertStatement.setLong(1, accountId);
-                            insertStatement.setLong(2, blueRayId);
-                            insertStatement.setDate(3, reservationStartDate);
-                            int rowsInserted = insertStatement.executeUpdate();
+				try (PreparedStatement insertReservationStatement = connection.prepareStatement(insertReservationQuery)) {
+					insertReservationStatement.setLong(1, account.getId());
+					insertReservationStatement.setLong(2, blueRay.getId());
 
-                            if (rowsInserted > 0) {
-                                connection.commit();
-                                return true;
-                            }
-                            connection.rollback();
-                        }
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+					int updatedRows = insertReservationStatement.executeUpdate();
 
-        return false;
-    }
-        
-    public boolean removeCurrentReservation(BlueRay blueRay) {
-        try {
-            String deleteQuery = "DELETE FROM CurrentReservations WHERE id_blueray = ?";
-            try (PreparedStatement deleteStatement = connection.prepareStatement(deleteQuery)) {
-                deleteStatement.setLong(1, blueRay.getId());
-                int rowsDeleted = deleteStatement.executeUpdate();
+					if (updatedRows <= 0) {
+						connection.rollback();
+						return false;
+					}
+				}
 
-                if (rowsDeleted <= 0) {
-                    return false;
-                }
-            }
-            
-            String updateQuery = "UPDATE BlueRay SET available = 1 WHERE id = ?";
-            
-            try (PreparedStatement updateStatement = connection.prepareStatement(updateQuery)) {
-            	updateStatement.setLong(1, blueRay.getId());
-            	
-            	int updatedRows = updateStatement.executeUpdate();
-            	
-            	if (updatedRows > 0) {
-                    connection.commit();
-                    return true;
-                }
-                connection.rollback();
-            }
-            
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+				String updateQuery = "UPDATE BlueRay SET available = 0 WHERE id = ?";
 
-        return false;
-    }
-    
-    public List<HistoricReservation> getHistoricReservations(Account account) {
-        List<HistoricReservation> historicReservations = new ArrayList<>();
+				try (PreparedStatement updateStatement = connection.prepareStatement(updateQuery)) {
+					updateStatement.setLong(1, blueRay.getId());
 
-        if (account != null) {
-            String sql = "SELECT rh.*, b.*, f.* FROM ReservationHistory rh " +
-                         "JOIN BlueRay b ON rh.id_blueray = b.id " +
-                         "JOIN Film f ON b.id_film = f.id " +
-                         "WHERE rh.id_account = ?";
+					int updatedRows = updateStatement.executeUpdate();
 
-            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-                preparedStatement.setLong(1, account.getId());
+					if (updatedRows > 0) {
+						connection.commit();
+						return true;
+					}
+					connection.rollback();
+				}
 
-                try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                    while (resultSet.next()) {
-                        HistoricReservation historicReservation = new HistoricReservation();
-                        historicReservation.setAccount(account);
+			} catch (SQLException e) {
+				try {
+					connection.rollback();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
 
-                        BlueRay blueRay = new BlueRay();
-                        blueRay.setId(resultSet.getLong("id_blueray"));
-                        blueRay.setAvailable(resultSet.getLong("available"));
+	public boolean ReserveQrCode(Account account, Film film) {
+		if (account != null && film != null) {
+			try {
 
-                        Film film = new Film();
-                        film.setId(resultSet.getLong("id_film"));
-                        film.setName(resultSet.getString("name"));
-                        film.setDescription(resultSet.getString("description"));
-                        film.setDuration(resultSet.getInt("duration"));
-                        blueRay.setFilm(film);
+				String baseLink = "https://example.com/qr-codes/";
+				String randomToken = UUID.randomUUID().toString().replace("-", "").substring(0, 12);
+				String randomLink = baseLink + randomToken;
 
-                        historicReservation.setBlueray(blueRay);
-                        historicReservation.setStartReservationDate(resultSet.getDate("reservation_start_date"));
-                        historicReservation.setEndReservationDate(resultSet.getDate("reservation_end_date"));
+				String insertQrCodeQuery = "INSERT INTO QRCodeHistory (id_account, id_film, reservation_start_date, expiration_date, link) " +
+						"VALUES (?, ?, CURRENT_DATE, CURRENT_DATE + INTERVAL '12' HOUR, ?)";
 
-                        historicReservations.add(historicReservation);
-                    }
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+				try (PreparedStatement insertQrCodeStatement = connection.prepareStatement(insertQrCodeQuery)) {
+					insertQrCodeStatement.setLong(1, account.getId());
+					insertQrCodeStatement.setLong(2, film.getId());
+					insertQrCodeStatement.setString(3, randomLink);
 
-        return historicReservations;
-    }
+					int updatedRows = insertQrCodeStatement.executeUpdate();
+
+					if (updatedRows > 0) {
+						connection.commit();
+						return true;
+					}
+					connection.rollback();
+				}
+			} catch (SQLException e) {
+				try {
+					connection.rollback();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
+
+	public boolean addReservationToHistoric(BlueRay blueRay) {
+
+		try {
+			String selectQuery = "SELECT id_account, id_blueray, reservation_start_date FROM CurrentReservations WHERE id_blueray = ?";
+			try (PreparedStatement selectStatement = connection.prepareStatement(selectQuery)) {
+				selectStatement.setLong(1, blueRay.getId());
+				try (ResultSet resultSet = selectStatement.executeQuery()) {
+					if (resultSet.next()) {
+						long accountId = resultSet.getLong("id_account");
+						long blueRayId = resultSet.getLong("id_blueray");
+						Date reservationStartDate = resultSet.getDate("reservation_start_date");
+
+						String insertQuery = "INSERT INTO ReservationHistory (id_account, id_blueray, reservation_start_date, reservation_end_date) " +
+								"VALUES (?, ?, ?, CURRENT_DATE)";
+						try (PreparedStatement insertStatement = connection.prepareStatement(insertQuery)) {
+							insertStatement.setLong(1, accountId);
+							insertStatement.setLong(2, blueRayId);
+							insertStatement.setDate(3, reservationStartDate);
+							int rowsInserted = insertStatement.executeUpdate();
+
+							if (rowsInserted > 0) {
+								connection.commit();
+								return true;
+							}
+							connection.rollback();
+						}
+					}
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+	public boolean removeCurrentReservation(BlueRay blueRay) {
+		try {
+			String deleteQuery = "DELETE FROM CurrentReservations WHERE id_blueray = ?";
+			try (PreparedStatement deleteStatement = connection.prepareStatement(deleteQuery)) {
+				deleteStatement.setLong(1, blueRay.getId());
+				int rowsDeleted = deleteStatement.executeUpdate();
+
+				if (rowsDeleted <= 0) {
+					return false;
+				}
+			}
+
+			String updateQuery = "UPDATE BlueRay SET available = 1 WHERE id = ?";
+
+			try (PreparedStatement updateStatement = connection.prepareStatement(updateQuery)) {
+				updateStatement.setLong(1, blueRay.getId());
+
+				int updatedRows = updateStatement.executeUpdate();
+
+				if (updatedRows > 0) {
+					connection.commit();
+					return true;
+				}
+				connection.rollback();
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+	public List<HistoricReservation> getHistoricReservations(Account account) {
+		List<HistoricReservation> historicReservations = new ArrayList<>();
+
+		if (account != null) {
+			String sql = "SELECT rh.*, b.*, f.*, " +
+					"(SELECT LISTAGG(DISTINCT a.first_name || ' ' || a.last_name, ', ') WITHIN GROUP (ORDER BY a.id) " +
+					" FROM FilmActor fa INNER JOIN Actor a ON fa.id_actor = a.id " +
+					" WHERE fa.id_film = f.id) AS actors, " +
+					"(SELECT LISTAGG(DISTINCT au.first_name || ' ' || au.last_name, ', ') WITHIN GROUP (ORDER BY au.id) " +
+					" FROM FilmAuthor fau INNER JOIN Author au ON fau.id_author = au.id " +
+					" WHERE fau.id_film = f.id) AS authors, " +
+					"(SELECT LISTAGG(c.id || ':' || c.category_name, ', ') WITHIN GROUP (ORDER BY c.id) " +
+					" FROM FilmCategory fc " +
+					" INNER JOIN Category c ON fc.id_category = c.id " +
+					" WHERE fc.id_film = f.id) AS categories " +
+					"FROM ReservationHistory rh " +
+					"JOIN BlueRay b ON rh.id_blueray = b.id " +
+					"JOIN Film f ON b.id_film = f.id " +
+					"WHERE rh.id_account = ?";
+
+			try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+				preparedStatement.setLong(1, account.getId());
+
+				try (ResultSet resultSet = preparedStatement.executeQuery()) {
+					while (resultSet.next()) {
+						HistoricReservation historicReservation = new HistoricReservation();
+						historicReservation.setAccount(account);
+
+						BlueRay blueRay = new BlueRay();
+						blueRay.setId(resultSet.getLong("id_blueray"));
+						blueRay.setAvailable(resultSet.getLong("available"));
+
+						Film film = new Film();
+						film.setId(resultSet.getLong("id_film"));
+						film.setName(resultSet.getString("name"));
+						film.setDescription(resultSet.getString("description"));
+						film.setDuration(resultSet.getInt("duration"));
+						film.setPath(resultSet.getString("image_path"));
+
+						String actorNames = resultSet.getString("actors");
+						if (actorNames != null) {
+							String[] actorNameArray = actorNames.split(",");
+							List<Actor> actors = new ArrayList<>();
+							for (String actorName : actorNameArray) {
+								Actor actor = new Actor();
+								String[] nameParts = actorName.trim().split(" ");
+								if (nameParts.length == 2) {
+									actor.setFirstName(nameParts[0]);
+									actor.setLastName(nameParts[1]);
+									actors.add(actor);
+								}
+							}
+							film.setActors(actors);
+						}
+
+						String authorNames = resultSet.getString("authors");
+						if (authorNames != null) {
+							String[] authorNameArray = authorNames.split(",");
+							List<Author> authors = new ArrayList<>();
+							for (String authorName : authorNameArray) {
+								Author author = new Author();
+								String[] nameParts = authorName.trim().split(" ");
+								if (nameParts.length == 2) {
+									author.setFirstName(nameParts[0]);
+									author.setLastName(nameParts[1]);
+									authors.add(author);
+								}
+							}
+							film.setAuthors(authors);
+						}
+
+						String categoryNames = resultSet.getString("categories");
+						if (categoryNames != null) {
+							if (!(categoryNames.replace(":", "").equals(""))) {
+								String[] categoryNameArray = categoryNames.split(",");
+								List<Category> categories = new ArrayList<>();
+								for (String categoryName : categoryNameArray) {
+									Category category = new Category();
+									String[] categoryNameIdArray = categoryName.split(":");
+									category.setId(Long.parseLong(categoryNameIdArray[0].trim()));
+									category.setCategoryName(categoryNameIdArray[1].trim());
+									categories.add(category);
+								}
+								film.setCategories(categories);
+							}
+						}
+
+						blueRay.setFilm(film);
+
+						historicReservation.setBlueray(blueRay);
+						historicReservation.setStartReservationDate(resultSet.getDate("reservation_start_date"));
+						historicReservation.setEndReservationDate(resultSet.getDate("reservation_end_date"));
+
+						historicReservations.add(historicReservation);
+					}
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return historicReservations;
+	}
 
 }

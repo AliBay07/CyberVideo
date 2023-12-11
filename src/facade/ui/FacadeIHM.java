@@ -39,6 +39,10 @@ public class FacadeIHM {
     public ArrayList<Film>  getTopFilmsOfTheMonth() {
         return machine.getTopFilmsMonth();
     }
+    
+    public ArrayList<BlueRay> getAvailableBlueRays() {
+        return machine.getAllAvailableBlueRays();
+    }
 
     public Account userLoginWithCard(String cardNumber, String password) {
         return null;
@@ -131,10 +135,6 @@ public class FacadeIHM {
 
     public boolean ensureMinimumBlueRayFilms(int quantity) {
         return false;
-    }
-
-    public ArrayList<Film> getAvailableBlueRays() {
-        return null;
     }
 
     public int getNbAvailableBlueRaysFor(Film film) {

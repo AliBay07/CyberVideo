@@ -177,6 +177,7 @@ public class Machine {
 	public boolean ReserveQrCode(Account account, Film film) {
 		return facadeBd.ReserveQrCode(account, film);
 	}
+	
 	public boolean addMoneyToCard(SubscriberCard subscriberCard, double amount) {
 		return facadeBd.addMoneyToCard(subscriberCard, amount);
 	}
@@ -196,9 +197,15 @@ public class Machine {
 	public boolean unbanFilmCategories(Account account, Category category) {
 		return facadeBd.unbanFilmCategories(account, category);
 	}
+	
 	public boolean addReservationToHistoric(BlueRay blueRay) {
 		return facadeBd.addReservationToHistoric(blueRay);
 	}
+	
+	public ArrayList<BlueRay> getAllAvailableBlueRays() {
+		return facadeBd.getAllAvailableBlueRays();
+	}
+	
 	public Account getAccount(){ return this.account;}
 
 	public void setAccount(Account account) {
