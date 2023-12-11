@@ -43,42 +43,41 @@ public class FacadeIHM {
     public ArrayList<BlueRay> getAvailableBlueRays() {
         return machine.getAllAvailableBlueRays();
     }
+    
+    public boolean rentBlueRay(BlueRay blueRay) {
+        return machine.ReserveBlueRay(blueRay);
+    }
+
+    public boolean returnBlueRay(BlueRay blueRay) {
+        return machine.removeCurrentReservation(blueRay);
+    }
 
     public Account userLoginWithCard(String cardNumber, String password) {
         return null;
     }
 
     public void userLogOut() {
-
+    	machine.userLogOut();
     }
 
-    public boolean rentBlueRay(BlueRay blueRay) {
-        return false;
-    }
-
-    public boolean returnBlueRay(BlueRay blueRay) {
-        return false;
-    }
-
-    public QrCode generateQrCode(Film film) {
-        return null;
+    public boolean generateQrCode(Film film) {
+        return machine.ReserveQrCode(film);
     }
 
     public boolean printQrCode(QrCode qrCode) {
         return false;
     }
 
-
-    public Account subscribeToService() {
-        return null;
+    public boolean subscribeToService() {
+        return machine.subscribeToService();
     }
 
-    public Account unsubscribeToService() {
-        return null;
+    public boolean unsubscribeToService() {
+        return machine.unsubscribeFromService();
     }
 
     public boolean addMoneyToCard(SubscriberCard subscriberCard, double amount) {
-        return false;
+        return machine.addMoneyToCard(subscriberCard, amount);
     }
 
     public boolean addCreditCardToAccount(Account account) {
@@ -89,20 +88,16 @@ public class FacadeIHM {
         return false;
     }
 
-    public boolean banFilmCategory(ArrayList<String> Category) {
-        return false;
+    public boolean banFilmCategory(ArrayList<Category> category) {
+        return machine.banFilmCategories(category);
     }
 
     public boolean unbanFilmCategory(Category c) {
-        return false;
+        return machine.unbanFilmCategories(c);
     }
 
-    public List<Category> getBannedCategories() {
-        return null;
-    }
-
-    public Account modifyAccountInformation(Account account, String newFirstName, String newLastName, String NewPassword) {
-        return null;
+    public ArrayList<Category> getBannedCategories() {
+        return machine.getAccountBannedCategories();
     }
 
     public ArrayList<Film> searchFilmByCriteria(Map<String,ArrayList<String>> filters) {
@@ -118,7 +113,7 @@ public class FacadeIHM {
     }
 
     public Account modifyAccountInformation(String newFirstName, String newLastName, String NewPassword) {
-        return null;
+    	return machine.modifyAccountInformation(newFirstName, newLastName, NewPassword, NewPassword);
     }
 
     public boolean processPaymentByCreditCard(double amount) {
@@ -130,7 +125,7 @@ public class FacadeIHM {
     }
 
     public boolean setWeeklyRentalLimit(int weeklyLimit) {
-        return false;
+        return machine.setWeeklyRentalLimit(weeklyLimit);
     }
 
     public boolean ensureMinimumBlueRayFilms(int quantity) {
@@ -142,7 +137,7 @@ public class FacadeIHM {
     }
 
     public ArrayList<Reservation> getCurrentReservationsByAccount() {
-        return null;
+        return machine.getCurrentReservationsByAccount();
     }
 
     public ArrayList<HistoricReservation> getHistoricReservationByAccount() {
