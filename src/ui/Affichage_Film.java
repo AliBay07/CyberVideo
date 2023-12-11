@@ -175,7 +175,7 @@ class Affichage_Film extends BasePage {
     public BasePage afficher_film(BlueRay blueRay, Account account, JFrame frame, Controller controller) {
         NavigationBar navbar = initNavigationBar();
         this.setLayout(new BorderLayout());
-        this.setSize(800, 600);
+        this.setSize(SysAL2000.FRAME_WIDTH, SysAL2000.FRAME_HEIGHT);
         Payment payement = new Payment();
 
         // Créer un JSplitPane pour diviser la fenêtre en deux parties de taille égale

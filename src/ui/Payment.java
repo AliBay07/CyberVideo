@@ -21,7 +21,7 @@ public class Payment {
     public void afficherPaiement(Account account, JFrame jFrame, Film film,Controller controller,BasePage afficherFilm) {
         if (account instanceof SubscriberAccount ) { //and nb de reservation < 3
             JDialog dialog = new JDialog(jFrame, "Paiement", true);
-            dialog.setSize(500, 400);
+            dialog.setSize(SysAL2000.FRAME_WIDTH, SysAL2000.FRAME_HEIGHT);
             dialog.setLocationRelativeTo(null);
 
             // Panel principal avec GridBagLayout
@@ -262,10 +262,13 @@ public class Payment {
                                                 @Override
                                                 public void actionPerformed(ActionEvent e) {
                                                     dialog.dispose();
+                                                    controller.traite(null,Keyword.RENTED_BlueRay_FILM); //vérifier blueray
+                                                    //appeler traite pour dire aller mainPage
                                                 }
                                             });
                                             timer.setRepeats(false); // Le timer ne se répétera pas
                                             timer.start();
+
                                         }
                                         //accepter paiement si solde >= 4e sinon erreur choisir autre carte puis renvoyer vers une page de validation
                                     }
@@ -409,6 +412,8 @@ public class Payment {
                             @Override
                             public void actionPerformed(ActionEvent e) {
                                 dialog.dispose();
+                                controller.traite(null,Keyword.RENTED_BlueRay_FILM); //vérifier blueray
+                                //appeler traite pour dire aller mainPage
                             }
                         });
                         timer.setRepeats(false); // Le timer ne se répétera pas

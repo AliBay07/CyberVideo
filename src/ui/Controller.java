@@ -190,9 +190,11 @@ public class Controller {
 		if(action == Keyword.SHOWFILMDETAILS){
 			switch(state){ //A tester
 				case SHOW_FILMS_RESULTS:
+					saveOldPage();
 					showDetailedFilm(getCurrentFilm());
 					state = State.SHOW_FILM_DETAILS;
 				case SHOW_BLURAY_RESULTS:
+					saveOldPage();
 					showDetailedBlueRay(getCurrentBlueRay());
 					state = State.SHOW_FILM_DETAILS;
 				case IDLE:
