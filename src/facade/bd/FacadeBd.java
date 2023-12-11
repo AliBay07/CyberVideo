@@ -76,6 +76,10 @@ public class FacadeBd {
     public Account unsubscribeFromService(Account account) {
         return accountDao.unsubscribeFromService(account);
     }
+    
+    public ArrayList<Category> getAllCategories() {
+    	return filmDao.getAllCategories();
+    }
 
     public boolean addMoneyToCard(SubscriberCard subscriberCard, double amount) {
         return accountDao.addMoneyToCard(subscriberCard, amount);

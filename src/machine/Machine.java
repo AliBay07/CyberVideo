@@ -184,6 +184,10 @@ public class Machine {
 		 return facadeBd.ReserveBlueRay(this.account, blueRay);
 	}
 	
+	public ArrayList<Category> getAllCategories() {
+    	return facadeBd.getAllCategories();
+    }
+	
 	public boolean removeCurrentReservation(BlueRay blueRay) {
 		return facadeBd.removeCurrentReservation(blueRay);
 	}

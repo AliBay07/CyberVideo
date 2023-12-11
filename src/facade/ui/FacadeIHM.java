@@ -52,6 +52,10 @@ public class FacadeIHM {
 	public boolean returnBlueRay(BlueRay blueRay) {
 		return machine.removeCurrentReservation(blueRay);
 	}
+	
+	public ArrayList<Category> getAllCategories() {
+    	return machine.getAllCategories();
+    }
 
 	public Account userLoginWithCard(String cardNumber, String password) {
 		return machine.userLoginWithCard(cardNumber, password);

@@ -542,7 +542,6 @@ public class FilmDao extends Dao<Film> {
 		return null;
 	}
 
-	// Map<String, List<String>>
 	public List<Film> searchFilmByCriteria(Account account, Map<String, String> filters) {
 
 		boolean is_subscriber = false;
@@ -683,5 +682,25 @@ public class FilmDao extends Dao<Film> {
 		}
 
 		return films;
+	}
+	
+	public ArrayList<Category> getAllCategories() {
+		
+		ArrayList<Category> categories = new ArrayList<Category>();
+		String query = "SELECT * FROM CATEGORY";
+		try (PreparedStatement statement = connection.prepareStatement(query)) {
+			ResultSet resultSet = statement.executeQuery();
+			while (resultSet.next()) {
+				Category category = new Category();
+				category.setCategoryName(resultSet.getString("category_name"));
+				category.setId(resultSet.getLong("id"));
+				
+				categories.add(category);	
+			}
+		
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return categories;
 	}
 }
