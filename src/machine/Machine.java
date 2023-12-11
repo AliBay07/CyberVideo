@@ -180,8 +180,8 @@ public class Machine {
 		return facadeBd.getCurrentReservationsByAccount(this.account);
 	}
 
-	public boolean ReserveBlueRay(BlueRay blueRay) {
-		 return facadeBd.ReserveBlueRay(this.account, blueRay);
+	public boolean ReserveBlueRay(BlueRay blueRay, CreditCard creditCard, SubscriberCard subscriberCard) {
+		 return facadeBd.ReserveBlueRay(this.account, blueRay, creditCard, subscriberCard);
 	}
 	
 	public ArrayList<Category> getAllCategories() {

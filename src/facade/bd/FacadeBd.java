@@ -139,8 +139,8 @@ public class FacadeBd {
         return reservationDao.getCurrentReservationsByAccount(account);
     }
 
-    public boolean ReserveBlueRay(Account account, BlueRay blueRay) {
-        return reservationDao.ReserveBlueRay(account, blueRay);
+    public boolean ReserveBlueRay(Account account, BlueRay blueRay, CreditCard creditCard, SubscriberCard subscriberCard) {
+        return reservationDao.ReserveBlueRay(account, blueRay, creditCard, subscriberCard);
     }
 
     public boolean ReserveQrCode(Account account, Film film) {

@@ -14,10 +14,12 @@ import beans.Actor;
 import beans.Author;
 import beans.BlueRay;
 import beans.Category;
+import beans.CreditCard;
 import beans.CurrentReservation;
 import beans.Film;
 import beans.HistoricReservation;
 import beans.Reservation;
+import beans.SubscriberCard;
 
 public class ReservationDao extends Dao<Reservation>{
 
@@ -128,7 +130,7 @@ public class ReservationDao extends Dao<Reservation>{
 		return reservations;
 	}
 
-	public boolean ReserveBlueRay(Account account, BlueRay blueRay) {
+	public boolean ReserveBlueRay(Account account, BlueRay blueRay, CreditCard creditCard, SubscriberCard subscriberCard) {
 
 		if (account != null && blueRay != null) {
 			try {
@@ -178,13 +180,25 @@ public class ReservationDao extends Dao<Reservation>{
 						}
 					}
 				}
-
-				String insertReservationQuery = "INSERT INTO CurrentReservations (id_account, id_blueray, reservation_start_date) " +
-						"VALUES (?, ?, CURRENT_DATE)";
+				
+				String insertReservationQuery = "";
+				if (creditCard == null) {
+					insertReservationQuery = "INSERT INTO CurrentReservations (id_account, id_blueray, ID_SUBSCRIBER_CARD, reservation_start_date) " +
+							"VALUES (?, ?, ?, CURRENT_DATE)";
+				} else {
+					insertReservationQuery = "INSERT INTO CurrentReservations (id_account, id_blueray, ID_CREDIT_CARD, reservation_start_date) " +
+							"VALUES (?, ?, ?, CURRENT_DATE)";
+				}
+				
 
 				try (PreparedStatement insertReservationStatement = connection.prepareStatement(insertReservationQuery)) {
 					insertReservationStatement.setLong(1, account.getId());
 					insertReservationStatement.setLong(2, blueRay.getId());
+					if (creditCard == null) {
+						insertReservationStatement.setLong(3, subscriberCard.getId());
+					} else {
+						insertReservationStatement.setLong(3, creditCard.getId());
+					}
 
 					int updatedRows = insertReservationStatement.executeUpdate();
 
