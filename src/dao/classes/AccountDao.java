@@ -285,7 +285,9 @@ public class AccountDao extends Dao<Account> {
 	public Account subscribeToService(Account account) {
 		if (account != null) {
 
-			String query = "SELECT * FROM Account WHERE Account.email = ?";
+			String query = "SELECT a.*, u.id as UserId, u.first_name, u.last_name " +
+                    "FROM Account a JOIN Users u ON a.id_users = u.id " +
+                    "WHERE a.email = ?";
 
 			try (PreparedStatement statement = connection.prepareStatement(query)) {
 				statement.setString(1, account.getEmail());
@@ -294,13 +296,20 @@ public class AccountDao extends Dao<Account> {
 						if (resultSet.getString("is_subscriber").equals("Y")) {
 							return account;
 						} else {
-							// can clone instead
+
 							SubscriberAccount subscriberAccount = new SubscriberAccount();
 							subscriberAccount.setId(account.getId());
 							subscriberAccount.setIdUser(account.getIdUser());
 							subscriberAccount.setEmail(account.getEmail());
 							subscriberAccount.setPassword(account.getPassword());
 							subscriberAccount.setNbAllowedReservation(account.getNbAllowedReservation());
+							
+							User user = new User();
+							user.setId(resultSet.getLong("UserId"));
+							user.setFirstName(resultSet.getString("first_name"));
+							user.setLastName(resultSet.getString("last_name"));
+							
+							subscriberAccount.setUser(user);
 
 							String updateQuery = "UPDATE Account SET is_subscriber = 'Y' WHERE email = ?";
 							try (PreparedStatement statementupdate = connection.prepareStatement(updateQuery)) {
@@ -327,7 +336,9 @@ public class AccountDao extends Dao<Account> {
 
 		if (account != null) {
 
-			String query = "SELECT * FROM Account WHERE Account.email = ?";
+			String query = "SELECT a.*, u.id as UserId, u.first_name, u.last_name " +
+                    "FROM Account a JOIN Users u ON a.id_users = u.id " +
+                    "WHERE a.email = ?";
 
 			try (PreparedStatement statement = connection.prepareStatement(query)) {
 				statement.setString(1, account.getEmail());
@@ -342,6 +353,13 @@ public class AccountDao extends Dao<Account> {
 							normalAccount.setEmail(account.getEmail());
 							normalAccount.setPassword(account.getPassword());
 							normalAccount.setNbAllowedReservation(account.getNbAllowedReservation());
+							
+							User user = new User();
+							user.setId(resultSet.getLong("UserId"));
+							user.setFirstName(resultSet.getString("first_name"));
+							user.setLastName(resultSet.getString("last_name"));
+							
+							normalAccount.setUser(user);
 
 							String updateQuery = "UPDATE Account SET is_subscriber = 'N' WHERE email = ?";
 							try (PreparedStatement statementupdate = connection.prepareStatement(updateQuery)) {
