@@ -246,15 +246,21 @@ public class MainPage extends BasePage {
     }
 
     private void abonner() {
-        boolean isOk = controller.getFacadeIHM().subscribeToService();
-        showTips("Abonner", isOk);
-        controller.traite(MainPage.this, Keyword.SUBSCRIBE);
+        Account acc = controller.getFacadeIHM().subscribeToService();
+        showTips("Abonner", acc!=null);
+        if(acc!=null){
+            controller.setAccount(acc);
+            controller.traite(MainPage.this, Keyword.SUBSCRIBE_SUCCESS);
+        }
     }
 
     private void desabonner(){
-        boolean isOk = controller.getFacadeIHM().unsubscribeToService();
-        showTips("Desabonner", isOk);
-        controller.traite(this, Keyword.UNSUBSCRIBE);
+        Account acc = controller.getFacadeIHM().unsubscribeToService();
+        showTips("Desabonner", acc!=null);
+        if(acc!=null){
+            controller.setAccount(acc);
+            controller.traite(this, Keyword.UNSUBSCRIBE_SUCCESS);
+        }
     }
 
     private void showTips(String action, boolean isOk) {

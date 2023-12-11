@@ -72,18 +72,12 @@ public class Controller {
 			}
 			showLoginPage();
 		}else
-		if(action==Keyword.SUBSCRIBE){
+		if(action==Keyword.SUBSCRIBE_SUCCESS){
 			switch (state) {
-				case IDLE:
-					showLoginPage();
-					state = State.SIGNIN_FOR_SUBSCRIBE;
-					break;
 				case LOGGED_NORMAL:
-					//Voir s'il faut afficher une pop up pour informer l'utilisateur qu'il s'est bien abonné
-					facadeIHM.subscribeToService();
+					state = State.LOGGED_PREMIUM;
+					showMainPage();
 					break;
-				case LOGGED_PREMIUM:
-					//Show pop up ou page pour créditer sa carte abonnée
 				default:
 					break;
 			}
@@ -291,13 +285,16 @@ public class Controller {
 		}else
 		if(action == Keyword.CHANGE_ACCOUNT_INFO){
 			//@TODO après la modification des infos d'account
-		}
-		else
+			showMainPage();
+			changeMainPageState();
+		}else
 		if(action == Keyword.LOGOUT){
 			logout();
 		}else
-		if(action == Keyword.UNSUBSCRIBE){
+		if(action == Keyword.UNSUBSCRIBE_SUCCESS){
 			//@TODO après unsubscribe dans le menu
+			state = State.IDLE;
+			showMainPage();
 		}
 	}
 
