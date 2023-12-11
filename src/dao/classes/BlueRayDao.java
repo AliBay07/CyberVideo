@@ -22,7 +22,8 @@ public class BlueRayDao extends Dao<BlueRay> {
 
 		String query = "SELECT b.id AS blueRayId, f.id AS filmId, f.name, f.duration, f.description, b.available, f.image_path " +
 				"FROM BlueRay b " +
-				"INNER JOIN Film f ON b.id_film = f.id";
+				"INNER JOIN Film f ON b.id_film = f.id" +
+				"WHERE b.available = 1;";
 
 		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			ResultSet resultSet = statement.executeQuery();
