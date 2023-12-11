@@ -1,0 +1,55 @@
+Trigger 2 : Lors d’un ajout dans la table CurrentReservations, le trigger doit vérifier si le id_account a l’attribut is_suscriber true ou false pour vérifier le nombre de réservation que l’id_account a le droit d’avoir dans la table.
+
+CREATE OR REPLACE TRIGGER trg_check_reservations
+BEFORE INSERT ON CurrentReservations
+FOR EACH ROW
+DECLARE
+  v_subscriber CHAR(1);
+  v_allowed_reservations NUMBER;
+  v_current_reservations NUMBER;
+BEGIN
+  -- Récupérer le statut d'abonné et le nombre autorisé de réservations pour l'account.
+  SELECT is_subscriber, nb_allowed_reservations
+  INTO v_subscriber, v_allowed_reservations
+  FROM Account
+  WHERE id = :NEW.id_account;
+
+  -- Si le compte est abonné, vérifier le nombre de réservations actuelles.
+  IF v_subscriber = 'Y' THEN
+    SELECT COUNT(*)
+    INTO v_current_reservations
+    FROM CurrentReservations
+    WHERE id_account = :NEW.id_account;
+
+    -- Si le nombre de réservations actuelles est égal ou supérieur au nombre autorisé, lever une exception.
+    IF v_current_reservations >= v_allowed_reservations THEN
+      RAISE_APPLICATION_ERROR(-20001, 'Le nombre maximum de réservations autorisées a été atteint.');
+    END IF;
+  END IF;
+END;
+/
+
+TEST : 
+
+-- Ajouter un utilisateur
+INSERT INTO Users (first_name, last_name, dob) VALUES ('Jean', 'Dupont', TO_DATE('1990-01-01', 'YYYY-MM-DD'));
+-- Ajouter une catégorie
+INSERT INTO Category (category_name) VALUES ('Horreur');
+-- Ajouter un auteur
+INSERT INTO Author (first_name, last_name) VALUES ('Victor', 'Hugo');
+-- Ajouter un acteur
+INSERT INTO Actor (first_name, last_name) VALUES ('Gérard', 'Depardieu');
+-- Ajouter un film
+INSERT INTO Film (name, duration, description) VALUES ('Les Misérables', 180, 'Une épopée historique.');
+-- Ajouter un compte utilisateur
+INSERT INTO Account (id_users, email, password, is_subscriber, nb_allowed_reservations) VALUES (1, 'jean.dupont@email.com', 'motdepasse', 'Y', 5);
+-- Ajouter des réservations existantes pour cet utilisateur
+INSERT INTO CurrentReservations (id_account, id_film, reservation_start_date) VALUES (1, 1, SYSDATE);
+COMMIT;
+-- 3. Tester le Trigger
+-- Essayer d'insérer une nouvelle réservation pour l'utilisateur qui dépasse la limite
+INSERT INTO CurrentReservations (id_account, id_film, reservation_start_date) VALUES (1, 1, SYSDATE);
+
+
+
+

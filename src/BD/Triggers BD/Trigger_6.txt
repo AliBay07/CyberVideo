@@ -1,0 +1,54 @@
+Trigger 6 : si il y’a une nouvelle reservation d un film on va incrementer number of reservations de 1 dans les deux table topfilmweek et top filmmonth (on récupere l id de film de l id de blueray) . sinon si le film n’existe pas dans les deux tables on l’ajoute avec number of reservation a 1.
+
+
+CREATE OR REPLACE TRIGGER Increment_Film_Reservation
+AFTER INSERT ON CurrentReservations
+FOR EACH ROW
+DECLARE
+    v_id_film NUMBER;
+    v_count NUMBER;
+BEGIN
+    -- Récupère l'ID du film à partir de l'ID de BlueRay
+    SELECT id_film INTO v_id_film FROM BlueRay WHERE id = :NEW.id_blueray;
+
+    -- Pour TopFilmsWeek
+    SELECT COUNT(*) INTO v_count FROM TopFilmsWeek WHERE id_film = v_id_film;
+    IF v_count > 0 THEN
+        -- Incrémente le nombre de réservations si le film existe déjà
+        UPDATE TopFilmsWeek SET number_reservations = number_reservations + 1 WHERE id_film = v_id_film;
+    ELSE
+        -- Ajoute le film avec un nombre de réservations de 1 s'il n'existe pas
+        INSERT INTO TopFilmsWeek (id_film, number_reservations) VALUES (v_id_film, 1);
+    END IF;
+
+    -- Pour TopFilmsMonth
+    SELECT COUNT(*) INTO v_count FROM TopFilmsMonth WHERE id_film = v_id_film;
+    IF v_count > 0 THEN
+        -- Incrémente le nombre de réservations si le film existe déjà
+        UPDATE TopFilmsMonth SET number_reservations = number_reservations + 1 WHERE id_film = v_id_film;
+    ELSE
+        -- Ajoute le film avec un nombre de réservations de 1 s'il n'existe pas
+        INSERT INTO TopFilmsMonth (id_film, number_reservations) VALUES (v_id_film, 1);
+    END IF;
+END;
+
+
+TEST : 
+
+-- Insérer un utilisateur dans la table Users
+INSERT INTO Users (first_name, last_name, dob) VALUES ('John', 'Doe', TO_DATE('1990-01-01', 'YYYY-MM-DD'));
+-- Insérer un compte dans la table Account
+-- Remplacer '1' par l'ID de l'utilisateur si différent
+INSERT INTO Account (id_users, email, password, is_subscriber, nb_allowed_reservations) VALUES (1, 'john.doe@email.com', 'password123', 'Y', 5);
+-- Insérer un film dans la table Film
+INSERT INTO Film (name, image_path, duration, description) VALUES ('Film Test', '/chemin/vers/image.jpg', 120, 'Description du film test');
+-- Insérer un BlueRay dans la table BlueRay
+-- Remplacer '1' par l'ID du film si différent
+INSERT INTO BlueRay (id_film, available) VALUES (1, 1);
+-- Insérer une réservation dans la table CurrentReservations
+-- Remplacer '1' par l'ID du compte et de BlueRay si différent
+INSERT INTO CurrentReservations (id_account, id_blueray, reservation_start_date) VALUES (1, 1, SYSDATE);
+-- Vérifier les résultats dans TopFilmsWeek
+SELECT * FROM TopFilmsWeek;
+-- Vérifier les résultats dans TopFilmsMonth
+SELECT * FROM TopFilmsMonth;

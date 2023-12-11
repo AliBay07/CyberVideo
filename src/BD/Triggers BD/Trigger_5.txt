@@ -1,0 +1,55 @@
+Trigger 5 : 
+si on ajoute une reservation dans la table current reservation  on vérifie si le id_account a l’attribut is_subscriber true donc on doit lui decrementer son amount de 4 ensuite on insert une ligne correspondante dans la table transaction. sinon si  son amount est inférieure a 4 euros on ajoute la carte de credit dans la table FrozenSubscriberCard.
+
+CREATE OR REPLACE TRIGGER trg_after_reservation_insert
+AFTER INSERT ON CurrentReservations
+FOR EACH ROW
+DECLARE
+  v_is_subscriber CHAR(1);
+  v_amount FLOAT;
+  v_subscriber_card_id NUMBER;
+BEGIN
+  -- Vérifier si le compte est un abonné
+  SELECT is_subscriber INTO v_is_subscriber
+  FROM Account
+  WHERE id = :NEW.id_account;
+
+  IF v_is_subscriber = 'Y' THEN
+    -- Récupérer l'ID de la carte d'abonné et son montant
+    SELECT id, amount INTO v_subscriber_card_id, v_amount
+    FROM SubscriberCard
+    WHERE id = :NEW.id_subscriber_card;
+
+    -- Décrémenter le montant et mettre à jour la carte d'abonné
+    v_amount := v_amount - 4;
+    UPDATE SubscriberCard
+    SET amount = v_amount
+    WHERE id = v_subscriber_card_id;
+
+    -- Insérer une nouvelle transaction
+    INSERT INTO Transactions (id_account, id_subscriber_card, amount, date_of_transaction)
+    VALUES (:NEW.id_account, v_subscriber_card_id, 4, SYSDATE);
+
+    -- Vérifier si le montant est inférieur à 4 et agir en conséquence
+    IF v_amount < 4 THEN
+      INSERT INTO FrozenSubscriberCard (id_subscriber_card, dateF)
+      VALUES (v_subscriber_card_id, SYSDATE);
+    END IF;
+  END IF;
+END;
+
+
+
+TEST :
+ 
+INSERT INTO Users (first_name, last_name, dob) VALUES ('John', 'Doe', TO_DATE('1990-01-01', 'YYYY-MM-DD'));
+INSERT INTO Account (id_users, email, password, is_subscriber, nb_allowed_reservations) VALUES (1, 'john.doe@email.com', 'password123', 'Y', 10.00);
+INSERT INTO SubscriberCard (card_number, amount) VALUES ('123456789', 10.00);
+INSERT INTO AccountSubscriberCard (id_account, id_subscriber_card) VALUES (1, 1);
+INSERT INTO Film (name, duration, description) VALUES ('Test Film', 120, 'Description of Test Film');
+INSERT INTO BlueRay (id_film, available) VALUES (1, 5);
+INSERT INTO CurrentReservations (id_account, id_subscriber_card, id_blueray, reservation_start_date) VALUES (1, 1, 1, SYSDATE);
+UPDATE SubscriberCard SET amount = 3.00 WHERE id = 1;
+INSERT INTO CurrentReservations (id_account, id_subscriber_card, id_blueray, reservation_start_date) VALUES (1, 1, 1, SYSDATE);
+
+

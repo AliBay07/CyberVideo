@@ -1,0 +1,89 @@
+Trigger_3 : Sur la table ReservationHistory, un trigger doit être lancé à chaque insertion pour calculer le nombre de réservation du mois dans cette table et dans la table CurrentReservation associées au client du tuple inséré. Si le nombre de réservation dépasse 20, alors le amount d’une des cartes abonné du client doit être crédité de 10 euros.
+
+//Créez une table temporaire pour stocker les identifiants des comptes qui ont besoin d'être traités.
+CREATE GLOBAL TEMPORARY TABLE temp_accounts_to_update (
+  id_account NUMBER,
+  id_subscriber_card NUMBER
+) ON COMMIT DELETE ROWS;
+
+// Créez un déclencheur ROW level pour capturer les identifiants des comptes à chaque insertion dans ReservationHistory.
+
+CREATE OR REPLACE TRIGGER trg_capture_account_id
+AFTER INSERT ON ReservationHistory
+FOR EACH ROW
+BEGIN
+  INSERT INTO temp_accounts_to_update (id_account)
+  VALUES (:NEW.id_account);
+END;
+/
+
+//  Créez un déclencheur au niveau de l'instruction qui utilisera les données de la table temporaire pour effectuer la mise à jour nécessaire sur SubscriberCard.
+
+CREATE OR REPLACE TRIGGER trg_update_subscriber_card
+AFTER INSERT ON ReservationHistory
+DECLARE
+  v_monthly_reservations NUMBER;
+  v_subscriber_card_id NUMBER;
+BEGIN
+  FOR a_record IN (SELECT DISTINCT id_account FROM temp_accounts_to_update) LOOP
+    -- Calculer le nombre total de réservations pour ce client pour le mois courant
+    SELECT COUNT(*)
+    INTO v_monthly_reservations
+    FROM (
+      SELECT id_account FROM CurrentReservations
+      WHERE id_account = a_record.id_account
+      AND EXTRACT(MONTH FROM reservation_start_date) = EXTRACT(MONTH FROM SYSDATE)
+      AND EXTRACT(YEAR FROM reservation_start_date) = EXTRACT(YEAR FROM SYSDATE)
+      UNION ALL
+      SELECT id_account FROM ReservationHistory
+      WHERE id_account = a_record.id_account
+      AND EXTRACT(MONTH FROM reservation_start_date) = EXTRACT(MONTH FROM SYSDATE)
+      AND EXTRACT(YEAR FROM reservation_start_date) = EXTRACT(YEAR FROM SYSDATE)
+    );
+
+    -- Si le nombre de réservations dépasse 20, créditer de 10 euros
+    IF v_monthly_reservations > 20 THEN
+      -- Récupérer l'ID de la carte d'abonné de l'utilisateur
+      SELECT id_subscriber_card INTO v_subscriber_card_id
+      FROM AccountSubscriberCard
+      WHERE id_account = a_record.id_account
+      AND ROWNUM = 1; -- Supposition: Créditer la première carte trouvée
+
+      -- Créditer le montant de 10 euros à la carte d'abonné
+      UPDATE SubscriberCard
+      SET amount = amount + 10
+      WHERE id = v_subscriber_card_id;
+    END IF;
+  END LOOP;
+END;
+/
+
+TEST : 
+
+INSERT INTO Users (first_name, last_name, dob) VALUES ('John', 'Doe', TO_DATE('1990-01-01', 'YYYY-MM-DD'));
+INSERT INTO Account (id_users, email, password, is_subscriber, nb_allowed_reservations) VALUES (1, 'john.doe@example.com', 'hashed_password', 'Y', 30);
+INSERT INTO SubscriberCard (amount) VALUES (50); -- Supposons que l'ID généré est 1
+INSERT INTO AccountSubscriberCard (id_account, id_subscriber_card) VALUES (1, 1);
+-- Insérer un film
+INSERT INTO Film (name, duration, description) VALUES ('Film Example', 120, 'Description here');
+-- 2. Ajouter 20 réservations pour ce mois
+DECLARE
+  v_date DATE;
+BEGIN
+  v_date := TRUNC(SYSDATE, 'MM');
+  FOR i IN 1..20 LOOP
+    INSERT INTO CurrentReservations (id_account, id_film, reservation_start_date) VALUES (1, 1, v_date + i);
+  END LOOP;
+END;
+/
+-- 3. Insérer une nouvelle entrée dans ReservationHistory pour déclencher le trigger
+INSERT INTO ReservationHistory (id_account, id_film, reservation_start_date, reservation_end_date) VALUES (1, 1, SYSDATE, SYSDATE);
+-- 4. Vérifier si le montant a été crédité
+SELECT amount FROM SubscriberCard WHERE id = 1;
+
+
+
+
+
+
+

@@ -1,0 +1,71 @@
+Trigger 4 : Un trigger doit être lancé à chaque modification de l’amount dans la table SubscriberCard pour vérifier si la carte a un amount positif et s’il existe un tuple associé a cet id dans la table FrozenSubscriberCard. Si c’est le cas, alors le trigger doit calculer la somme à créditer sur la carte à l’aide de la dateF et doit débiter le amount de la carte correspondante dans la table SubscriberCard. Si l’amount résultant est positif, alors le tuple concernant la carte dans la table FrozenSubscriberCard doit être supprimé, sinon il faut garder le tuple dans la table.
+
+CREATE TABLE TempSubscriberCardUpdate (
+    id NUMBER PRIMARY KEY
+);
+
+CREATE OR REPLACE TRIGGER StoreUpdatedSubscriberCardId
+BEFORE UPDATE OF amount ON SubscriberCard
+FOR EACH ROW
+BEGIN
+    INSERT INTO TempSubscriberCardUpdate (id) VALUES (:NEW.id);
+END;
+
+CREATE OR REPLACE TRIGGER ProcessUpdatedSubscriberCards
+AFTER UPDATE OF amount ON SubscriberCard
+DECLARE
+    v_amount FLOAT;
+    v_dateF DATE;
+    v_days_diff INTEGER;
+    v_amount_diff FLOAT;
+BEGIN
+    FOR rec IN (SELECT id FROM TempSubscriberCardUpdate) LOOP
+        -- Récupérer le montant et vérifier si le tuple correspondant existe dans FrozenSubscriberCard
+        SELECT amount INTO v_amount FROM SubscriberCard WHERE id = rec.id;
+
+        IF v_amount > 0 THEN
+            BEGIN
+                SELECT dateF INTO v_dateF FROM FrozenSubscriberCard WHERE id = rec.id;
+                v_days_diff := TRUNC(SYSDATE) - TRUNC(v_dateF);
+                v_amount_diff := v_days_diff * 10;
+                
+                -- Mettre à jour le montant de la carte
+                UPDATE SubscriberCard SET amount = v_amount + v_amount_diff WHERE id = rec.id;
+                
+                -- Supprimer le tuple si le nouveau montant est positif
+                IF v_amount + v_amount_diff > 0 THEN
+                    DELETE FROM FrozenSubscriberCard WHERE id = rec.id;
+                END IF;
+            EXCEPTION
+                WHEN NO_DATA_FOUND THEN
+                    NULL; -- Aucune action si la carte n'est pas trouvée dans FrozenSubscriberCard
+            END;
+        END IF;
+    END LOOP;
+
+    -- Vider la table temporaire
+    DELETE FROM TempSubscriberCardUpdate;
+END;
+
+
+TEST : 
+
+-- Insérer un enregistrement dans SubscriberCard
+INSERT INTO SubscriberCard (id, card_number, amount) VALUES (1, '123456', -100);
+-- Insérer un enregistrement correspondant dans FrozenSubscriberCard
+-- Supposons que la date de gel est 10 jours avant aujourd'hui
+INSERT INTO FrozenSubscriberCard (id, dateF) VALUES (1, SYSDATE - 10);
+COMMIT;
+
+//  Vérifier que les données sont correctement insérées.
+SELECT * FROM SubscriberCard WHERE id = 1;
+SELECT * FROM FrozenSubscriberCard WHERE id = 1;
+
+//Déclancher le trigger 
+UPDATE SubscriberCard SET amount = -50 WHERE id = 1;
+COMMIT;
+// Vérification 
+SELECT * FROM SubscriberCard WHERE id = 1;
+SELECT * FROM FrozenSubscriberCard WHERE id = 1;
+
+

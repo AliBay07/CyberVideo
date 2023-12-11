@@ -1,0 +1,12 @@
+Trigger 1 : Lors d’un ajout ou d’une modification dans la table AccountSuscriberCard, le Account relié à l’id_account du tuple a l’attribut is_suscriber true. 
+
+CREATE OR REPLACE TRIGGER UpdateAccountSubscriberStatus
+AFTER INSERT OR UPDATE ON AccountSubscriberCard
+FOR EACH ROW
+BEGIN
+  -- Mettre à jour la colonne is_subscriber à 'Y' pour le Account correspondant
+  UPDATE Account
+  SET is_subscriber = 'Y'
+  WHERE id = :NEW.id_account;
+END;
+
