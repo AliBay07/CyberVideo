@@ -168,7 +168,7 @@ public class MainPage extends BasePage {
         else{
             filmsSections.add(new FilmSection(this.frame, controller, topFilmsWeek, "Top 10 de la semaine", false));
             filmsSections.add(new FilmSection(this.frame, controller, topFilmsMonth,"Top 10 du mois", false));
-            filmsSections.add(new FilmSection(this.frame, controller, new ArrayList<Film>(),"Blu-ray disponibles", true));
+            filmsSections.add(new FilmSection(this.frame, controller, dispoBluray,"Blu-ray disponibles"));
             filmsSections.add(new FilmSection(this.frame, controller, new ArrayList<Film>(),"Par catégorie", true));
             filmsSections.add(new FilmSection(this.frame, controller, allfilms,"Tous les films", true));
         }

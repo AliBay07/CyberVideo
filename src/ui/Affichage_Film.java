@@ -3,7 +3,6 @@ package ui;
 import beans.Account;
 import beans.Actor;
 import beans.Film;
-import facade.ui.*;
 import beans.*;
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +12,7 @@ import java.awt.event.ActionListener;
 class Affichage_Film extends BasePage {
     private Affichage_Film affichage_film = this;
     private Film film;
-    private BlueRay blueRay;
+
     private Account account;
     private BackNavigationBar backNavigationBar = new BackNavigationBar("Détails du film");
 
@@ -25,12 +24,14 @@ class Affichage_Film extends BasePage {
         super(frame,controller);
         this.film = film;
         this.account = controller.currentAccount;
-        this.blueRay = null;
+        controller.setCurrentBlueRay(null);
+        controller.setCurrentFilm(film);
     }
 
     public Affichage_Film(JFrame frame, BlueRay blueRay, Controller controller) {
         super(frame,controller);
-        this.blueRay = blueRay;
+        controller.setCurrentBlueRay(blueRay);
+        controller.setCurrentFilm(blueRay.getFilm());
         this.account = controller.currentAccount;
         this.film = null;
     }
@@ -44,7 +45,7 @@ class Affichage_Film extends BasePage {
         }
         else
         {
-            afficher_film(blueRay.getFilm(), frame, controller);
+            afficher_film(controller.getCurrentBlueRay().getFilm(), frame, controller);
             return this;
         }
     }

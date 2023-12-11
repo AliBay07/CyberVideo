@@ -40,8 +40,13 @@ public class ResearchResults extends BasePage {
                     selectedFilm = filmsResults.get(i);
                 }
                 else if(!(controller.getCurrentAccount()==null) && e.getSource()==filmsSections.get(i).getRentButton()) {
-                    controller.traite(ResearchResults.this, Keyword.RENTED_QrCode_FILM);
-                    selectedFilm = filmsResults.get(i);
+                    if(bluraysResults == null)
+                    {
+                        controller.traite(ResearchResults.this, Keyword.RENTED_QrCode_FILM);
+                        selectedFilm = filmsResults.get(i);
+                    }
+                    controller.traite(ResearchResults.this, Keyword.RENTED_BlueRay_FILM);
+                    selectedBlueray = bluraysResults.get(i);
                 } 
             }
         }
@@ -52,6 +57,7 @@ public class ResearchResults extends BasePage {
         //Création des listes ayant le contenu des critères/films
         choice = s;
         this.criteria = criteria;
+        bluraysResults = null;
         filmsResults = films;
         filmsResults = new ArrayList<Film>(); //Ici faire un appel à la BD (ou en paramètre et gestion dans le main ?)
         //Génération de films pour tester
@@ -80,6 +86,7 @@ public class ResearchResults extends BasePage {
         choice = s;
         this.criteria = criteria;
         bluraysResults = blueRays;
+        filmsResults = null;
         //Vérifier qu'il y a des films dans la liste !!
         filmsSections = new ArrayList<FilmInfoSection>();
         for(int i=0; i< blueRays.size(); i++){
