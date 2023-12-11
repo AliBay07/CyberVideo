@@ -31,7 +31,7 @@ BEGIN
         INSERT INTO TopFilmsMonth (id_film, number_reservations) VALUES (v_id_film, 1);
     END IF;
 END;
-
+/
 
 TEST : 
 

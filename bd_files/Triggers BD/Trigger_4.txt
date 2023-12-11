@@ -46,7 +46,7 @@ BEGIN
     -- Vider la table temporaire
     DELETE FROM TempSubscriberCardUpdate;
 END;
-
+/
 
 TEST : 
 
