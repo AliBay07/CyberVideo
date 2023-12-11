@@ -49,5 +49,10 @@ public class Author {
     public int hashCode() {
         return Objects.hash(first_name.trim().toLowerCase(), last_name.trim().toLowerCase());
     }
+    
+    @Override
+    public String toString() {
+    	return this.first_name + " " + this.last_name;
+    }
 
 }

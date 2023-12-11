@@ -168,7 +168,7 @@ public class Controller {
 						}
 					}
 					else
-					if(currentPage.getController().getCurrentFilm()==null){
+					if(getCurrentFilm()==null){
 						state = State.SHOW_FILMS_RESULTS;
 						//showResearchResult global
 					}else{
@@ -190,10 +190,10 @@ public class Controller {
 		if(action == Keyword.SHOWFILMDETAILS){
 			switch(state){ //A tester
 				case SHOW_FILMS_RESULTS:
-					showDetailedFilm(((ResearchResults)currentPage).getSelectedFilm());
+					showDetailedFilm(getCurrentFilm());
 					state = State.SHOW_FILM_DETAILS;
 				case SHOW_BLURAY_RESULTS:
-					showDetailedBlueRay(((ResearchResults)currentPage).getSelectedBluRay());
+					showDetailedBlueRay(getCurrentBlueRay());
 					state = State.SHOW_FILM_DETAILS;
 				case IDLE:
 					//accéder au film sélectionné + enregistrer oldpage
@@ -215,12 +215,12 @@ public class Controller {
 		if (action == Keyword.RENTED_BlueRay_FILM) {
 			switch (state) {
 				case SHOW_BLURAY_RESULTS:
-					showDetailedBlueRay(((ResearchResults)currentPage).getSelectedBluRay());
+					showDetailedBlueRay(getCurrentBlueRay());
 					state = State.SHOW_FILM_DETAILS;
 					break;
 				case SHOW_FILM_DETAILS:
 					showMainPage();
-					facadeIHM.rentBlueRay(this.getCurrentBlueRay());
+					facadeIHM.rentBlueRay(getCurrentBlueRay());
 					if(currentAccount instanceof NormalAccount)
 						state = State.LOGGED_NORMAL;
 					else if(currentAccount instanceof SubscriberAccount)
@@ -235,7 +235,7 @@ public class Controller {
 		{
 			switch (state) {
 				case SHOW_FILMS_RESULTS:
-					showDetailedFilm(((ResearchResults)currentPage).getSelectedFilm());
+					showDetailedFilm(getCurrentFilm());
 					state = State.SHOW_FILM_DETAILS;
 					break;
 				case SHOW_FILM_DETAILS:
