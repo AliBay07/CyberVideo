@@ -21,7 +21,7 @@ public class Payment {
     public void afficherPaiement(Account account, JFrame jFrame, Film film,Controller controller,BasePage afficherFilm) {
         if (account instanceof SubscriberAccount ) { //and nb de reservation < 3
             JDialog dialog = new JDialog(jFrame, "Paiement", true);
-            dialog.setSize(SysAL2000.FRAME_WIDTH, SysAL2000.FRAME_HEIGHT);
+            dialog.setSize(SysAL2000.DIALOG_WIDTH, SysAL2000.DIALOG_HEIGHT);
             dialog.setLocationRelativeTo(null);
 
             // Panel principal avec GridBagLayout

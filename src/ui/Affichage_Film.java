@@ -45,7 +45,7 @@ class Affichage_Film extends BasePage {
         }
         else
         {
-            afficher_film(controller.getCurrentBlueRay().getFilm(), frame, controller);
+            afficher_film2(controller.getCurrentBlueRay(), frame, controller);
             return this;
         }
     }
@@ -172,7 +172,7 @@ class Affichage_Film extends BasePage {
     }
 
 
-    public BasePage afficher_film(BlueRay blueRay, Account account, JFrame frame, Controller controller) {
+    public BasePage afficher_film2(BlueRay blueRay, JFrame frame, Controller controller) {
         NavigationBar navbar = initNavigationBar();
         this.setLayout(new BorderLayout());
         this.setSize(SysAL2000.FRAME_WIDTH, SysAL2000.FRAME_HEIGHT);
@@ -281,6 +281,14 @@ class Affichage_Film extends BasePage {
         this.add(navbar,BorderLayout.NORTH);
 
         this.setVisible(true);
+
+        blueRaybutton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                payement.afficherPaiement(account,frame, blueRay.getFilm(), controller,affichage_film);
+            }
+        });
+
         return this;
     }
 
