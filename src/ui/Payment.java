@@ -44,7 +44,7 @@ public class Payment {
             // Radio bouton pour la carte de crédit
             JRadioButton creditCardRadioButton = null;
 
-            List<CreditCard> creditCard = account.getCreditCards();
+            List<CreditCard> creditCard = controller.getCurrentAccount().getCreditCards();
             JPanel creditCardPanel = new JPanel();
             creditCardPanel.setLayout(new BoxLayout(creditCardPanel, BoxLayout.Y_AXIS));
 
@@ -156,6 +156,8 @@ public class Payment {
                                         gbc.gridy++;
                                         JLabel labelCarte = new JLabel("Paiement par carte bancaire");
                                         validateJPanel.add(labelCarte, gbc);
+
+                                        System.out.println(selectedCreditCard);
 
                                         gbc.gridy++;
                                         JLabel labelBank = new JLabel(String.valueOf(selectedCreditCard.getId()));
