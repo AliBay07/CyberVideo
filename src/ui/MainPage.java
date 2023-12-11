@@ -28,14 +28,8 @@ public class MainPage extends BasePage {
             else if(e.getSource()==filmsSectionsPane.getFilmSections().get(2).getMoreFilmsButton()){
                 controller.traite(MainPage.this, Keyword.SHOWBLURAY);
             }
-            if(controller.getCurrentAccount() != null){
-                if(e.getSource()==filmsSectionsPane.getFilmSections().get(4).getMoreFilmsButton()){
-                    controller.traite(MainPage.this, Keyword.SHOWCATEGORIES); 
-                    //Il faut changer ça car on veut avoir le nom de la catégorie selectionnée !
-                }
-                else if(e.getSource()==filmsSectionsPane.getFilmSections().get(3).getMoreFilmsButton()){
-                    controller.traite(MainPage.this, Keyword.SHOWALLFILMS);
-                }
+            if(e.getSource()==filmsSectionsPane.getFilmSections().get(3).getMoreFilmsButton()){
+                controller.traite(MainPage.this, Keyword.SHOWALLFILMS);
             }
             if(controller.getCurrentAccount() == null){
                 if(e.getSource()==((InitialNavbar)navbar).getSignInButton()){
@@ -64,74 +58,6 @@ public class MainPage extends BasePage {
 
         initView();
     }
-
-//    private ActionListener setRightMenu(String[] tabFonctions, ActionListener actionListener){
-////        JList<String> rightMenu = new JList<String>(tabFonctions);
-////        rightMenu.setPreferredSize(new Dimension(7*SysAL2000.DIALOG_WIDTH/8, 7*SysAL2000.DIALOG_HEIGHT/8));
-////        rightMenu.setLayoutOrientation(JList.VERTICAL);
-////        rightMenu.setFont(new Font("serif", Font.PLAIN, 15));
-//
-//        //
-//        JPanel menuPane = new JPanel();
-//        menuPane.setLayout(new BoxLayout(menuPane, BoxLayout.Y_AXIS));
-//        for(String optionName : tabFonctions){
-//            JButton optionBtn = new JButton(optionName);
-//            optionBtn.setActionCommand(optionName);
-//            optionBtn.addActionListener(actionListener);
-//            optionBtn.setAlignmentX(CENTER_ALIGNMENT);
-//            // interval
-//            menuPane.add(Box.createRigidArea(new Dimension(10, 10)));
-//            menuPane.add(optionBtn);
-//        }
-//
-//        ActionListener openRightMenu = new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                JDialog rightMenuDialog = new JDialog(frame, "Menu droit", true);
-//                rightMenuDialog.setSize(SysAL2000.DIALOG_WIDTH/3,SysAL2000.DIALOG_HEIGHT/3);
-//                rightMenuDialog.setLayout(new BorderLayout());
-//                rightMenuDialog.add(menuPane, BorderLayout.CENTER);
-//                JButton closeButton = new JButton("Close");
-//                rightMenuDialog.add(closeButton, BorderLayout.SOUTH);
-//                closeButton.addActionListener(new ActionListener() {
-//                    @Override
-//                    public void actionPerformed(ActionEvent e) {
-//                        rightMenuDialog.dispose();
-//                    }
-//                });
-//                rightMenuDialog.setLocationRelativeTo(null);
-//                rightMenuDialog.setVisible(true);
-//            }
-//        };
-//
-//        return openRightMenu;
-//    }
-
-//    private ActionListener setLeftMenu(){
-//        String[] tabFonctions1 = {"Voir mon historique de location", "Modifier mes préférences de location", "Filtrer les catégories", "Demander l'ajout d'un nouveau film"};
-//        JList<String> leftMenu = new JList<String>(tabFonctions1);
-//        leftMenu.setFont(new Font("serif", Font.PLAIN, 15));
-//        leftMenu.setPreferredSize(new Dimension(7*SysAL2000.DIALOG_WIDTH/8, 7*SysAL2000.DIALOG_HEIGHT/8));
-//        leftMenu.setLayoutOrientation(JList.VERTICAL);
-//        ActionListener openLeftMenu = new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                JDialog leftMenuDialog = new JDialog(frame, "Menu gauche", true);
-//                leftMenuDialog.setSize(SysAL2000.DIALOG_WIDTH,SysAL2000.DIALOG_HEIGHT);
-//                leftMenuDialog.setLayout(new FlowLayout());
-//                leftMenuDialog.add(leftMenu);
-//                JButton closeButton = new JButton("Close");
-//                leftMenuDialog.add(closeButton);
-//                closeButton.addActionListener(new ActionListener() {
-//                    @Override
-//                    public void actionPerformed(ActionEvent e) {
-//                        leftMenuDialog.dispose();
-//                    }
-//                });
-//                leftMenuDialog.setLocationRelativeTo(MainPage.this);
-//                leftMenuDialog.setVisible(true);
-//            }
-//        };
-//        return openLeftMenu;
-//    }
 
     private ActionListener setBasketListener(){
         ActionListener basketListener = new ActionListener() {
@@ -189,21 +115,12 @@ public class MainPage extends BasePage {
         ArrayList<Film> topFilmsMonth = controller.getFacadeIHM().getTopFilmsOfTheMonth();
         ArrayList<Film> topFilmsWeek = controller.getFacadeIHM().getTopFilmsOfTheWeek();
         ArrayList<BlueRay> dispoBluray = controller.getFacadeIHM().getAvailableBlueRays();
-        System.out.println("num bluray:"+dispoBluray.size());
         
-        if(controller.getCurrentAccount() == null){
-            filmsSections.add(new FilmSection(this.frame, controller, topFilmsWeek, "Top 10 de la semaine", false));
-            filmsSections.add(new FilmSection(this.frame, controller, topFilmsMonth,"Top 10 du mois", false));
-            filmsSections.add(new FilmSection(this.frame, controller, dispoBluray,"Blu-ray disponibles"));
-            filmsSections.add(new FilmSection(this.frame, controller, allfilms,"Tous les films", true)); // maybe remove later
-        }
-        else{
-            filmsSections.add(new FilmSection(this.frame, controller, topFilmsWeek, "Top 10 de la semaine", false));
-            filmsSections.add(new FilmSection(this.frame, controller, topFilmsMonth,"Top 10 du mois", false));
-            filmsSections.add(new FilmSection(this.frame, controller, dispoBluray,"Blu-ray disponibles"));
-            filmsSections.add(new FilmSection(this.frame, controller, allfilms,"Tous les films", true));
-            filmsSections.add(new FilmSection(this.frame, controller, new ArrayList<Film>(),"Par catégorie", true));
-        }
+        
+        filmsSections.add(new FilmSection(this.frame, controller, topFilmsWeek, "Top 10 de la semaine", false));
+        filmsSections.add(new FilmSection(this.frame, controller, topFilmsMonth,"Top 10 du mois", false));
+        filmsSections.add(new FilmSection(this.frame, controller, dispoBluray,"Blu-ray disponibles"));
+        filmsSections.add(new FilmSection(this.frame, controller, allfilms,"Tous les films", true));
         for(int i=2; i < filmsSections.size(); i++){
             filmsSections.get(i).getMoreFilmsButton().addActionListener(actionListener);
         }

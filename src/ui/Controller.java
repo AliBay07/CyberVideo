@@ -128,11 +128,6 @@ public class Controller {
 			ArrayList<Film> results = facadeIHM.getAllFilms();
 			state = State.SHOW_FILMS_RESULTS;
 			showResearchPage(Section.ALL, results, null);
-		}
-		else if(action == Keyword.SHOWCATEGORIES){
-			ArrayList<Film> results = facadeIHM.searchFilmByCriteria(((MainPage)currentPage).getChosenCriterias());
-			state = State.SHOW_FILMS_RESULTS;
-			showResearchPage(Section.CATEGORY, results, null);
 		}else
 		if(action == Keyword.BACK){
 			switch(state){
@@ -324,12 +319,6 @@ public class Controller {
 
 	public void showResearchPage(Section s, ArrayList<Film> films, ArrayList<BlueRay> blueRays){
 		ResearchResults page;
-		if(s == Section.CATEGORY){
-			page = new ResearchResults(frame, this, s, ((MainPage) currentPage).getChosenCriterias().get("categorie").get(0), films);
-			page.showResearchResults();
-			showPage(page);
-			return;
-		}
 		if(s == Section.BLURAY){
 			page = new ResearchResults(frame, this, s, blueRays, null);
 			page.showResearchResults();
