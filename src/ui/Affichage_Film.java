@@ -50,6 +50,7 @@ class Affichage_Film extends BasePage {
         }
     }
     public BasePage afficher_film(Film film, JFrame frame, Controller controller) {
+        NavigationBar navbar = initNavigationBar();
         this.setLayout(new BorderLayout());
         this.setSize(800, 600);
         Payment payement = new Payment();
@@ -155,6 +156,7 @@ class Affichage_Film extends BasePage {
 
         this.add(splitPane, BorderLayout.CENTER);
         this.add(buttonPanel,BorderLayout.SOUTH);
+        this.add(navbar, BorderLayout.NORTH);
 
 
         qrCode.addActionListener(new ActionListener() {
@@ -164,12 +166,6 @@ class Affichage_Film extends BasePage {
             }
         });
 
-        backNavigationBar.getLeftBtn().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                controller.traite(null,Keyword.BACK);
-            }
-        });
 
         this.setVisible(true);
         return this;
@@ -177,6 +173,7 @@ class Affichage_Film extends BasePage {
 
 
     public BasePage afficher_film(BlueRay blueRay, Account account, JFrame frame, Controller controller) {
+        NavigationBar navbar = initNavigationBar();
         this.setLayout(new BorderLayout());
         this.setSize(800, 600);
         Payment payement = new Payment();
@@ -281,25 +278,22 @@ class Affichage_Film extends BasePage {
 
         this.add(splitPane, BorderLayout.CENTER);
         this.add(buttonPanel,BorderLayout.SOUTH);
-
-
-        blueRaybutton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                payement.afficherPaiement(account,frame,blueRay.getFilm(),controller,affichage_film);
-
-            }
-        });
-
-        backNavigationBar.getLeftBtn().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                controller.traite(null,Keyword.BACK);
-            }
-        });
+        this.add(navbar,BorderLayout.NORTH);
 
         this.setVisible(true);
         return this;
+    }
+
+    private NavigationBar initNavigationBar() {
+        BackNavigationBar navbar = new BackNavigationBar("Détails films");
+        navbar.getLeftBtn().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // se termine
+                dispose();
+            }
+        });
+        return navbar;
     }
 
 }
