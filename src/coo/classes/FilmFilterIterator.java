@@ -85,19 +85,19 @@ public class FilmFilterIterator implements Iterator<Film> {
 
 	private boolean matchesFilter(Film film) {
 		
-		if (!nameFilter.isEmpty() && !film.getName().trim().toLowerCase().contains(nameFilter.trim().toLowerCase())) {
+		if (nameFilter != null && !nameFilter.isEmpty() && !film.getName().trim().toLowerCase().contains(nameFilter.trim().toLowerCase())) {
 			return false;
 		}
 
-		if (!authorFilter.isEmpty() && !film.getAuthors().containsAll(authorFilter)) {
+		if (authorFilter != null && !authorFilter.isEmpty() && !film.getAuthors().containsAll(authorFilter)) {
 			return false;
 		}
 
-		if (!actorFilter.isEmpty() && !film.getActors().containsAll(actorFilter)) {
+		if (actorFilter != null && !actorFilter.isEmpty() && !film.getActors().containsAll(actorFilter)) {
 			return false;
 		}
 
-		if (!categoryFilter.isEmpty() && !film.getCategories().containsAll(categoryFilter)) {
+		if (categoryFilter != null &&  !categoryFilter.isEmpty() && !film.getCategories().containsAll(categoryFilter)) {
 			return false;
 		}
 
