@@ -568,7 +568,7 @@ public class AccountDao extends Dao<Account> {
 	}
 
 	public ArrayList<Category> getBannedCategories(Account account) {
-		List<Category> bannedCategories = new ArrayList<>();
+		ArrayList<Category> bannedCategories = new ArrayList<>();
 
 		if (account != null) {
 			try {
