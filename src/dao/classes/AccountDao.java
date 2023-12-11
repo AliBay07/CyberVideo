@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import org.springframework.security.access.vote.ConsensusBased;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import beans.Account;
@@ -93,8 +94,8 @@ public class AccountDao extends Dao<Account> {
 		String query = "SELECT " +
 				"Account.id, Account.id_users, Account.email, Account.password, " +
 				"Account.is_subscriber, Account.nb_allowed_reservations, " +
-				"LISTAGG(CreditCard.card_number, ', ') WITHIN GROUP (ORDER BY CreditCard.id) AS credit_cards, " +
-				"LISTAGG(SubscriberCard.card_number || ':' || SubscriberCard.amount, ', ') " +
+				"LISTAGG(CreditCard.id || ':' || CreditCard.card_number, ', ') WITHIN GROUP (ORDER BY CreditCard.id) AS credit_cards, " +
+				"LISTAGG(SubscriberCard.id || ':' || SubscriberCard.card_number || ':' || SubscriberCard.amount, ', ') " +
 				"WITHIN GROUP (ORDER BY SubscriberCard.id) AS subscriber_cards, " +
 				"Users.first_name, Users.last_name " +
 				"FROM Account " +
@@ -122,30 +123,30 @@ public class AccountDao extends Dao<Account> {
 
 					String firstName = resultSet.getString("first_name");
 					String lastName = resultSet.getString("last_name");
-					
+
 					BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 					if (!(passwordEncoder.matches(password, storedPassword))) {
 						return null;
 					}
-										
+
 					Account account = null;
-					
+
 					if ("Y".equals(isSubscriber)) {
 						account = new SubscriberAccount();
 
-						if (!(subscriberCards.replace(":", "").equals(""))) {
+						if (!(subscriberCards.replaceAll(":", "").equals(""))) {
 							List<SubscriberCard> subscriberCardList = Arrays.stream(subscriberCards.split(", "))
 									.map(cardData -> {
 										String[] cardInfo = cardData.split(":");
 										SubscriberCard subscriberCard = new SubscriberCard();
-										subscriberCard.setCardNumber(cardInfo[0]);
-										subscriberCard.setAmount(Float.parseFloat(cardInfo[1]));
+										subscriberCard.setId(Long.parseLong(cardInfo[0]));
+										subscriberCard.setCardNumber(cardInfo[1]);
+										subscriberCard.setAmount(Float.parseFloat(cardInfo[2]));
 										return subscriberCard;
 									})
 									.collect(Collectors.toList());
 							((SubscriberAccount) account).setSubscriberCards(subscriberCardList);
 						}
-
 					} else {
 						account = new NormalAccount();
 					}
@@ -163,9 +164,11 @@ public class AccountDao extends Dao<Account> {
 
 					if (creditCards != null) {
 						List<CreditCard> creditCardList = Arrays.stream(creditCards.split(", "))
-								.map(cardNumber -> {
+								.map(cardData -> {
+									String[] cardInfo = cardData.split(":");
 									CreditCard creditCard = new CreditCard();
-									creditCard.setCardNumber(cardNumber);
+									creditCard.setId(Long.parseLong(cardInfo[0]));
+									creditCard.setCardNumber(cardInfo[1]);
 									return creditCard;
 								})
 								.collect(Collectors.toList());
