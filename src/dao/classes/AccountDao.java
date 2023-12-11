@@ -428,7 +428,6 @@ public class AccountDao extends Dao<Account> {
 								int rowsUpdated = statementupdate.executeUpdate();
 
 								if (rowsUpdated > 0) {
-									connection.commit();
 									subscriberCard.setAmount((float)(amountInCard - amount));
 									return true;
 								}
