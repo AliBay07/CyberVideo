@@ -1,6 +1,9 @@
 package ui;
 
 import javax.swing.*;
+
+import beans.Category;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -41,9 +44,10 @@ public class FilmsSectionsPane extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 AdvancedResearchPopUp popUp = new AdvancedResearchPopUp();
                 //!!!! Catgories qui vont être récupérées depuis la facade !
-                String[] availableCategories = new String[10];
-                for(int i=0; i<10; i++){
-                    availableCategories[i] = "Categorie " + i;
+                ArrayList<Category> categories = controller.getFacadeIHM().getAllCategories();
+                String[] availableCategories = new String[categories.size()];
+                for(int i=0; i<availableCategories.length; i++){
+                    availableCategories[i] = categories.get(i).getCategoryName();
                 }
                 popUp.showPopUp(availableCategories);
                 popUp.getValidationButton().addActionListener(new ActionListener() {
@@ -51,7 +55,7 @@ public class FilmsSectionsPane extends JPanel {
                         criterias = popUp.getChosenCriterias();
                         popUp.setVisible(false);
                         popUp.dispose();
-                        controller.traite((BasePage) FilmsSectionsPane.this.getParent(), Keyword.SHOWADVANCEDRESEARCH);
+                        controller.traite(null, Keyword.SHOWADVANCEDRESEARCH);
                     }
                 });
             }
