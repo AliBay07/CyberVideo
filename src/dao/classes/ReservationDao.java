@@ -132,7 +132,7 @@ public class ReservationDao extends Dao<Reservation>{
 
 		if (account != null && blueRay != null) {
 			try {
-
+				connection.setAutoCommit(false);
 				String selectAccountQuery = "SELECT is_subscriber FROM Account WHERE id = ?";
 				try (PreparedStatement selectAccountStatement = connection.prepareStatement(selectAccountQuery)) {
 					selectAccountStatement.setLong(1, account.getId());
