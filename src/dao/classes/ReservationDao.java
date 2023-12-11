@@ -242,17 +242,10 @@ public class ReservationDao extends Dao<Reservation>{
 					int updatedRows = insertQrCodeStatement.executeUpdate();
 
 					if (updatedRows > 0) {
-						connection.commit();
 						return true;
 					}
-					connection.rollback();
 				}
 			} catch (SQLException e) {
-				try {
-					connection.rollback();
-				} catch (SQLException e1) {
-					e1.printStackTrace();
-				}
 				e.printStackTrace();
 			}
 		}
@@ -280,10 +273,8 @@ public class ReservationDao extends Dao<Reservation>{
 							int rowsInserted = insertStatement.executeUpdate();
 
 							if (rowsInserted > 0) {
-								connection.commit();
 								return true;
 							}
-							connection.rollback();
 						}
 					}
 				}
