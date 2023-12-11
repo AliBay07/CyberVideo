@@ -2,6 +2,9 @@ package ui;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+
 import beans.*;
 
 public class SubscriberNavbar extends JPanel {
@@ -19,7 +22,14 @@ public class SubscriberNavbar extends JPanel {
         //this.setLayout(new FlowLayout(FlowLayout.CENTER, 60, 0));
         leftMenu = new JButton("trois barres");
         currentLocations = new JLabel(nbReservations + " locations en cours",JLabel.CENTER); //Avoir le nombre de location avec la BD
-        currentMoney = new JLabel(((SubscriberAccount)account).getSubscriberCards().get(0).getAmount() + " euros restants", JLabel.CENTER); //Il faut avoir l'information sur l'argent depuis la DAO !
+        float amount = 0;
+        if(account instanceof SubscriberAccount){
+            List<SubscriberCard> listCard = ((SubscriberAccount)account).getSubscriberCards();
+            if(listCard!=null && !listCard.isEmpty()){
+                amount = listCard.get(0).getAmount();
+            }
+        }
+        currentMoney = new JLabel(amount + " euros restants", JLabel.CENTER); //Il faut avoir l'information sur l'argent depuis la DAO !
         basket = new JButton("Panier");
         rightMenu = new JButton(account.getUser().getFirstName());
         this.add(leftMenu);

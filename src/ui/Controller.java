@@ -287,6 +287,16 @@ public class Controller {
 		if(action == Keyword.CHANGE_ACCOUNT_INFO){
 			//@TODO après la modification des infos d'account
 		}
+		else
+		if(action == Keyword.LOGOUT){
+			if(currentAccount!=null){
+				facadeIHM.userLogOut();
+				currentAccount = null;
+				state = State.IDLE;
+				showMainPage();
+				JOptionPane.showMessageDialog(frame, "Logout success!", "Logout", JOptionPane.PLAIN_MESSAGE);
+			}
+		}
 	}
 
 	//    public void exitPage(BasePage page) {
