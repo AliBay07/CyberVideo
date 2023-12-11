@@ -18,7 +18,7 @@ import java.util.List;
 
 public class Payment {
     private JRadioButton selectedRadioButton = null;
-    public void afficherPaiement(Account account, JFrame jFrame, Film film,Controller controller,BasePage afficherFilm) {
+    public void afficherPaiement(Account account, JFrame jFrame, Film film,Controller controller,BasePage afficherFilm,BlueRay blueray) {
         if (account instanceof SubscriberAccount ) { //and nb de reservation < 3
             JDialog dialog = new JDialog(jFrame, "Paiement", true);
             dialog.setSize(SysAL2000.DIALOG_WIDTH, SysAL2000.DIALOG_HEIGHT);
@@ -111,11 +111,11 @@ public class Payment {
             // Bouton "Sélectionner cette carte"
             JButton selectCardButton = new JButton("Sélectionner cette carte");
 
-            if(creditCardRadioButton.isSelected())
+            if(creditCardRadioButton!= null && creditCardRadioButton.isSelected())
             {
                 selectedRadioButton = creditCardRadioButton;
             }
-            else if(subsciptionRadioButton.isSelected())
+            else if(subsciptionRadioButton != null && subsciptionRadioButton.isSelected())
             {
                 selectedRadioButton = subsciptionRadioButton;
             }
@@ -125,15 +125,14 @@ public class Payment {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     // Vérifiez d'abord si la case à cocher de la carte de crédit est sélectionnée
-                    CreditCard selectedCreditCard;
-                    SubscriberCard selectedSubscriptionCard;
+                    CreditCard selectedCreditCard = null;
+                    SubscriberCard selectedSubscriptionCard = null;
                     boolean boolcredit = false;
 
                         for (int i = 0; i < creditCardPanel.getComponentCount(); i++) {
                             if (creditCardPanel.getComponent(i) instanceof JPanel) {
                                 JPanel cardItemPanel = (JPanel) creditCardPanel.getComponent(i);
                                 if (cardItemPanel.getComponent(1) instanceof JRadioButton) {
-                                    System.out.println("hihi");
                                     JRadioButton radioButton = (JRadioButton) cardItemPanel.getComponent(1);
                                     if (radioButton.isSelected()) {
                                         selectedCreditCard = creditCard.get(i);
@@ -168,6 +167,14 @@ public class Payment {
                                         //vérifier que l'achat fonctionne
                                         if(controller.getFacadeIHM().processPaymentByCreditCard(selectedCreditCard, 4))
                                         {
+                                            System.out.println("1");
+                                            if(blueray != null)
+                                            {
+                                                System.out.println("here 2");
+                                                controller.getFacadeIHM().rentBlueRay(blueray,selectedCreditCard,selectedSubscriptionCard);
+                                            }
+                                            else{
+                                            controller.getFacadeIHM().generateQrCode(film,selectedCreditCard,selectedSubscriptionCard);}
                                             validateButton.addActionListener(new ActionListener() {
                                                 @Override
                                                 public void actionPerformed(ActionEvent e) {
@@ -237,10 +244,13 @@ public class Payment {
                                             validateJPanel.add(labelID, gbc);
 
                                             gbc.gridy++;
-                                            selectedSubscriptionCard.setAmount(selectedSubscriptionCard.getAmount() - 4);
+                                            selectedSubscriptionCard.setAmount(selectedSubscriptionCard.getAmount());
                                             System.out.println(selectedSubscriptionCard.getAmount());
                                             JLabel labelSolde = new JLabel("Solde : " + selectedSubscriptionCard.getAmount());
                                             validateJPanel.add(labelSolde, gbc);
+                                            gbc.gridy++;
+                                            JLabel newlabelSolde = new JLabel("Nouveau Solde : " + selectedSubscriptionCard.getAmount()+"-4");
+                                            validateJPanel.add(newlabelSolde, gbc);
 
                                             gbc.gridy++;
                                             JButton validateButton = new JButton("Valider");
@@ -252,24 +262,36 @@ public class Payment {
                                                 }
                                             });
 
-                                            dialog.setTitle("Paiement effectué");
-                                            dialog.getContentPane().removeAll();
-                                            dialog.getContentPane().add(validateJPanel);
-                                            dialog.revalidate();
-
-                                            //fermer après 4 secondes
-                                            Timer timer = new Timer(4000, new ActionListener() {
-                                                @Override
-                                                public void actionPerformed(ActionEvent e) {
-                                                    dialog.dispose();
-                                                    controller.traite(null,Keyword.RENTED_BlueRay_FILM); //vérifier blueray
-                                                    //appeler traite pour dire aller mainPage
+                                            if(controller.getFacadeIHM().processPaymentBySubscriberCard(selectedSubscriptionCard,4))
+                                            {
+                                                if(blueray != null)
+                                                {
+                                                    controller.getFacadeIHM().rentBlueRay(blueray,selectedCreditCard,selectedSubscriptionCard);
                                                 }
-                                            });
-                                            timer.setRepeats(false); // Le timer ne se répétera pas
-                                            timer.start();
+                                                else{
+                                                    controller.getFacadeIHM().generateQrCode(film,selectedCreditCard,selectedSubscriptionCard);}
 
-                                        }
+                                                dialog.setTitle("Paiement effectué");
+                                                dialog.getContentPane().removeAll();
+                                                dialog.getContentPane().add(validateJPanel);
+                                                dialog.revalidate();
+
+                                                //fermer après 4 secondes
+                                                Timer timer = new Timer(4000, new ActionListener() {
+                                                    @Override
+                                                    public void actionPerformed(ActionEvent e) {
+                                                        dialog.dispose();
+                                                        controller.traite(null,Keyword.RENTED_BlueRay_FILM); //vérifier blueray
+                                                        //appeler traite pour dire aller mainPage
+                                                    }
+                                                });
+                                                timer.setRepeats(false); // Le timer ne se répétera pas
+                                                timer.start();
+
+                                            }
+                                            }
+
+
                                         //accepter paiement si solde >= 4e sinon erreur choisir autre carte puis renvoyer vers une page de validation
                                     }
                                 }
@@ -408,16 +430,33 @@ public class Payment {
                         dialog.getContentPane().add(validateJPanel);
                         dialog.revalidate();
 
-                        Timer timer = new Timer(4000, new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                dialog.dispose();
-                                controller.traite(null,Keyword.RENTED_BlueRay_FILM); //vérifier blueray
-                                //appeler traite pour dire aller mainPage
+                        if(controller.getFacadeIHM().processPaymentByCreditCard(selectedCreditCard,4))
+                        {
+                            if(blueray != null)
+                            {
+                                controller.getFacadeIHM().rentBlueRay(blueray,selectedCreditCard,null);
                             }
-                        });
-                        timer.setRepeats(false); // Le timer ne se répétera pas
-                        timer.start();
+                            else{
+                                controller.getFacadeIHM().generateQrCode(film,selectedCreditCard,null);}
+
+                            dialog.setTitle("Paiement effectué");
+                            dialog.getContentPane().removeAll();
+                            dialog.getContentPane().add(validateJPanel);
+                            dialog.revalidate();
+
+                            //fermer après 4 secondes
+                            Timer timer = new Timer(4000, new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+                                    dialog.dispose();
+                                    controller.traite(null,Keyword.RENTED_BlueRay_FILM); //vérifier blueray
+                                    //appeler traite pour dire aller mainPage
+                                }
+                            });
+                            timer.setRepeats(false); // Le timer ne se répétera pas
+                            timer.start();
+
+                        }
 
                         //accepter paiement et renvoyer vers une page de validation
                         //la page est surement dans affichage film et cette fonction return la carte

@@ -162,7 +162,7 @@ class Affichage_Film extends BasePage {
         qrCode.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                payement.afficherPaiement(account,frame,film,controller,affichage_film);
+                payement.afficherPaiement(account,frame,film,controller,affichage_film, controller.getCurrentBlueRay());
             }
         });
 
@@ -285,7 +285,7 @@ class Affichage_Film extends BasePage {
         blueRaybutton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                payement.afficherPaiement(account,frame, blueRay.getFilm(), controller,affichage_film);
+                payement.afficherPaiement(account,frame, blueRay.getFilm(), controller,affichage_film,controller.getCurrentBlueRay());
             }
         });
 

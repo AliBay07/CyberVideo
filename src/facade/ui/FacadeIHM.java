@@ -45,8 +45,8 @@ public class FacadeIHM {
 		return machine.getAllAvailableBlueRays();
 	}
 
-	public boolean rentBlueRay(BlueRay blueRay) {
-		return machine.ReserveBlueRay(blueRay);
+	public boolean rentBlueRay(BlueRay blueRay,CreditCard creditCard, SubscriberCard subscriberCard) {
+		return machine.ReserveBlueRay(blueRay, creditCard,subscriberCard);
 	}
 
 	public boolean returnBlueRay(BlueRay blueRay) {
@@ -65,7 +65,7 @@ public class FacadeIHM {
 		machine.userLogOut();
 	}
 
-	public boolean generateQrCode(Film film) {
+	public boolean generateQrCode(Film film, CreditCard creditCard,SubscriberCard subscriberCard) {
 		return machine.ReserveQrCode(film);
 	}
 

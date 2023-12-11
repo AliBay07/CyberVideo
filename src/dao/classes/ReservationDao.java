@@ -32,7 +32,7 @@ public class ReservationDao extends Dao<Reservation>{
 		ArrayList<Reservation> reservations = new ArrayList<>();
 
 		if (account != null) {
-			String query = "SELECT b.available, r.id AS reservation_id, r.id_blueray, r.reservation_start_date, " +
+			String query = "SELECT b.available, f.image_path, r.id AS reservation_id, r.id_blueray, r.reservation_start_date, " +
 				    "f.id AS film_id, f.name, f.duration, f.description, " +
 				    "(SELECT LISTAGG(DISTINCT a.first_name || ' ' || a.last_name, ', ') WITHIN GROUP (ORDER BY a.id) " +
 				    " FROM FilmActor fa INNER JOIN Actor a ON fa.id_actor = a.id " +
@@ -134,7 +134,6 @@ public class ReservationDao extends Dao<Reservation>{
 
 		if (account != null && blueRay != null) {
 			try {
-				connection.setAutoCommit(false);
 				String selectAccountQuery = "SELECT is_subscriber FROM Account WHERE id = ?";
 				try (PreparedStatement selectAccountStatement = connection.prepareStatement(selectAccountQuery)) {
 					selectAccountStatement.setLong(1, account.getId());
@@ -155,7 +154,6 @@ public class ReservationDao extends Dao<Reservation>{
 									int numReservations = numReservationsResult.getInt("numReservations");
 
 									if (numReservations > 0) {
-										connection.rollback();
 										return false;
 									}
 								}
@@ -172,7 +170,6 @@ public class ReservationDao extends Dao<Reservation>{
 									int numReservations = numReservationsResult.getInt("numReservations");
 
 									if (numReservations >= 3) {
-										connection.rollback();
 										return false;
 									}
 								}
@@ -203,7 +200,6 @@ public class ReservationDao extends Dao<Reservation>{
 					int updatedRows = insertReservationStatement.executeUpdate();
 
 					if (updatedRows <= 0) {
-						connection.rollback();
 						return false;
 					}
 				}
@@ -216,18 +212,11 @@ public class ReservationDao extends Dao<Reservation>{
 					int updatedRows = updateStatement.executeUpdate();
 
 					if (updatedRows > 0) {
-						connection.commit();
 						return true;
 					}
-					connection.rollback();
 				}
 
 			} catch (SQLException e) {
-				try {
-					connection.rollback();
-				} catch (SQLException e1) {
-					e1.printStackTrace();
-				}
 				e.printStackTrace();
 			}
 		}
