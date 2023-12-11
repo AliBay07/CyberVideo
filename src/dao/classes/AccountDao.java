@@ -122,7 +122,12 @@ public class AccountDao extends Dao<Account> {
 
 					String firstName = resultSet.getString("first_name");
 					String lastName = resultSet.getString("last_name");
-
+					
+					BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+					if (!(passwordEncoder.matches(password, storedPassword))) {
+						return null;
+					}
+										
 					Account account = null;
 					
 					if ("Y".equals(isSubscriber)) {
