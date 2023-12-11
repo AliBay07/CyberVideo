@@ -13,8 +13,8 @@ public class Basket extends JDialog {
     private JButton validation;
     //Code dans mon Test.java pour dimensionner la JFrame et les JDialog
     public static Dimension dimension = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-    public static int DIALOG_WIDTH = (int) (dimension.getWidth()/3)*2;
-    public static int DIALOG_HEIGHT = (int) (dimension.getHeight()/3)*2;
+    public static int DIALOG_WIDTH = (int) (dimension.getWidth()/7);
+    public static int DIALOG_HEIGHT = (int) (dimension.getHeight()/7);
 
     public Basket(ArrayList<String> films){
         filmsPanel.setLayout(new BoxLayout(filmsPanel, BoxLayout.Y_AXIS));
