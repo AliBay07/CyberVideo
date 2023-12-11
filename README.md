@@ -1,28 +1,28 @@
 # CyberVideo Project
 
 Participants:
-AZZOUZI Nizar
-BAYDOUN Ali
-CHOUITER Skander
-GUEGAN Nicolas
-LI Jiawei
-PELLEGRIN Noémie
+AZZOUZI Nizar 
+BAYDOUN Ali 
+CHOUITER Skander 
+GUEGAN Nicolas 
+LI Jiawei 
+PELLEGRIN Noémie 
 
 ## Project Structure:
 
-.gitignore: Fichier pour la gestion des exclusions dans Git.
-README.md: Document principal de présentation et d'explication du projet.
-jars: Répertoire pour les bibliothèques Java externes (fichiers JAR).
-bd_files: Contient le fichier sql de notre base de donnée ainsi que les triggers.
+.gitignore: Fichier pour la gestion des exclusions dans Git. 
+README.md: Document principal de présentation et d'explication du projet. 
+jars: Répertoire pour les bibliothèques Java externes (fichiers JAR). 
+bd_files: Contient le fichier sql de notre base de donnée ainsi que les triggers. 
 
 Source Code (src):
 
-beans: Contient des classes Java Bean pour modéliser des entités comme Account, Film, etc.
-coo: Répertoire pour la logique métier spécifique au projet.
-dao (Data Access Object): Gère l'interaction avec la base de données.
-classes: Classes pour les opérations de base de données.
-tests: Tests unitaires pour les DAO.
-tools: Outils pour la manipulation des données.
+beans: Contient des classes Java Bean pour modéliser des entités comme Account, Film, etc. 
+coo: Répertoire pour la logique métier spécifique au projet. 
+dao (Data Access Object): Gère l'interaction avec la base de données. 
+classes: Classes pour les opérations de base de données. 
+tests: Tests unitaires pour les DAO. 
+tools: Outils pour la manipulation des données. 
 
 facade: Fournit des interfaces simplifiées pour les opérations complexes.
 bd: Façade pour les interactions avec la base de données.
