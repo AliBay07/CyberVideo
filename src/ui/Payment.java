@@ -166,7 +166,7 @@ public class Payment {
                                         JButton validateButton = new JButton("Valider");
                                         validateJPanel.add(validateButton, gbc);
                                         //vérifier que l'achat fonctionne
-                                        if(controller.getFacadeIHM().processPaymentByCreditCard(4))
+                                        if(controller.getFacadeIHM().processPaymentByCreditCard(selectedCreditCard, 4))
                                         {
                                             validateButton.addActionListener(new ActionListener() {
                                                 @Override
