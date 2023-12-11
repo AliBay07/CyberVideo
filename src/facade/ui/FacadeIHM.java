@@ -73,11 +73,11 @@ public class FacadeIHM {
 		return false;
 	}
 
-	public boolean subscribeToService() {
+	public Account subscribeToService() {
 		return machine.subscribeToService();
 	}
 
-	public boolean unsubscribeToService() {
+	public Account unsubscribeToService() {
 		return machine.unsubscribeFromService();
 	}
 

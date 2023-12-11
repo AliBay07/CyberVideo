@@ -125,22 +125,20 @@ public class Machine {
 		return facadeBd.setWeeklyRentalLimit(this.account, weeklyLimit);
 	}
 	
-	public boolean subscribeToService() {
+	public Account subscribeToService() {
 		SubscriberAccount subAccount = (SubscriberAccount) facadeBd.subscribeToService(account);
 		if (subAccount != null) {
 			this.account = subAccount;
-			return true;
 		}
-		return false;
+		return this.account;
 	}
 
-	public boolean unsubscribeFromService() {
+	public Account unsubscribeFromService() {
 		Account retrievedAccount = facadeBd.unsubscribeFromService(this.account);
 		if (retrievedAccount != null) {
 			this.account = retrievedAccount;
-			return true;
 		}
-		return false;
+		return this.account;
 	}
 
 	public ArrayList<Film> getAllFilms() {
