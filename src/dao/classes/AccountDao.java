@@ -309,7 +309,6 @@ public class AccountDao extends Dao<Account> {
 								int rowsUpdated = statementupdate.executeUpdate();
 
 								if (rowsUpdated > 0) {
-									connection.commit();
 									return subscriberAccount;
 								}
 							}
@@ -320,11 +319,6 @@ public class AccountDao extends Dao<Account> {
 			} catch (SQLException e1) {
 				e1.printStackTrace();
 			}
-		}
-		try {
-			connection.rollback();
-		} catch (SQLException e) {
-			e.printStackTrace();
 		}
 		return account;
 	}
@@ -356,7 +350,6 @@ public class AccountDao extends Dao<Account> {
 								int rowsUpdated = statementupdate.executeUpdate();
 
 								if (rowsUpdated > 0) {
-									connection.commit();
 									return normalAccount;
 								}
 							} 
@@ -366,11 +359,6 @@ public class AccountDao extends Dao<Account> {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-		}
-		try {
-			connection.rollback();
-		} catch (SQLException e) {
-			e.printStackTrace();
 		}
 		return account;
 	}
@@ -395,7 +383,6 @@ public class AccountDao extends Dao<Account> {
 							int rowsUpdated = statementupdate.executeUpdate();
 
 							if (rowsUpdated > 0) {
-								connection.commit();
 								subscriberCard.setAmount((float) (amountInCard + amount));
 								return true;
 							}
@@ -469,7 +456,6 @@ public class AccountDao extends Dao<Account> {
 
 								int rowsInserted = statement.executeUpdate();
 								if (rowsInserted > 0) {
-									connection.commit();
 									return true;
 								}
 							}
@@ -509,7 +495,6 @@ public class AccountDao extends Dao<Account> {
 										}
 									}
 
-									connection.commit();
 									return true;
 								}
 							}
@@ -518,11 +503,6 @@ public class AccountDao extends Dao<Account> {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				try {
-					connection.rollback();
-				} catch (SQLException rollbackException) {
-					rollbackException.printStackTrace();
-				}
 			}
 		}
 		return false;
@@ -546,10 +526,7 @@ public class AccountDao extends Dao<Account> {
 									int rowsDeleted = deleteStatement.executeUpdate();
 
 									if (rowsDeleted > 0) {
-										connection.commit();
 										return true;
-									} else {
-										connection.rollback();
 									}
 								}
 							}
@@ -558,11 +535,6 @@ public class AccountDao extends Dao<Account> {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				try {
-					connection.rollback();
-				} catch (SQLException rollbackException) {
-					rollbackException.printStackTrace();
-				}
 			}
 		}
 
@@ -603,11 +575,6 @@ public class AccountDao extends Dao<Account> {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				try {
-					connection.rollback();
-				} catch (SQLException rollbackException) {
-					rollbackException.printStackTrace();
-				}
 			}
 		}
 
@@ -632,11 +599,8 @@ public class AccountDao extends Dao<Account> {
 									int rowsUpdated = updateStatement.executeUpdate();
 
 									if (rowsUpdated > 0) {
-										connection.commit();
 										account.setNbAllowedReservation(weeklyLimit);
 										return true;
-									} else {
-										connection.rollback();
 									}
 								}
 							}
@@ -645,11 +609,6 @@ public class AccountDao extends Dao<Account> {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				try {
-					connection.rollback();
-				} catch (SQLException rollbackException) {
-					rollbackException.printStackTrace();
-				}
 			}
 		}
 		return false;
@@ -714,7 +673,6 @@ public class AccountDao extends Dao<Account> {
 
 								int passwordRowsUpdated = passwordUpdateStatement.executeUpdate();
 								if (passwordRowsUpdated > 0) {
-									connection.commit();
 
 									User updatedUser = new User();
 									updatedUser.setFirstName(newFirstName);
@@ -726,7 +684,6 @@ public class AccountDao extends Dao<Account> {
 								}
 							}
 						} else {
-							connection.commit();
 
 							User updatedUser = new User();
 							updatedUser.setFirstName(newFirstName);
@@ -740,11 +697,6 @@ public class AccountDao extends Dao<Account> {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				try {
-					connection.rollback();
-				} catch (SQLException rollbackException) {
-					rollbackException.printStackTrace();
-				}
 			}
 		}
 		return null;
@@ -791,14 +743,11 @@ public class AccountDao extends Dao<Account> {
 
 													if (rowsUpdated > 0) {
 														((SubscriberAccount)account).addSubscriberCard(subscriberCard);
-														connection.commit();
 														return true;
 													}
 												}	                                        
 											}
 										}
-									} else {
-										connection.rollback();
 									}
 								}
 							}
@@ -807,11 +756,6 @@ public class AccountDao extends Dao<Account> {
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				try {
-					connection.rollback();
-				} catch (SQLException rollbackException) {
-					rollbackException.printStackTrace();
-				}
 			}
 		}
 		return false;
@@ -848,23 +792,15 @@ public class AccountDao extends Dao<Account> {
 
 									if (rowsUpdated > 0) {
 										account.addCreditCard(creditCard);
-										connection.commit();
 										return true;
 									}
 								}                                        
 							}
 						}
-					} else {
-						connection.rollback();
 					}
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
-				try {
-					connection.rollback();
-				} catch (SQLException rollbackException) {
-					rollbackException.printStackTrace();
-				}
 			}
 		}
 		return false;
