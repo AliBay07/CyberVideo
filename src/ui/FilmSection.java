@@ -37,7 +37,7 @@ public class FilmSection extends BasePage {
                 public void actionPerformed(ActionEvent e) {
                     for(int j=0; j<listBluray.size(); j++){
                         if(listBluray.get(j).getFilm().getName().equals(film.getText())){
-                            selectedBluray = listBluray.get(j);
+                            controller.setCurrentBlueRay(listBluray.get(j));
                             controller.traite(FilmSection.this, Keyword.SHOWFILMDETAILS);
                         }
                     }
@@ -77,7 +77,7 @@ public class FilmSection extends BasePage {
                 public void actionPerformed(ActionEvent e) {
                     for(int j=0; j<listFilms.size(); j++){
                         if(listFilms.get(j).getName().equals(film.getText())){
-                            selectedFilm = listFilms.get(j);
+                            controller.setCurrentFilm(listFilms.get(j));
                             controller.traite(FilmSection.this, Keyword.SHOWFILMDETAILS);
                         }
                     }
@@ -106,5 +106,9 @@ public class FilmSection extends BasePage {
 
     public Film getSelectedFilm(){
         return selectedFilm;
+    }
+
+    public BlueRay getSelectedBlueRay(){
+        return selectedBluray;
     }
 }

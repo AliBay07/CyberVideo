@@ -190,21 +190,41 @@ public class Controller {
 		if(action == Keyword.SHOWFILMDETAILS){
 			switch(state){ //A tester
 				case SHOW_FILMS_RESULTS:
-					saveOldPage();
 					showDetailedFilm(getCurrentFilm());
 					state = State.SHOW_FILM_DETAILS;
+					break;
 				case SHOW_BLURAY_RESULTS:
-					saveOldPage();
 					showDetailedBlueRay(getCurrentBlueRay());
 					state = State.SHOW_FILM_DETAILS;
+					break;
 				case IDLE:
-					//accéder au film sélectionné + enregistrer oldpage
+					saveOldPage();
+					if(currentFilm == null){
+						showDetailedBlueRay(getCurrentBlueRay());
+					}
+					else{
+						showDetailedFilm(getCurrentFilm());
+					}
 					state = State.SHOW_FILM_DETAILS;
+					break;
 				case LOGGED_NORMAL:
-					//accéder au film sélectionné + enregistrer oldpage
+					saveOldPage();
+					if(currentFilm == null){
+						showDetailedBlueRay(getCurrentBlueRay());
+					}
+					else{
+						showDetailedFilm(getCurrentFilm());
+					}
 					state = State.SHOW_FILM_DETAILS;
+					break;
 				case LOGGED_PREMIUM:
-					//accéder au film sélectionné + enregistrer oldpage
+					saveOldPage();
+					if(currentFilm == null){
+						showDetailedBlueRay(getCurrentBlueRay());
+					}
+					else{
+						showDetailedFilm(getCurrentFilm());
+					}
 					state = State.SHOW_FILM_DETAILS;
 				default:
 					break;
